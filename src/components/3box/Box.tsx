@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 interface BoxProps {}
 
 export const BoxController: React.FC<BoxProps> = () => {
-  const [status,setStatus] = useState("Disconnected")
+  const [status,setStatus] = useState(false)
   let address = "";
   let mybox
   let space
@@ -39,10 +39,11 @@ export const BoxController: React.FC<BoxProps> = () => {
     toast.success("space opened... getting data")
     console.log(space);
    
+    await boxservice.setSpace(space)
     await boxservice.getHashesFrom3Box(space)
+    boxservice.status.next(true)
 
-
-    setStatus("connected")
+    setStatus(true)
       // .then((x) => toast.success("connected to 3box"))
       // .catch((x) => toast.error("can't connect to 3box"));
   });
@@ -61,7 +62,7 @@ export const BoxController: React.FC<BoxProps> = () => {
       >
         Connect to wallet & 3box
       </button>
-      <div id="3boxconnection">{status}</div>
+      <div id="3boxconnection">{status?<>connected</>:<>disconnected</>}</div>
     </>
   );
 };

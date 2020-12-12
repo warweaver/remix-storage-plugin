@@ -1,5 +1,6 @@
 import IpfsHttpClient from "ipfs-http-client";
 import { toast } from "react-toastify";
+import { BehaviorSubject } from "rxjs";
 import { fileservice, fs, gitservice } from "../../App";
 
 export interface ipfsConfig {
@@ -14,7 +15,6 @@ export interface ipfsFileObject {
   content: string;
 }
 
-const ipfsurl = "https://ipfs.io/ipfs/";
 export class IPFSService {
   ipfsconfig: ipfsConfig = {
     host: "localhost",
@@ -26,8 +26,10 @@ export class IPFSService {
   ipfs = IpfsHttpClient(this.ipfsconfig);
   filesToSend: ipfsFileObject[] = [];
   cid: string = "";
+  cidBehavior = new BehaviorSubject<string>("")
 
   async getipfsurl() {
+    return this.ipfsconfig.ipfsurl;
     //return $("#IPFS-url").val() != "" ? $("#IPFS-url").val() : false || ipfsurl;
   }
 
@@ -106,11 +108,10 @@ export class IPFSService {
         /* $('#CID').attr('href', `${ipfsurl}${x.cid.string}`)
             $('#CID').html(`Your files are here: ${x.cid.string}`) */
         this.cid = x.cid.string;
+        this.cidBehavior.next(this.cid)
       });
       toast.success(
-        `You files were uploaded to IPFS: <a target=_blank href="${await this.getipfsurl()}${
-          this.cid
-        }">${this.cid}</a>`
+        `You files were uploaded to IPFS`
       );
       this.hidespinner();
     } catch (e) {

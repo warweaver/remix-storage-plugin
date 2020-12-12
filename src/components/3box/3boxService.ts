@@ -1,8 +1,10 @@
 import { default as Box } from "3box";
 import { toast } from "react-toastify";
+import { BehaviorSubject } from "rxjs";
 import { gitservice, ipfservice } from "../../App";
 
 export class BoxService {
+  status = new BehaviorSubject<boolean>(false)
   box: any;
   space: any;
 
@@ -10,6 +12,10 @@ export class BoxService {
 
   hidespinner() {}
   // 3BOX connection
+
+  async setSpace(space:any){
+    this.space = space
+  }
 
   async storeHashIn3Box(space:any) {
     if (typeof this.space == "undefined") {
