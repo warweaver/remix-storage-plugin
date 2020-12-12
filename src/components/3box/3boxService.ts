@@ -1,6 +1,6 @@
 import { default as Box } from "3box";
 import { toast } from "react-toastify";
-import { gitservice, ipfservice, walletservice } from "../../App";
+import { gitservice, ipfservice } from "../../App";
 
 export class BoxService {
   box: any;
@@ -10,27 +10,6 @@ export class BoxService {
 
   hidespinner() {}
   // 3BOX connection
-
-  async connect3Box() {
-    console.log("3box connect");
-    this.showspinner();
-    try {
-      console.log(walletservice.address, window.ethereum);
-      let profile = await Box.getProfile(walletservice.address);
-      await Box.openBox(walletservice.address, window.ethereum, {})
-      console.log(profile)
-      toast.success(`Your 3Box space is ${this.space._name}`);
-      //await Box.openBox(walletservice.address, window.ethereum);
-      /* this.space = await this.box.openSpace("remix-workspace");
-      console.log(this.space);
-      
-      const hashes = await this.getHashesFrom3Box();
-      await this.show3boxhashes(hashes); */
-    } catch (e) {
-      toast.error(`Can't connect to 3Box. Make sure the IDE runs on HTTPS.`);
-    }
-    this.hidespinner();
-  }
 
   async storeHashIn3Box(space:any) {
     if (typeof this.space == "undefined") {

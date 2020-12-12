@@ -38,8 +38,11 @@ export const BoxController: React.FC<BoxProps> = () => {
     space = await mybox.openSpace("remix-workspace");
     toast.success("space opened... getting data")
     console.log(space);
-    setStatus("connected")
+   
     await boxservice.getHashesFrom3Box(space)
+
+
+    setStatus("connected")
       // .then((x) => toast.success("connected to 3box"))
       // .catch((x) => toast.error("can't connect to 3box"));
   });
