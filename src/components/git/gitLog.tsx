@@ -1,0 +1,60 @@
+import { ReadCommitResult } from "isomorphic-git";
+import React from "react";
+import { useBehaviorSubject } from "use-subscribable";
+import { gitservice } from "../../App";
+
+interface gitLogProps {}
+
+export const GitLog: React.FC<gitLogProps> = ({}) => {
+  const commits = useBehaviorSubject(gitservice.commits);
+
+  gitservice.commits
+    .subscribe((x) => {
+      console.log(commits);
+    })
+    .unsubscribe();
+
+  const getDate = (commit: ReadCommitResult) => {
+    let date = new Date(commit.commit.committer.timestamp * 1000);
+    return `${date.getDay()}-${date.getMonth()}-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  };
+
+  return (
+    <>
+      <button
+        className="btn w-25 btn-primary"
+        onClick={async () => gitservice.gitlog()}
+      >
+        git log
+      </button>
+
+      <hr />
+      <h4>Commits</h4>
+
+      <div className="container-fluid">
+        {commits?.map((commit) => {
+          return (
+            <div key={commit.oid} className="row p-1 small">
+              <div className="col-2">{commit.commit.message}</div>
+              <div className="col">{getDate(commit)}</div>
+              <div className="col">{commit.oid}</div>
+              <div
+                onClick={async () => gitservice.checkout(commit.oid)}
+                className="btn btn-primary btn-sm checkout-btn"
+              >
+                git checkout
+              </div>
+            </div>
+          );
+        })}
+        <div
+          onClick={async () => gitservice.checkout("master")}
+          className="btn btn-primary btn-sm checkout-btn"
+          data-oid="master"
+        >
+          git checkout master
+        </div>
+      </div>
+    </>
+  );
+};
