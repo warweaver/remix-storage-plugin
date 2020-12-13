@@ -71,6 +71,7 @@
     ]
   },
   "devDependencies": {
-    "@types/3box": "^1.22.0"
+    "@types/3box": "^1.22.0",
+    "@types/marked": "^1.2.1"
   }
 }

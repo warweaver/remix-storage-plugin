@@ -26,6 +26,7 @@ import { Importer } from "./components/Import/importer";
 import Loading from "react-fullscreen-loading";
 import { LoaderService } from "./components/loaderService";
 import { useBehaviorSubject } from "use-subscribable";
+import { Help } from "./components/Help";
 
 export const fsNoPromise: any = new FS("remix-workspace");
 export const fs: any = fsNoPromise.promises;
@@ -76,6 +77,9 @@ function App() {
           </Tab>
           <Tab className="mt-4 ml-1" eventKey="diff" title="Diff">
             <DiffView />
+          </Tab>
+          <Tab className="mt-4 ml-1" eventKey="help" title="Help">
+            <Help />
           </Tab>
         </Tabs>
       </Container>
