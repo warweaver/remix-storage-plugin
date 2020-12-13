@@ -22,52 +22,65 @@ import { IPFSService } from "./components/IPFS/IPFSService";
 import { BoxService } from "./components/3box/3boxService";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Importer } from "./components/Import/importer";
+import Loading from "react-fullscreen-loading";
+import { LoaderService } from "./components/loaderService";
+import { useBehaviorSubject } from "use-subscribable";
 
 export const fsNoPromise: any = new FS("remix-workspace");
 export const fs: any = fsNoPromise.promises;
 export const gitservice: gitService = new gitService();
 export const client: WorkSpacePlugin = new WorkSpacePlugin();
 export const fileservice: LsFileService = new LsFileService();
-export const ipfservice:IPFSService = new IPFSService();
-export const boxservice:BoxService = new BoxService();
-
+export const ipfservice: IPFSService = new IPFSService();
+export const boxservice: BoxService = new BoxService();
+export const loaderservice: LoaderService = new LoaderService();
 
 function App() {
-  const [activeKey, setActiveKey] = useState<string>("files")
+  const [activeKey, setActiveKey] = useState<string>("files");
+  const loading: boolean | undefined = useBehaviorSubject(loaderservice.loading);
+  loaderservice.loading.subscribe((x) => {}).unsubscribe();
 
-
-  const setTab = (key:string)=>{
-    setActiveKey(key)
-  }
-
+  const setTab = async (key: string) => {
+    setActiveKey(key);
+    if(key=="diff"){
+      loaderservice.setLoading(true)
+      await gitservice.diffFiles()
+      loaderservice.setLoading(false)
+    }
+  };
 
   return (
     <div className="App">
       <Container fluid>
+        {loading? <Loading loading background="#2ecc71" loaderColor="#3498db" />:<></>}
+       
         <h1>Storage</h1>
         <ToastContainer position="bottom-right" />
-        <Tabs activeKey={activeKey} onSelect={(k) => setTab(k || "files")}>
+        <Tabs activeKey={activeKey} onSelect={async (k) => await setTab(k || "files")}>
           <Tab className="mt-4 ml-1" eventKey="files" title="Files">
-            <FileExplorer setTab={setTab}/>
-            <FileTools/>
+            <FileExplorer setTab={setTab} />
+            <FileTools />
           </Tab>
           <Tab className="mt-4 ml-1" eventKey="git" title="Git">
             <GitControls />
           </Tab>
           <Tab className="mt-4 ml-1" eventKey="connections" title="Connections">
-            <BoxController/>
+            <BoxController />
           </Tab>
           <Tab className="mt-4 ml-1" eventKey="export" title="Export">
             <IPFSView />
           </Tab>
+          <Tab className="mt-4 ml-1" eventKey="import" title="Import">
+            <Importer />
+          </Tab>
           <Tab className="mt-4 ml-1" eventKey="diff" title="Diff">
-            <DiffView/>
+            <DiffView />
           </Tab>
         </Tabs>
       </Container>
     </div>
   );
-
 }
 
 export default App;

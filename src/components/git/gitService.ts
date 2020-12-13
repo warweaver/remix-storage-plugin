@@ -308,16 +308,16 @@ export class gitService {
   async diffFile(args: any) {
     //$('#files').hide()
     //$('#diff-container').show()
-
+    console.log("DIFF", args);
     const fullfilename = args; // $(args[0].currentTarget).data('file')
     const filename = ""; // path.basename($(args[0].currentTarget).data('file'))
-    const commitOid = await git.resolveRef({
-      fs: fsNoPromise,
-      dir: "/",
-      ref: "HEAD",
-    });
-
     try {
+      const commitOid = await git.resolveRef({
+        fs: fsNoPromise,
+        dir: "/",
+        ref: "HEAD",
+      });
+
       const { blob } = await git.readBlob({
         fs: fsNoPromise,
         dir: "/",
@@ -343,7 +343,7 @@ export class gitService {
 
       return filediff;
     } catch (e) {
-      toast("Nothing to diff!");
+      toast("Nothing to diff! "+fullfilename);
 
       const filediff: diffObject = {
         originalFileName: "",

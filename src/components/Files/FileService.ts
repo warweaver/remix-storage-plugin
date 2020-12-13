@@ -1,15 +1,11 @@
 import { toast } from "react-toastify";
-import { gitservice } from "../../App";
+import { gitservice, loaderservice } from "../../App";
 import { client } from "../../App";
 import path from "path";
 import { fs } from "../../App";
 import { removeSlash, jsonObjectFromFileList } from "./utils";
 import { BehaviorSubject } from "rxjs";
-import {
-  fileExplorerNode,
-  fileStatusResult,
-  statusMatrix,
-} from "./types";
+import { fileExplorerNode, fileStatusResult, statusMatrix } from "./types";
 
 export const fileStatuses = [
   ["new, untracked", 0, 2, 0], // new, untracked
@@ -33,14 +29,16 @@ console.log("matrix", statusmatrix);
 
 export class LsFileService {
   filetreecontent = new BehaviorSubject<fileExplorerNode>({ children: [] });
-  fileStatusResult: fileStatusResult[] = []
+  fileStatusResult: fileStatusResult[] = [];
 
   async addFileFromBrowser(file: string) {
     if (!client.callBackEnabled) return false;
-    const content = await client.call("fileManager", "readFile", file);
-    console.log(content);
-    await this.addFile(file, content);
-    //return content
+    try {
+      const content = await client.call("fileManager", "readFile", file);
+      console.log(content);
+      await this.addFile(file, content);
+      //return content
+    } catch (e) {}
   }
 
   async clearDb() {
@@ -57,6 +55,7 @@ export class LsFileService {
 
   async syncToBrowser() {
     //this.showspinner();
+    loaderservice.setLoading(true);
     await client.disableCallBacks();
     let filesToSync = [];
     // first get files in current commit, not the files in the FS because they can be changed or unstaged
@@ -76,7 +75,7 @@ export class LsFileService {
         await client.call("fileManager", "setFile", ob.path, ob.content);
       } catch (e) {
         console.log("could not load file", e);
-        //this.hidespinner();
+        loaderservice.setLoading(false);
       }
       filesToSync.push(ob);
     }
@@ -84,8 +83,8 @@ export class LsFileService {
 
     await this.showFiles();
     await client.enableCallBacks();
-    toast("Import successfull");
-    //this.hidespinner();
+    toast.success("Import successfull");
+    loaderservice.setLoading(false);
   }
 
   async addFile(file: string, content: string) {
@@ -98,8 +97,10 @@ export class LsFileService {
   }
 
   async rmFile(file: string) {
-    console.log("rm file ", file);
-    await fs.unlink("/" + file);
+    try {
+      console.log("rm file ", file);
+      await fs.unlink("/" + file);
+    } catch (e) {}
     await this.showFiles();
   }
 
@@ -124,13 +125,17 @@ export class LsFileService {
   }
 
   async viewFile(args: any) {
-    const filename = args; 
-    console.log("view file",filename)
+    const filename = args;
+    console.log("view file", filename);
     //$(args[0].currentTarget).data('file')
-    try{
-      await client.call("fileManager", "switchFile", `${removeSlash(filename)}`);
-    }catch(e){
-      toast.error("file does not exist in Remix")
+    try {
+      await client.call(
+        "fileManager",
+        "switchFile",
+        `${removeSlash(filename)}`
+      );
+    } catch (e) {
+      toast.error("file does not exist in Remix");
     }
   }
 
@@ -147,10 +152,11 @@ export class LsFileService {
     console.log("file status", this.fileStatusResult);
   }
 
-  getFileStatusForFile(filename:string){
-    console.log("checking file status",filename)
-    for(let i:number=0;i<this.fileStatusResult.length;i++){
-      if(this.fileStatusResult[i].filename == filename) return this.fileStatusResult[i].statusNames
+  getFileStatusForFile(filename: string) {
+    console.log("checking file status", filename);
+    for (let i: number = 0; i < this.fileStatusResult.length; i++) {
+      if (this.fileStatusResult[i].filename == filename)
+        return this.fileStatusResult[i].statusNames;
     }
   }
 
@@ -173,7 +179,7 @@ export class LsFileService {
     try {
       await gitservice.getBranches();
     } catch (e) {}
-    await gitservice.diffFiles()
+    //await gitservice.diffFiles()
     return true;
   }
 

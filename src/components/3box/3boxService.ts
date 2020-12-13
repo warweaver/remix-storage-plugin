@@ -1,10 +1,8 @@
-import { default as Box } from "3box";
 import { toast } from "react-toastify";
 import { BehaviorSubject } from "rxjs";
-import { gitservice, ipfservice } from "../../App";
-
+import { gitservice, ipfservice, loaderservice } from "../../App";
 export interface boxObject {
-  key: string;
+  key?: string;
   cid?: string;
   datestored?: string | number | Date;
   datecommit?: number | string | Date;
@@ -14,7 +12,7 @@ export interface boxObject {
 }
 export class BoxService {
   status = new BehaviorSubject<boolean>(false);
-
+  boxObjects = new BehaviorSubject<boxObject[] | []>([]);
   box: any;
   space: any;
 
@@ -29,10 +27,10 @@ export class BoxService {
 
   async storeHashIn3Box(space: any) {
     if (typeof this.space == "undefined") {
-      toast.warning("You should connect to 3Box first");
+      toast.error("You should connect to 3Box first");
       return false;
     }
-    this.showspinner();
+    loaderservice.setLoading(true)
     await ipfservice.addToIpfs();
     console.log("export 3box", ipfservice.cid, this.space);
     const commits = await gitservice.getCommits();
@@ -48,50 +46,26 @@ export class BoxService {
     };
 
     await this.space.private.set(key, ob);
-    toast.success("stored in 3box");
-    //this.addSuccess('boxexportstatus', 'Your data was stored in 3Box')
-    const hashes = await this.getHashesFrom3Box(space);
-    await this.show3boxhashes(hashes);
-    this.hidespinner();
+    toast.success("Stored in 3box");
+    await this.getObjectsFrom3Box(space);
+    loaderservice.setLoading(false)
   }
 
-  async show3boxhashes(hashes: any) {
-    console.log("render", hashes);
-
-    let ipfsurl = await ipfservice.getipfsurl();
-    hashes.map(async (x: any) => {
-      try {
-        x.link = `${ipfsurl}${x.cid}`;
-        return x;
-      } catch (e) {
-        return false;
-      }
-    });
-
-    hashes = hashes.reverse();
-  }
-
-  async getHashesFrom3Box(space: any) {
-    const hashes = await space.private.all();
+  async getObjectsFrom3Box(space: any) {
+    const hashes: boxObject[] = await space.private.all();
+    this.boxObjects.next(Object.values(hashes));
     console.log(hashes);
     return Object.values(hashes);
   }
 
-  async importFrom3Box(args: string) {
-    const cid = args;
-    console.log("cid", cid);
-    ipfservice.cid = cid;
-    //$("#ipfs").val(ipfservice.cid);
-    //await this.clone();
-  }
-
-  async deleteFrom3Box(args: string, space: any) {
-    const key = args;
-    console.log("key", key);
-    this.showspinner();
-    await this.space.private.remove(key);
-    const hashes = await this.getHashesFrom3Box(space);
-    await this.show3boxhashes(hashes);
-    this.hidespinner();
+  async deleteFrom3Box(args: string | undefined) {
+    if (args !== undefined) {
+      const key = args;
+      console.log("key", key);
+      loaderservice.setLoading(true)
+      await this.space.private.remove(key);
+      await this.getObjectsFrom3Box(this.space);
+      loaderservice.setLoading(false)
+    }
   }
 }

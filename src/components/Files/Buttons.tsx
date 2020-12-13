@@ -28,9 +28,9 @@ export const FileButtons: React.FC<FileButtonsProps> = ({
       <div className="badge badge-primary addgit" onClick={async() => await gitservice.addToGit(file.fullname)}>
         add
       </div>
-      <div className="badge badge-primary gitrm" onClick={async() => await gitservice.gitrm(file.fullname)}>
-        rm
-      </div>
+      {/* <div className="badge badge-primary addgit" onClick={async() => await gitservice.diffFile(file.fullname)}>
+        diff
+      </div> */}
       <div
         className="badge badge-primary checkoutfile d-none" onClick={async() => await gitservice.checkoutfile(file.fullname)}>
         checkout

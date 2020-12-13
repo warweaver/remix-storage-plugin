@@ -1,11 +1,14 @@
-import React from 'react'
+import React from "react";
+import { BoxImporter } from "./BoxImporter";
+import { IPFSImporter } from "./IPFSImporter";
 
-interface importerProps {
 
-}
 
-export const importer: React.FC<importerProps> = ({}) => {
-        return (/* 
+interface importerProps {}
+
+export const Importer: React.FC<importerProps> = ({}) => {
+  return (
+    /* 
             <>
 
 <h4>3Box storage</h4>
@@ -35,5 +38,10 @@ export const importer: React.FC<importerProps> = ({}) => {
 
 </div>
             </> */
-       <></> );
-}
+    <>
+        <IPFSImporter/>
+        <BoxImporter/>
+        
+    </>
+  );
+};

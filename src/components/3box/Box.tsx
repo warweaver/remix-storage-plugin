@@ -3,7 +3,7 @@ import Box from "3box";
 import Web3Modal from "web3modal";
 import { getAddress } from "@ethersproject/address";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { boxservice } from "../../App";
+import { boxservice, loaderservice } from "../../App";
 import { toast } from "react-toastify";
 
 interface BoxProps {}
@@ -30,20 +30,22 @@ export const BoxController: React.FC<BoxProps> = () => {
   modal.on("connect", async (provider) => {
     const [eth] = await provider.enable();
     address = getAddress(eth);
-    toast.info("Please wait...")
+    loaderservice.setLoading(true)
+    toast.info("Please wait... this can take a while")
     console.log(address);
     mybox = await Box.openBox(address, window.ethereum)
     toast.success("3box connected... waiting for space to open")
     console.log(mybox)
     space = await mybox.openSpace("remix-workspace");
-    toast.success("space opened... getting data")
+    //toast.success("space opened... getting data")
     console.log(space);
    
     await boxservice.setSpace(space)
-    await boxservice.getHashesFrom3Box(space)
+    await boxservice.getObjectsFrom3Box(space)
     boxservice.status.next(true)
 
     setStatus(true)
+    loaderservice.setLoading(false)
       // .then((x) => toast.success("connected to 3box"))
       // .catch((x) => toast.error("can't connect to 3box"));
   });

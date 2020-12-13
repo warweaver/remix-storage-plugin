@@ -32,7 +32,7 @@ export class WorkSpacePlugin extends PluginClient {
 
         })
 
-        this.on('fileManager', 'currentFileChanged', async (e) => {
+        this.on('fileManager', 'fileSaved', async (e) => {
           // Do something
           console.log(e)
           fileservice.addFileFromBrowser(e)
@@ -40,15 +40,16 @@ export class WorkSpacePlugin extends PluginClient {
           //await this.addFileFromBrowser(e)
         })
     
-        this.on('fileManager', 'currentFileChanged', async (e) => {
+        this.on('fileManager', 'fileAdded', async (e) => {
           // Do something
           fileservice.addFileFromBrowser(e)
           console.log(e)
         })
     
-        this.on('fileManager', 'currentFileChanged', async (e) => {
+        this.on('fileManager', 'fileRemoved', async (e) => {
           // Do something
           console.log(e)
+          await fileservice.rmFile(e)
          // await this.rmFile(e)
     
         })
@@ -59,10 +60,11 @@ export class WorkSpacePlugin extends PluginClient {
           //await this.rmFile(e)
         })
     
-        this.on('fileManager', 'currentFileChanged', async (e) => {
+        this.on('fileManager', 'fileRenamed', async (oldfile,newfile) => {
           // Do something
-          console.log(e)
-          fileservice.addFileFromBrowser(e)
+          console.log(oldfile,newfile)
+          fileservice.rmFile(oldfile)
+          fileservice.addFileFromBrowser(newfile)
           //await this.addFileFromBrowser(e)
         })
         this.callBackEnabled = true
