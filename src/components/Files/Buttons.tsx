@@ -1,43 +1,107 @@
 import React from "react";
-import { fileservice, gitservice } from "../../App";
+import { client, fileservice, gitservice } from "../../App";
 import "./FileExplorer.css";
 import { fileExplorerNode } from "./types";
 interface FileButtonsProps {
   file: fileExplorerNode;
-  setTab: (key:string) => void
+  setTab: (key: string) => void;
 }
 
-
-
 export const FileButtons: React.FC<FileButtonsProps> = ({
-  file,setTab
+  file,
+  setTab,
 }: FileButtonsProps) => {
-
-  const diffFile = (file:fileExplorerNode)=>{
-    gitservice.diffFiles()
+  const diffFile = (file: fileExplorerNode) => {
+    gitservice.diffFiles();
     ///setTab("diff")
-  }
+  };
 
-  if(file.type == "file"){
-  return (
-    <span className="status float-right mr-3 ml-3">
-        
-      <div className="badge badge-primary viewfile" onClick={async() => await fileservice.viewFile(file.fullname)}>
-        edit
-      </div>
-      <div className="badge badge-primary addgit" onClick={async() => await gitservice.addToGit(file.fullname)}>
-        add
-      </div>
-      {/* <div className="badge badge-primary addgit" onClick={async() => await gitservice.diffFile(file.fullname)}>
-        diff
-      </div> */}
-      <div
-        className="badge badge-primary checkoutfile d-none" onClick={async() => await gitservice.checkoutfile(file.fullname)}>
-        checkout
-      </div>
-    </span>
-  );
-  }else{
-      return <></>
+  const gitaddButton = (file: fileExplorerNode) => {
+    let status = fileservice.getFileStatusForFile(file.fullname || "");
+    if (
+      status?.indexOf("deleted") === -1 &&
+      status?.indexOf("unmodified") === -1
+    ) {
+      return (
+        <div
+          className={"badge badge-primary addgit"}
+          onClick={async () => await gitservice.addToGit(file.fullname)}
+        >
+          git add
+        </div>
+      );
+    } else {
+      return <div className={"badge badge-secondary addgit"}>git add</div>;
+    }
+  };
+
+  const giteditButton = (file: fileExplorerNode) => {
+    let status = fileservice.getFileStatusForFile(file.fullname || "");
+    if (status?.indexOf("deleted") === -1) {
+      return (
+        <div
+          className={"badge badge-primary addgit"}
+          onClick={async () => await fileservice.viewFile(file.fullname)}
+        >
+          edit
+        </div>
+      );
+    } else {
+      return <div className={"badge badge-secondary addgit"}>edit</div>;
+    }
+  };
+
+  const gitrmbutton = (file: fileExplorerNode) => {
+    let status = fileservice.getFileStatusForFile(file.fullname || "");
+    if (status?.indexOf("deleted") === -1) {
+      return <div className={"badge badge-secondary addgit"}>git rm</div>;
+    } else {
+      if (status?.indexOf("staged") === -1) {
+        return (
+          <div
+            className={"badge badge-primary addgit"}
+            onClick={async () => await gitservice.gitrm(file.fullname)}
+          >
+            git rm
+          </div>
+        );
+      }else{
+        return <div className={"badge badge-secondary addgit"}>git rm</div>;
+      }
+    }
+  };
+
+  const checkoutbutton = (file: fileExplorerNode) => {
+    let status = fileservice.getFileStatusForFile(file.fullname || "");
+    if (
+      status?.indexOf("modified") === -1 &&
+      (status?.indexOf("deleted") === -1 ||
+        status?.indexOf("staged") ||
+        status?.indexOf("unstaged"))
+    ) {
+      return <div className={"badge badge-secondary addgit"}>git checkout</div>;
+    } else {
+      return (
+        <div
+          className={"badge badge-primary addgit"}
+          onClick={async () => await gitservice.checkoutfile(file.fullname)}
+        >
+          git checkout
+        </div>
+      );
+    }
+  };
+
+  if (file.type === "file") {
+    return (
+      <span className="status float-right ml-3">
+        {giteditButton(file)}
+        {gitrmbutton(file)}
+        {gitaddButton(file)}
+        {checkoutbutton(file)}
+      </span>
+    );
+  } else {
+    return <></>;
   }
 };

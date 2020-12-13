@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import path from "path";
 import { removeSlash } from "../Files/utils";
 import { BehaviorSubject } from "rxjs";
+import { fileStatuses } from "../Files/FileService";
 
 export interface diffObject {
   originalFileName: string;
@@ -71,7 +72,6 @@ export class gitService {
       await git.checkout({
         fs: fsNoPromise,
         dir: "/",
-        ref: "HEAD",
         filepaths: [`/${filename}`],
       });
     } catch (e) {
@@ -79,7 +79,7 @@ export class gitService {
       //this.addAlert("checkoutMessage", e)
     }
     console.log("done");
-    //await this.syncToBrowser();
+    await fileservice.syncToBrowser()
   }
 
   async checkout(args: string) {
@@ -273,6 +273,11 @@ export class gitService {
     return result;
   }
 
+  async getStatusMatrixFiles() {
+    let files = await (await this.statusMatrix()).map((f)=>{return f.filename})
+    return files
+  }
+
   async listFiles(dir: string = "/", ref: string = "HEAD") {
     let filescommited = await git.listFiles({
       fs: fsNoPromise,
@@ -280,6 +285,14 @@ export class gitService {
       ref: ref,
     });
     return filescommited;
+  }
+
+  async listFilesInstaging(dir: string = "/") {
+    let filesInStaging = await git.listFiles({
+      fs: fsNoPromise,
+      dir: dir
+    });
+    return filesInStaging;
   }
 
   async addAll() {

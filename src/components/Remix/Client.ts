@@ -50,6 +50,8 @@ export class WorkSpacePlugin extends PluginClient {
           // Do something
           console.log(e)
           await fileservice.rmFile(e)
+          //await gitservice.gitrm(e)
+          await fileservice.showFiles()
          // await this.rmFile(e)
     
         })

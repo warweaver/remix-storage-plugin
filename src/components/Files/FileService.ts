@@ -8,15 +8,18 @@ import { BehaviorSubject } from "rxjs";
 import { fileExplorerNode, fileStatusResult, statusMatrix } from "./types";
 
 export const fileStatuses = [
-  ["new, untracked", 0, 2, 0], // new, untracked
-  ["added, staged", 0, 2, 2], //
-  ["added, staged, with unstaged changes", 0, 2, 3], // added, staged, with unstaged changes
+  ["new,untracked", 0, 2, 0], // new, untracked
+  ["added,staged", 0, 2, 2], //
+  ["added,staged, with unstaged changes", 0, 2, 3], // added, staged, with unstaged changes
   ["unmodified", 1, 1, 1], // unmodified
-  ["modified, unstaged", 1, 2, 1], // modified, unstaged
-  ["modified, staged", 1, 2, 2], // modified, staged
-  ["modified, staged, with unstaged changes", 1, 2, 3], // modified, staged, with unstaged changes
-  ["deleted, unstaged", 1, 0, 1], // deleted, unstaged
-  ["deleted, staged", 1, 0, 0], // deleted, staged
+  ["modified,unstaged", 1, 2, 1], // modified, unstaged
+  ["modified,staged", 1, 2, 2], // modified, staged
+  ["modified,staged,with unstaged changes", 1, 2, 3], // modified, staged, with unstaged changes
+  ["deleted,unstaged", 1, 0, 1], // deleted, unstaged
+  ["deleted,staged", 1, 0, 0],
+  ["deleted", 1, 1, 0], // deleted, staged
+  ["unmodified", 1, 1, 3],
+  ["deleted,not in git", 0,0,3] 
 ];
 
 const statusmatrix: statusMatrix[] = fileStatuses.map((x: any) => {
@@ -101,7 +104,7 @@ export class LsFileService {
       console.log("rm file ", file);
       await fs.unlink("/" + file);
     } catch (e) {}
-    await this.showFiles();
+    //await this.showFiles();
   }
 
   async createDirectoriesFromString(strdirectories: string) {
@@ -140,7 +143,13 @@ export class LsFileService {
   }
 
   async getFileStatusMatrix() {
-    this.fileStatusResult = await gitservice.statusMatrix();
+    this.fileStatusResult = await gitservice.statusMatrix()
+    let filesinstaging = await gitservice.listFilesInstaging()
+    let filesingit = await gitservice.listFiles()
+
+    console.log("FILES IN STAGING",filesinstaging)
+    console.log("FILES IN GIT",filesingit)
+    console.log("STATUS MATRIX",this.fileStatusResult)
     this.fileStatusResult.map((m) => {
       statusmatrix.map((sm) => {
         if (JSON.stringify(sm.status) === JSON.stringify(m.status)) {
@@ -155,7 +164,7 @@ export class LsFileService {
   getFileStatusForFile(filename: string) {
     console.log("checking file status", filename);
     for (let i: number = 0; i < this.fileStatusResult.length; i++) {
-      if (this.fileStatusResult[i].filename == filename)
+      if (this.fileStatusResult[i].filename === filename)
         return this.fileStatusResult[i].statusNames;
     }
   }
@@ -163,7 +172,7 @@ export class LsFileService {
   async showFiles() {
     //$('#files').show()
     //$('#diff-container').hide()
-    let files = await this.getDirectory("/");
+    let files = await gitservice.getStatusMatrixFiles() //await this.getDirectory("/");
     console.log("get directory result", files);
 
     try {
@@ -187,7 +196,7 @@ export class LsFileService {
     //console.log('get directory')
     let result: string[] = [];
     const files = await fs.readdir(`${dir}`);
-    //console.log('readdir', files)
+   
     // await files.map(async (fi)=>{
     for (let i = 0; i < files.length; i++) {
       const fi = files[i];
