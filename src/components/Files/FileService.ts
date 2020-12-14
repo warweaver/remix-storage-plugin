@@ -1,5 +1,12 @@
 import { toast } from "react-toastify";
-import { gitservice, loaderservice } from "../../App";
+import FS from "@isomorphic-git/lightning-fs";
+import {
+  clearFileSystem,
+  fileservice,
+  fsNoPromise,
+  gitservice,
+  loaderservice,
+} from "../../App";
 import { client } from "../../App";
 import path from "path";
 import { fs } from "../../App";
@@ -19,7 +26,7 @@ export const fileStatuses = [
   ["deleted,staged", 1, 0, 0],
   ["deleted", 1, 1, 0], // deleted, staged
   ["unmodified", 1, 1, 3],
-  ["deleted,not in git", 0,0,3] 
+  ["deleted,not in git", 0, 0, 3],
 ];
 
 const statusmatrix: statusMatrix[] = fileStatuses.map((x: any) => {
@@ -35,7 +42,6 @@ export class LsFileService {
   fileStatusResult: fileStatusResult[] = [];
 
   async addFileFromBrowser(file: string) {
-    if (!client.callBackEnabled) return false;
     try {
       const content = await client.call("fileManager", "readFile", file);
       console.log(content);
@@ -44,17 +50,56 @@ export class LsFileService {
     } catch (e) {}
   }
 
+  // RESET FUNCTIONS
+
   async clearDb() {
     const req = indexedDB.deleteDatabase("remix-workspace");
-
     let me = this;
     req.onsuccess = async function () {
       toast("Deleted database successfully");
       //await me.gitlog()
+
       await me.showFiles();
       await gitservice.init();
     };
   }
+
+  async clearFilesInWorkSpace() {
+    await client.disableCallBacks();
+    await this.clearFilesInIde()
+    await this.clearFilesInWorkingDirectory()
+    await this.showFiles();
+    await client.enableCallBacks();
+  }
+
+  async clearFilesInIde(){
+    const files = await this.getDirectoryFromIde("/");
+    console.log(files);
+    for (let i = 0; i < files.length; i++) {
+      await client.call("fileManager", "remove", files[i]);
+    }
+  }
+
+  async clearFilesInWorkingDirectory() {
+    // files in FS
+    const files = await gitservice.getStatusMatrixFiles();
+    for (let i = 0; i < files.length; i++) {
+      await this.rmFile(files[i]);
+    }
+  }
+
+  async startNewRepo() {
+    await clearFileSystem();
+    await this.syncFromBrowser();
+    await gitservice.init();
+  }
+
+  async clearAll() {
+    await this.clearFilesInWorkSpace();
+    await clearFileSystem();
+  }
+
+  // SYNC FUNCTIONS
 
   async syncToBrowser() {
     //this.showspinner();
@@ -90,13 +135,27 @@ export class LsFileService {
     loaderservice.setLoading(false);
   }
 
+  async syncFromBrowser() {
+    await client.disableCallBacks();
+    /// remove the files in the working area
+
+    /// get files from ID and sync them
+    let files = await this.getDirectoryFromIde("/");
+
+    console.log(files);
+    for (let i = 0; i < files.length; i++) {
+      await this.addFileFromBrowser(files[i]);
+    }
+    await this.showFiles();
+    await client.enableCallBacks();
+  }
+
   async addFile(file: string, content: string) {
     console.log("add file ", file);
     const directories = path.dirname(file);
     await this.createDirectoriesFromString(directories);
     console.log(fs);
     await fs.writeFile("/" + file, content);
-    await this.showFiles();
   }
 
   async rmFile(file: string) {
@@ -132,24 +191,20 @@ export class LsFileService {
     console.log("view file", filename);
     //$(args[0].currentTarget).data('file')
     try {
-      await client.call(
-        "fileManager",
-        "switchFile",
-        `${removeSlash(filename)}`
-      );
+      await client.call("fileManager", "open", `${removeSlash(filename)}`);
     } catch (e) {
       toast.error("file does not exist in Remix");
     }
   }
 
   async getFileStatusMatrix() {
-    this.fileStatusResult = await gitservice.statusMatrix()
-    let filesinstaging = await gitservice.listFilesInstaging()
-    let filesingit = await gitservice.listFiles()
+    this.fileStatusResult = await gitservice.statusMatrix();
+    console.log("STATUS MATRIX", this.fileStatusResult);
+    // let filesinstaging = await gitservice.listFilesInstaging();
+    // console.log("FILES IN STAGING", filesinstaging);
+    // let filesingit = await gitservice.listFiles();
+    // console.log("FILES IN GIT", filesingit);
 
-    console.log("FILES IN STAGING",filesinstaging)
-    console.log("FILES IN GIT",filesingit)
-    console.log("STATUS MATRIX",this.fileStatusResult)
     this.fileStatusResult.map((m) => {
       statusmatrix.map((sm) => {
         if (JSON.stringify(sm.status) === JSON.stringify(m.status)) {
@@ -158,11 +213,11 @@ export class LsFileService {
         }
       });
     });
-    console.log("file status", this.fileStatusResult);
+    //console.log("file status", this.fileStatusResult);
   }
 
   getFileStatusForFile(filename: string) {
-    console.log("checking file status", filename);
+    //console.log("checking file status", filename);
     for (let i: number = 0; i < this.fileStatusResult.length; i++) {
       if (this.fileStatusResult[i].filename === filename)
         return this.fileStatusResult[i].statusNames;
@@ -172,7 +227,7 @@ export class LsFileService {
   async showFiles() {
     //$('#files').show()
     //$('#diff-container').hide()
-    let files = await gitservice.getStatusMatrixFiles() //await this.getDirectory("/");
+    let files = await gitservice.getStatusMatrixFiles(); //await this.getDirectory("/");
     console.log("get directory result", files);
 
     try {
@@ -180,8 +235,9 @@ export class LsFileService {
       let jsonfiles = await jsonObjectFromFileList(files);
       console.log("files", jsonfiles);
       this.filetreecontent.next(jsonfiles);
-    } catch (e) {}
-
+    } catch (e) {
+      console.log(e);
+    }
     try {
       await gitservice.gitlog();
     } catch (e) {}
@@ -193,11 +249,11 @@ export class LsFileService {
   }
 
   async getDirectory(dir: string) {
-    //console.log('get directory')
+    console.log("get directory");
     let result: string[] = [];
     const files = await fs.readdir(`${dir}`);
-   
-    // await files.map(async (fi)=>{
+    console.log(files);
+
     for (let i = 0; i < files.length; i++) {
       const fi = files[i];
       if (typeof fi !== "undefined") {
@@ -213,8 +269,45 @@ export class LsFileService {
         }
       }
     }
+    console.log(result);
+    return result;
+  }
 
-    // })
+  async getDirectoryFromIde(dir: string) {
+    console.log("get directory", dir);
+    let result: string[] = [];
+    const files = await client.call("fileManager", "readdir", dir);
+    console.log(files);
+
+    let fileArray = Object.keys(files).map(function (i: any) {
+      // do something with person
+      return { filename: i, data: files[i] };
+    });
+
+    console.log(fileArray);
+
+    for (let i = 0; i < fileArray.length; i++) {
+      const fi: any = fileArray[i];
+      if (typeof fi !== "undefined") {
+        //console.log('looking into ', fi, dir)
+        //if (dir === "/") dir = "";
+        //dir = removeSlash(dir)
+        const type = fi.data.isDirectory;
+        //console.log("type",type)
+        if (type === true) {
+          //console.log('is directory, so get ', `${fi.filename}`)
+          result = [
+            ...result,
+            ...(await this.getDirectoryFromIde(`${fi.filename}`)),
+          ];
+        } else {
+          // console.log('is file ', `${dir}/${fi}`)
+          result.push(`browser/${fi.filename}`);
+        }
+      }
+    }
+
+    console.log(result);
     return result;
   }
 }

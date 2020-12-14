@@ -28,14 +28,20 @@ import { LoaderService } from "./components/loaderService";
 import { useBehaviorSubject } from "use-subscribable";
 import { Help } from "./components/Help";
 
-export const fsNoPromise: any = new FS("remix-workspace");
-export const fs: any = fsNoPromise.promises;
+export var fsNoPromise: any = new FS("remix-workspace");
+export var fs: any = fsNoPromise.promises;
 export const gitservice: gitService = new gitService();
 export const client: WorkSpacePlugin = new WorkSpacePlugin();
 export const fileservice: LsFileService = new LsFileService();
 export const ipfservice: IPFSService = new IPFSService();
 export const boxservice: BoxService = new BoxService();
 export const loaderservice: LoaderService = new LoaderService();
+
+export const clearFileSystem = async ()=>{
+  fsNoPromise = new FS("remix-workspace",{wipe:true});
+  fs = fsNoPromise.promises;
+  fileservice.showFiles();
+}
 
 function App() {
   const [activeKey, setActiveKey] = useState<string>("files");
@@ -65,9 +71,6 @@ function App() {
           </Tab>
           <Tab className="mt-4 ml-1" eventKey="git" title="Git">
             <GitControls />
-          </Tab>
-          <Tab className="mt-4 ml-1" eventKey="connections" title="Connections">
-            <BoxController />
           </Tab>
           <Tab className="mt-4 ml-1" eventKey="export" title="Export">
             <IPFSView />

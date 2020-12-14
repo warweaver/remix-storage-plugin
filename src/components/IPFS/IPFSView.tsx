@@ -1,6 +1,7 @@
 import React from "react";
 import { useBehaviorSubject } from "use-subscribable";
 import { boxservice, ipfservice } from "../../App";
+import { BoxController } from "../3box/Box";
 
 interface IPFSViewProps {}
 
@@ -34,24 +35,26 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
         id="main-btn"
         onClick={async () => ipfservice.addToIpfs()}
       >
-        upload to IPFS only
+        Export to IPFS only
       </button>
       <br />
       <div id="ipfsAlert" role="alert"></div>
       <br />
       {getUrlLink()}
       <hr />
-      <div className="alert alert-info" role="alert">
+      <h4>3Box Storage</h4>
+      <div className="alert alert-info w-25" role="alert">
         This will export the files to IPFS and store a key in your 3Box account.
       </div>
-
+      <BoxController/>
+      {/* <h4>Step 2</h4>
       <button
         className="btn w-25 btn-primary 3boxbtn"
-        disabled={!boxconnected || ipfservice.cid === ""}
+        disabled={!boxconnected}
         onClick={async () => await boxservice.storeHashIn3Box(boxservice.space)}
       >
         Export to 3Box & IPFS
-      </button>
+      </button> */}
       <div id="boxexportstatus"></div>
     </>
   );

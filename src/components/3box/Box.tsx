@@ -9,10 +9,10 @@ import { toast } from "react-toastify";
 interface BoxProps {}
 
 export const BoxController: React.FC<BoxProps> = () => {
-  const [status,setStatus] = useState(false)
+  const [status, setStatus] = useState(false);
   let address = "";
-  let mybox
-  let space
+  let mybox;
+  let space;
 
   const providerOptions = {
     walletconnect: {
@@ -28,26 +28,30 @@ export const BoxController: React.FC<BoxProps> = () => {
   });
 
   modal.on("connect", async (provider) => {
-    const [eth] = await provider.enable();
-    address = getAddress(eth);
-    loaderservice.setLoading(true)
-    toast.info("Please wait... this can take a while")
-    console.log(address);
-    mybox = await Box.openBox(address, window.ethereum)
-    toast.success("3box connected... waiting for space to open")
-    console.log(mybox)
-    space = await mybox.openSpace("remix-workspace");
-    //toast.success("space opened... getting data")
-    console.log(space);
-   
-    await boxservice.setSpace(space)
-    await boxservice.getObjectsFrom3Box(space)
-    boxservice.status.next(true)
+    
+    if (!status) {
+      const [eth] = await provider.enable();
+      address = getAddress(eth);
+      loaderservice.setLoading(true);
+      toast.info("Please wait... this can take a while");
+      console.log(address);
+      mybox = await Box.openBox(address, window.ethereum);
+      toast.success("3box connected... waiting for space to open");
+      console.log(mybox);
+      space = await mybox.openSpace("remix-workspace");
+      //toast.success("space opened... getting data")
+      console.log(space);
 
-    setStatus(true)
-    loaderservice.setLoading(false)
-      // .then((x) => toast.success("connected to 3box"))
-      // .catch((x) => toast.error("can't connect to 3box"));
+      await boxservice.setSpace(space);
+      await boxservice.getObjectsFrom3Box(space);
+      boxservice.status.next(true);
+
+      setStatus(true);
+    }
+    await boxservice.storeHashIn3Box(boxservice.space);
+    loaderservice.setLoading(false);
+    // .then((x) => toast.success("connected to 3box"))
+    // .catch((x) => toast.error("can't connect to 3box"));
   });
 
   const startConnect = async () => {
@@ -56,15 +60,16 @@ export const BoxController: React.FC<BoxProps> = () => {
 
   return (
     <>
-      <hr />
       <button
         className="btn w-25 btn-primary 3boxbtn"
         id="boxconnect"
         onClick={async () => await startConnect()}
       >
-        Connect to wallet & 3box
+        Export to 3Box
       </button>
-      <div id="3boxconnection">{status?<>connected</>:<>disconnected</>}</div>
+      <div id="3boxconnection">
+        {status ? <>connected</> : <>disconnected</>}
+      </div>
     </>
   );
 };

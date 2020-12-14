@@ -23,7 +23,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
 
   const getFileStatus = function (file: fileExplorerNode) {
     let result = fileservice.getFileStatusForFile(file.fullname || "");
-    console.log("file status", file, result);
+    //console.log("file status", file, result);
     return <StatusButtons statuses={result} />;
   };
 

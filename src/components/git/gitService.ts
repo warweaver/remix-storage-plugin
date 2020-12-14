@@ -30,7 +30,7 @@ export class gitService {
     });
     toast.info(`Git version ${git.version()}`);
 
-    fileservice.showFiles();
+    await fileservice.showFiles();
   }
 
   async addToGit(args: string | undefined) {
@@ -79,7 +79,7 @@ export class gitService {
       //this.addAlert("checkoutMessage", e)
     }
     console.log("done");
-    await fileservice.syncToBrowser()
+    await fileservice.syncToBrowser();
   }
 
   async checkout(args: string) {
@@ -100,7 +100,7 @@ export class gitService {
     }
 
     console.log("done");
-    //await this.syncToBrowser();
+    await fileservice.syncToBrowser();
   }
 
   async getCommits() {
@@ -119,24 +119,13 @@ export class gitService {
 
   async gitlog() {
     console.log("log");
-
-    //$('#status').empty()
-    // console.log(fs);
-
     try {
       const commits: ReadCommitResult[] = await this.getCommits();
       this.commits.next(commits);
       console.log(commits);
-      /*
-      const template = require("./commits.html");
-      const html = template.render({
-        commits: commits,
-      });
-      */
-      //$('#status').html(html)
     } catch (e) {
+      this.commits.next([]);
       console.log(e);
-      //$('#status').html('Log is empty')
     }
 
     await this.showCurrentBranch();
@@ -155,46 +144,30 @@ export class gitService {
   }
 
   async showCurrentBranch() {
-    //$('#init-btn').hide()
-    //$('.gitIsReady').show()
-
     try {
       const branch = await this.currentBranch();
+      const currentcommitoid = await this.getCommitFromRef("HEAD");
       this.branch.next(branch);
       if (typeof branch === "undefined" || branch === "") {
         toast.warn(`You are in a detached state`);
-        this.branch.next(`You are in a detached state`);
+        this.branch.next(`HEAD detached at ${currentcommitoid}`);
       } else {
-        const currentcommitoid = await this.getCommitFromRef(branch);
         this.branch.next(`Branch is: ${branch} at commit ${currentcommitoid}`);
       }
-    } catch (e) {
-      // this means git is not init
-      //console.log(e)
-      //$('#init-btn').show()
-      //$('.gitIsReady').hide()
-      //toast("There is no active branch. Add and commit files.");
-      //await this.createBranch()
-      //toast('No active branch')
-    }
+    } catch (e) {}
   }
 
   async getLastCommmit() {
     try {
       let currentcommitoid = "";
-      const branch = await this.currentBranch();
-      if (typeof branch !== "undefined") {
-        currentcommitoid = await this.getCommitFromRef(branch);
-        return currentcommitoid;
-      }
+      currentcommitoid = await this.getCommitFromRef("HEAD");
+      return currentcommitoid;
     } catch (e) {
       return false;
     }
   }
 
   async currentBranch() {
-    ///$('#branch').empty()
-
     try {
       const branch: string =
         (await git.currentBranch({
@@ -219,7 +192,7 @@ export class gitService {
       },
       message: message, //$('#message').val()
     });
-    toast.success(`commited ${sha}`);
+    toast.success(`Commited: ${sha}`);
     await fileservice.showFiles();
   }
 
@@ -274,8 +247,10 @@ export class gitService {
   }
 
   async getStatusMatrixFiles() {
-    let files = await (await this.statusMatrix()).map((f)=>{return f.filename})
-    return files
+    let files = await (await this.statusMatrix()).map((f) => {
+      return f.filename;
+    });
+    return files;
   }
 
   async listFiles(dir: string = "/", ref: string = "HEAD") {
@@ -290,7 +265,7 @@ export class gitService {
   async listFilesInstaging(dir: string = "/") {
     let filesInStaging = await git.listFiles({
       fs: fsNoPromise,
-      dir: dir
+      dir: dir,
     });
     return filesInStaging;
   }
@@ -323,7 +298,6 @@ export class gitService {
     //$('#diff-container').show()
     console.log("DIFF", args);
     const fullfilename = args; // $(args[0].currentTarget).data('file')
-    const filename = ""; // path.basename($(args[0].currentTarget).data('file'))
     try {
       const commitOid = await git.resolveRef({
         fs: fsNoPromise,
@@ -356,7 +330,7 @@ export class gitService {
 
       return filediff;
     } catch (e) {
-      toast("Nothing to diff! "+fullfilename);
+      toast("Nothing to diff! " + fullfilename);
 
       const filediff: diffObject = {
         originalFileName: "",
@@ -365,8 +339,6 @@ export class gitService {
         past: "",
       };
       return filediff;
-      //$('#files').show()
-      //$('#diff-container').hide()
     }
   }
 }
