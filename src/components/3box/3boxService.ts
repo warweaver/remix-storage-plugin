@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { BehaviorSubject } from "rxjs";
-import { gitservice, ipfservice, loaderservice } from "../../App";
+import { gitservice, ipfservice, loaderservice, localipfsstorage } from "../../App";
+
 export interface boxObject {
   key?: string;
   cid?: string;
@@ -33,25 +34,17 @@ export class BoxService {
     loaderservice.setLoading(true)
     await ipfservice.addToIpfs();
     console.log("export 3box", ipfservice.cid, this.space);
-    const commits = await gitservice.getCommits();
-    let key = `remixhash-${Date.now()}`;
 
-    let ob: boxObject = {
-      key: key,
-      cid: ipfservice.cid,
-      datestored: new Date(Date.now()),
-      datecommit: commits[0].commit.committer.timestamp,
-      ref: commits[0].oid,
-      message: commits[0].commit.message,
-    };
+    const ob = await localipfsstorage.createBoxObject()
 
-    await this.space.private.set(key, ob);
+    await this.space.private.set(ob.key, ob);
     toast.success("Stored in 3box");
     await this.getObjectsFrom3Box(space);
     loaderservice.setLoading(false)
   }
 
   async getObjectsFrom3Box(space: any) {
+    console.log("get objects from box");
     const hashes: boxObject[] = await space.private.all();
     this.boxObjects.next(Object.values(hashes));
     console.log(hashes);

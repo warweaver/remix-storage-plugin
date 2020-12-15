@@ -17,7 +17,8 @@ export class gitService {
   branch = new BehaviorSubject<string>("");
   branches = new BehaviorSubject<string[] | undefined>(undefined);
   diffResult = new BehaviorSubject<diffObject[] | undefined>(undefined);
-  reponame = new BehaviorSubject<string>("");
+  reponameSubject = new BehaviorSubject<string>("");
+  reponame = ""
 
   constructor() {
     this.init();
@@ -35,7 +36,7 @@ export class gitService {
   }
 
   async clearRepoName(){
-    this.reponame.next("")
+    this.reponameSubject.next("")
   }
 
   async addToGit(args: string | undefined) {

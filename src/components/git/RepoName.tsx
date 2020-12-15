@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useBehaviorSubject } from "use-subscribable";
 import { gitservice } from "../../App";
@@ -8,16 +8,24 @@ interface RepoNameProps {}
 
 export const RepoName: React.FC<RepoNameProps> = ({}) => {
   const [name, setNAme] = useState({ value: "" });
-  const reponame = useBehaviorSubject(gitservice.reponame)
+  const reponame = useBehaviorSubject(gitservice.reponameSubject)
 
-  gitservice.reponame.subscribe((x)=>{}).unsubscribe()
+  gitservice.reponameSubject.subscribe((x)=>{}).unsubscribe()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNAme({ value: e.currentTarget.value });
   };
   const saveName = () => {
-      gitservice.reponame.next(name.value)
+      gitservice.reponameSubject.next(name.value)
+      gitservice.reponame = name.value
+      localStorage.setItem("currentRepo",name.value)
   };
+
+  useEffect(()=>{
+    let name:string = localStorage.getItem("currentRepo") || ""
+    gitservice.reponame = name
+    gitservice.reponameSubject.next(name)
+  },[])
 
   return (
     <>

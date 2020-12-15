@@ -1,6 +1,6 @@
 import React from "react";
 import { useBehaviorSubject } from "use-subscribable";
-import { boxservice, ipfservice } from "../../App";
+import { boxservice, ipfservice, localipfsstorage } from "../../App";
 import { BoxController } from "../3box/Box";
 
 interface IPFSViewProps {}
@@ -24,18 +24,24 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
     }
   };
 
+  const addFilesToIpfs = async ()=>{
+    await ipfservice.addToIpfs()
+    await localipfsstorage.addToStorage(await localipfsstorage.createBoxObject())
+  }
+
   const getUrl = () => {
     return `${ipfservice.ipfsconfig.ipfsurl}${cid}`;
   };
 
   return (
     <>
+    <h4>Local storage & IPFS</h4>
       <button
         className="btn w-25 btn-primary"
         id="main-btn"
-        onClick={async () => ipfservice.addToIpfs()}
+        onClick={async () => await addFilesToIpfs() }
       >
-        Export to IPFS only
+        Export to IPFS only & store in local storage
       </button>
       <br />
       <div id="ipfsAlert" role="alert"></div>
@@ -46,7 +52,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
       <div className="alert alert-info w-25" role="alert">
         This will export the files to IPFS and store a key in your 3Box account.
       </div>
-      <BoxController/>
+      <BoxController buttonTitle="Export to 3Box" storeData={true}/>
       {/* <h4>Step 2</h4>
       <button
         className="btn w-25 btn-primary 3boxbtn"

@@ -12,7 +12,7 @@ export const IPFSImporter: React.FC<ipfsimporterProps> = ({}) => {
   return (
     <>
       <div className="alert alert-warning" role="alert">
-        Importing files from IPFS will clear the filelist.
+        Importing files will clear the filelist.
       </div>
       <div className="form-group">
         <label>IPFS CID</label>

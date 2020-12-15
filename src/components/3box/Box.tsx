@@ -3,26 +3,21 @@ import Box from "3box";
 import Web3Modal from "web3modal";
 import { getAddress } from "@ethersproject/address";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { boxservice, loaderservice } from "../../App";
+import { boxservice, loaderservice, providerOptions } from "../../App";
 import { toast } from "react-toastify";
 
-interface BoxProps {}
+interface BoxProps {
+  buttonTitle:string,
+  storeData:boolean
+}
 
-export const BoxController: React.FC<BoxProps> = () => {
+export const BoxController: React.FC<BoxProps> = (p) => {
   const [status, setStatus] = useState(false);
   let address = "";
   let mybox;
   let space;
 
-  const providerOptions = {
-    walletconnect: {
-      package: WalletConnectProvider,
-      options: {
-        infuraId: "83d4d660ce3546299cbe048ed95b6fad",
-      },
-    },
-  };
-
+  
   const modal = new Web3Modal({
     providerOptions: providerOptions, // required
   });
@@ -48,6 +43,7 @@ export const BoxController: React.FC<BoxProps> = () => {
 
       setStatus(true);
     }
+    if(p.storeData)
     await boxservice.storeHashIn3Box(boxservice.space);
     loaderservice.setLoading(false);
     // .then((x) => toast.success("connected to 3box"))
@@ -65,7 +61,7 @@ export const BoxController: React.FC<BoxProps> = () => {
         id="boxconnect"
         onClick={async () => await startConnect()}
       >
-        Export to 3Box
+        {p.buttonTitle}
       </button>
       <div id="3boxconnection">
         {status ? <>connected</> : <>disconnected</>}

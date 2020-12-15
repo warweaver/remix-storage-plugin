@@ -1,4 +1,5 @@
 import React from "react";
+import { LocalIPFSView } from "../LocalStorage/LocalIPFSView";
 import { BoxImporter } from "./BoxImporter";
 import { IPFSImporter } from "./IPFSImporter";
 
@@ -40,6 +41,7 @@ export const Importer: React.FC<importerProps> = ({}) => {
             </> */
     <>
         <IPFSImporter/>
+        <LocalIPFSView/>
         <BoxImporter/>
         
     </>

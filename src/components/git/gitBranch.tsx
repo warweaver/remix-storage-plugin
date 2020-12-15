@@ -28,7 +28,7 @@ export const GitBranch: React.FC<gitBranchProps> = ({}) => {
 
   return (
     <>
-      <h2>Branches</h2>
+      <h4>Branches</h4>
       <Alert className="w-50" variant="success">
         {branch}
       </Alert>

@@ -28,6 +28,10 @@ import { LoaderService } from "./components/loaderService";
 import { useBehaviorSubject } from "use-subscribable";
 import { Help } from "./components/Help";
 import { RepoName } from "./components/git/RepoName";
+import { LocalIPFSStorage } from "./components/LocalStorage/LocalStorage";
+
+export const fsConfig: any = new FS("remix-storage-config");
+export const fsConfigPromise: any = fsConfig.promises;
 
 export var fsNoPromise: any = new FS("remix-workspace");
 export var fs: any = fsNoPromise.promises;
@@ -37,6 +41,7 @@ export const fileservice: LsFileService = new LsFileService();
 export const ipfservice: IPFSService = new IPFSService();
 export const boxservice: BoxService = new BoxService();
 export const loaderservice: LoaderService = new LoaderService();
+export const localipfsstorage: LocalIPFSStorage = new LocalIPFSStorage();
 
 export const clearFileSystem = async ()=>{
   fsNoPromise = new FS("remix-workspace",{wipe:true});
@@ -44,11 +49,20 @@ export const clearFileSystem = async ()=>{
   fileservice.showFiles();
 }
 
+export const providerOptions = {
+  walletconnect: {
+    package: WalletConnectProvider,
+    options: {
+      infuraId: "83d4d660ce3546299cbe048ed95b6fad",
+    },
+  },
+};
+
 function App() {
   const [activeKey, setActiveKey] = useState<string>("files");
   const loading: boolean | undefined = useBehaviorSubject(loaderservice.loading);
-  const repoName = useBehaviorSubject(gitservice.reponame)
-  gitservice.reponame.subscribe((x)=>{}).unsubscribe()
+  const repoName = useBehaviorSubject(gitservice.reponameSubject)
+  gitservice.reponameSubject.subscribe((x)=>{}).unsubscribe()
   loaderservice.loading.subscribe((x) => {}).unsubscribe();
 
   const setTab = async (key: string) => {

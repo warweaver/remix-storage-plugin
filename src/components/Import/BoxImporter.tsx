@@ -5,6 +5,7 @@ import { Card } from "react-bootstrap";
 import { useBehaviorSubject } from "use-subscribable";
 import { boxservice, ipfservice } from "../../App";
 import { boxObject } from "../3box/3boxService";
+import { BoxController } from "../3box/Box";
 
 interface boximporterProps {}
 
@@ -35,10 +36,12 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
 
   return (
     <>
+      <hr></hr>
       <h4>3Box storage</h4>
       <div className="alert alert-info" role="alert">
         This will import the IPFS repo from a key stored in your 3Box account.
       </div>
+      <BoxController buttonTitle="Connect to 3Box" storeData={false}/>
       <div className="container-fluid">
         {(boxobjects || []).map((o) => {
           return (
