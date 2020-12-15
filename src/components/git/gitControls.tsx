@@ -16,7 +16,7 @@ export const GitControls: React.FC<gitViewProps> = ({}) => {
   return (
     <>
       <hr />
-      <button className="btn w-25 btn-primary" onClick={async () =>await gitservice.init()}>git init</button>
+      {/* <button className="btn w-25 btn-primary" onClick={async () =>await gitservice.init()}>git init</button> */}
 
       {/* <button className="btn w-25 btn-primary" onClick={async()=>gitservice.addAll()} >git add all</button> */}
       <hr />

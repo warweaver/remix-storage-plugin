@@ -64,7 +64,7 @@ export class IPFSService {
     try {
       filescommited = await gitservice.listFiles();
     } catch (e) {
-      toast.warning("No files commited");
+      toast.error("No files commited");
       loaderservice.setLoading(false)
       return false;
     }

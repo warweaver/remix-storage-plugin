@@ -92,11 +92,13 @@ export class LsFileService {
     await clearFileSystem();
     await this.syncFromBrowser();
     await gitservice.init();
+    await gitservice.clearRepoName()
   }
 
   async clearAll() {
     await this.clearFilesInWorkSpace();
     await clearFileSystem();
+    await gitservice.clearRepoName()
   }
 
   // SYNC FUNCTIONS

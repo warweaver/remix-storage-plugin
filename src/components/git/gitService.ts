@@ -17,6 +17,7 @@ export class gitService {
   branch = new BehaviorSubject<string>("");
   branches = new BehaviorSubject<string[] | undefined>(undefined);
   diffResult = new BehaviorSubject<diffObject[] | undefined>(undefined);
+  reponame = new BehaviorSubject<string>("");
 
   constructor() {
     this.init();
@@ -31,6 +32,10 @@ export class gitService {
     toast.info(`Git version ${git.version()}`);
 
     await fileservice.showFiles();
+  }
+
+  async clearRepoName(){
+    this.reponame.next("")
   }
 
   async addToGit(args: string | undefined) {

@@ -27,6 +27,7 @@ import Loading from "react-fullscreen-loading";
 import { LoaderService } from "./components/loaderService";
 import { useBehaviorSubject } from "use-subscribable";
 import { Help } from "./components/Help";
+import { RepoName } from "./components/git/RepoName";
 
 export var fsNoPromise: any = new FS("remix-workspace");
 export var fs: any = fsNoPromise.promises;
@@ -46,6 +47,8 @@ export const clearFileSystem = async ()=>{
 function App() {
   const [activeKey, setActiveKey] = useState<string>("files");
   const loading: boolean | undefined = useBehaviorSubject(loaderservice.loading);
+  const repoName = useBehaviorSubject(gitservice.reponame)
+  gitservice.reponame.subscribe((x)=>{}).unsubscribe()
   loaderservice.loading.subscribe((x) => {}).unsubscribe();
 
   const setTab = async (key: string) => {
@@ -61,8 +64,8 @@ function App() {
     <div className="App">
       <Container fluid>
         {loading? <Loading loading background="#2ecc71" loaderColor="#3498db" />:<></>}
-       
-        <h1>Storage</h1>
+        <RepoName/>
+        <h1>Storage: {repoName}</h1>
         <ToastContainer position="bottom-right" />
         <Tabs activeKey={activeKey} onSelect={async (k) => await setTab(k || "files")}>
           <Tab className="mt-4 ml-1" eventKey="files" title="Files">
