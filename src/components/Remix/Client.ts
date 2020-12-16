@@ -26,10 +26,16 @@ export class WorkSpacePlugin extends PluginClient {
       "compilationFinished",
       async (file, source, version, result) => {
         console.log("compilationFinished");
-        console.log(result.contracts);
+        console.log(file,source,version,result);
         const r = await this.call("solidity", "getCompilationResult");
         console.log("getCompilationResult");
-        console.log(r.contracts);
+        console.log(r.data?.contracts);
+        console.log(r.data?.sources);
+        console.log(r.source?.sources)
+        console.log(r.source?.target) 
+        
+        //await this.call("editor","highlight",{start:{column:1,line:1},end:{column:2,line:2}},"2_Owner.sol","#32a852");
+        //await this.call("editor","addAnnotation",{row:3, column:1,type:"warning",text:"testing", name:"name",message:"message"})
       }
     );
 
@@ -52,7 +58,7 @@ export class WorkSpacePlugin extends PluginClient {
       }
     });
 
-    this.on("fileManager", "fileRemoved", async (e) => {
+    this.on("fileManager","fileRemoved", async (e) => {
       // Do something
       console.log(e);
       if (this.callBackEnabled) {

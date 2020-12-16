@@ -141,7 +141,8 @@ export class IPFSService {
       return false;
     }
     // return true;
-   
+    await clearFileSystem()
+    //await gitservice.init()
     await fileservice.clearFilesInIde()
     console.log("cloning");
     let connected = await this.setipfsHost();
@@ -165,6 +166,7 @@ export class IPFSService {
         await fs.writeFile(file.path, content[0] || new Uint8Array());
       }
       await fileservice.syncToBrowser();
+      await fileservice.syncStart()
     } catch (e) {
       toast.error("This IPFS cid is probably not correct....");
     }

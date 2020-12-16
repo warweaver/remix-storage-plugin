@@ -30,7 +30,7 @@ export class gitService {
       dir: "/",
       defaultBranch: "master",
     });
-    toast.info(`Git version ${git.version()}`);
+    //toast.info(`Git version ${git.version()}`);
 
     await fileservice.showFiles();
   }
@@ -86,6 +86,7 @@ export class gitService {
     }
     console.log("done");
     await fileservice.syncToBrowser();
+    await fileservice.syncStart()
   }
 
   async checkout(args: string) {
@@ -107,6 +108,7 @@ export class gitService {
 
     console.log("done");
     await fileservice.syncToBrowser();
+    await fileservice.syncStart()
   }
 
   async getCommits() {

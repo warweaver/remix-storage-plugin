@@ -32,6 +32,7 @@
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
+    "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^17.0.1",
     "react-fullscreen-loading": "0.0.4",
     "react-gh-like-diff": "^2.0.2",
@@ -74,6 +75,7 @@
   "devDependencies": {
     "@types/3box": "^1.22.0",
     "@types/dateformat": "^3.0.1",
-    "@types/marked": "^1.2.1"
+    "@types/marked": "^1.2.1",
+    "@types/react-copy-to-clipboard": "^5.0.0"
   }
 }

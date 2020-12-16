@@ -107,6 +107,10 @@ export class LsFileService {
     await gitservice.init();
   }
 
+  async clearLocalAndSyncFromBrowser(){
+    await this.clearFilesInWorkingDirectory();
+    await this.syncFromBrowser()
+  }
 
 
   async clearAll() {
