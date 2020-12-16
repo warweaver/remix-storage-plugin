@@ -2,7 +2,7 @@ import { ReadCommitResult } from "isomorphic-git";
 import React from "react";
 import { useBehaviorSubject } from "use-subscribable";
 import { gitservice } from "../../App";
-
+import { default as dateFormat } from 'dateformat'
 interface gitLogProps {}
 
 export const GitLog: React.FC<gitLogProps> = ({}) => {
@@ -15,8 +15,8 @@ export const GitLog: React.FC<gitLogProps> = ({}) => {
     .unsubscribe();
 
   const getDate = (commit: ReadCommitResult) => {
-    let date = new Date(commit.commit.committer.timestamp * 1000);
-    return `${date.getDay()}-${date.getMonth()}-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    let date = dateFormat(commit.commit.committer.timestamp * 1000, "dddd, mmmm dS, yyyy, h:MM:ss TT");
+    return date
   };
 
   return (

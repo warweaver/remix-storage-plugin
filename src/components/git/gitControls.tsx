@@ -24,7 +24,7 @@ export const GitControls: React.FC<gitViewProps> = ({}) => {
         <label>Message</label>
         <input className="form-control w-25" type="text" onChange={handleChange} value={message.value} />
       </div>
-      <button className="btn w-25 btn-primary" onClick={async()=>gitservice.commit(message.value)} >git commit</button>
+      <button className="btn w-25 btn-primary" disabled={message.value!==""?false:true} onClick={async()=>gitservice.commit(message.value)} >git commit</button>
       <br /><hr />
       <GitLog/>
       <br /><hr />

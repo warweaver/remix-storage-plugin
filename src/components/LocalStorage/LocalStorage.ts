@@ -2,7 +2,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { BehaviorSubject } from "rxjs";
 import { fsConfigPromise, gitservice, ipfservice } from "../../App";
 import { boxObject } from "../3box/3boxService";
-
+import { default as dateFormat } from 'dateformat'
 export class LocalIPFSStorage {
   boxObjects = new BehaviorSubject<boxObject[] | []>([]);
   objects: any[] = [];
@@ -21,8 +21,8 @@ export class LocalIPFSStorage {
       encoding: "utf8",
     });
     this.objects = JSON.parse(r);
-    this.objects.reverse()
-    this.objects = await this.filterNulls()
+    this.objects.sort((a, b) => (a.datecommit > b.datecommit) ? -1 : 1)
+    this.objects = await this.filterNulls();
     console.log(this.objects);
     this.boxObjects.next(this.objects);
   }
@@ -37,23 +37,26 @@ export class LocalIPFSStorage {
 
   async addToStorage(box: boxObject) {
     await this.init();
+    await this.deleteFromStorage(box.cid)
     this.objects.push(box);
     await this.write();
     await this.read();
   }
 
-  async filterNulls(){
+  async filterNulls() {
     var filtered = this.objects.filter(function (el) {
-        return el != null;
+      return el != null;
     });
-    return filtered
+    return filtered;
   }
 
-  async deleteFromStorage(index:number){
-    await this.read()
-    delete this.objects[index]
-    await this.write()
-    await this.read()
+  async deleteFromStorage(cid: string | undefined) {
+    if (cid !== undefined) {
+      await this.read();
+      this.objects = this.objects.filter((i) => i.cid !== cid);
+      await this.write();
+      await this.read();
+    }
   }
 
   async createBoxObject() {
@@ -64,8 +67,9 @@ export class LocalIPFSStorage {
     let ob: boxObject = {
       key: key,
       cid: ipfservice.cid,
-      datestored: new Date(Date.now()),
-      datecommit: commits[0].commit.committer.timestamp,
+      datestored: dateFormat(new Date(),"dddd, mmmm dS, yyyy, h:MM:ss TT"),
+      datecommit: dateFormat(new Date(commits[0].commit.committer.timestamp * 1000), "dddd, mmmm dS, yyyy, h:MM:ss TT"),
+      timestamp: commits[0].commit.committer.timestamp,
       ref: commits[0].oid,
       message: commits[0].commit.message,
     };

@@ -68,7 +68,7 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
                   <button onClick={async()=> await ipfservice.importFromCID(o.cid)} className="btn btn-primary btn-sm mr-2 import3b-btn">
                     import
                   </button>
-                  <button onClick={async()=> await localipfsstorage.deleteFromStorage(index)} className="btn btn-danger btn-sm delete3b-btn">
+                  <button onClick={async()=> await localipfsstorage.deleteFromStorage(o?.cid)} className="btn btn-danger btn-sm delete3b-btn">
                     <FontAwesomeIcon icon={faTrash} />
                   </button>
                 </div>

@@ -21,7 +21,7 @@ export class gitService {
   reponame = ""
 
   constructor() {
-    this.init();
+    //this.init();
   }
 
   async init() {
@@ -119,7 +119,7 @@ export class gitService {
       });
       return commits;
     } catch (e) {
-      throw e;
+      return []
     }
   }
 
@@ -160,7 +160,9 @@ export class gitService {
       } else {
         this.branch.next(`Branch is: ${branch} at commit ${currentcommitoid}`);
       }
-    } catch (e) {}
+    } catch (e) {
+      this.branch.next('')
+    }
   }
 
   async getLastCommmit() {

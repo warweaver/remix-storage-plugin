@@ -25,8 +25,12 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
   };
 
   const addFilesToIpfs = async ()=>{
-    await ipfservice.addToIpfs()
-    await localipfsstorage.addToStorage(await localipfsstorage.createBoxObject())
+    try{
+      await ipfservice.addToIpfs()
+      await localipfsstorage.addToStorage(await localipfsstorage.createBoxObject())
+    }catch(e){
+
+    }
   }
 
   const getUrl = () => {

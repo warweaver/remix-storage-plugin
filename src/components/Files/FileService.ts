@@ -41,6 +41,12 @@ export class LsFileService {
   filetreecontent = new BehaviorSubject<fileExplorerNode>({ children: [] });
   fileStatusResult: fileStatusResult[] = [];
 
+  constructor(){
+    client.clientLoaded.subscribe(async (load:boolean)=>{
+      if(load)await this.syncStart()
+    })
+  }
+
   async addFileFromBrowser(file: string) {
     try {
       const content = await client.call("fileManager", "readFile", file);
@@ -94,6 +100,14 @@ export class LsFileService {
     await gitservice.init();
     await gitservice.clearRepoName()
   }
+
+  async syncStart(){
+    await this.clearFilesInWorkingDirectory();
+    await this.syncFromBrowser()
+    await gitservice.init();
+  }
+
+
 
   async clearAll() {
     await this.clearFilesInWorkSpace();

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { Container, Tabs, Tab } from "react-bootstrap";
@@ -46,7 +46,7 @@ export const localipfsstorage: LocalIPFSStorage = new LocalIPFSStorage();
 export const clearFileSystem = async ()=>{
   fsNoPromise = new FS("remix-workspace",{wipe:true});
   fs = fsNoPromise.promises;
-  fileservice.showFiles();
+  await fileservice.showFiles();
 }
 
 export const providerOptions = {

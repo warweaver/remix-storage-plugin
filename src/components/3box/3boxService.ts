@@ -7,6 +7,7 @@ export interface boxObject {
   cid?: string;
   datestored?: string | number | Date;
   datecommit?: number | string | Date;
+  timestamp: number;
   ref?: string;
   message?: string;
   links?: string;
