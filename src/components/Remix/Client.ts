@@ -43,8 +43,8 @@ export class WorkSpacePlugin extends PluginClient {
       // Do something
       if (this.callBackEnabled) {
         console.log(e);
-        await fileservice.addFileFromBrowser(e);
-        await fileservice.showFiles();
+        await fileservice.syncFromBrowser();
+
       }
       //await this.addFileFromBrowser(e)
     });
@@ -52,8 +52,8 @@ export class WorkSpacePlugin extends PluginClient {
     this.on("fileManager", "fileAdded", async (e) => {
       // Do something
       if (this.callBackEnabled) {
-        await fileservice.addFileFromBrowser(e);
-        await fileservice.showFiles();
+        await fileservice.syncFromBrowser();
+
         console.log(e);
       }
     });
@@ -62,9 +62,8 @@ export class WorkSpacePlugin extends PluginClient {
       // Do something
       console.log(e);
       if (this.callBackEnabled) {
-        await fileservice.rmFile(e);
-        //await gitservice.gitrm(e)
-        await fileservice.showFiles();
+        await fileservice.clearFilesInWorkingDirectory()
+        await fileservice.syncFromBrowser();
       }
       // await this.rmFile(e)
     });
@@ -73,6 +72,7 @@ export class WorkSpacePlugin extends PluginClient {
       // Do something
       if (this.callBackEnabled) {
         console.log(e, this);
+        await fileservice.syncFromBrowser();
       }
       //await this.rmFile(e)
     });
@@ -81,9 +81,9 @@ export class WorkSpacePlugin extends PluginClient {
       // Do something
       if (this.callBackEnabled) {
         console.log(oldfile, newfile);
-        await fileservice.rmFile(oldfile);
-        await fileservice.addFileFromBrowser(newfile);
-        await fileservice.showFiles();
+        await fileservice.clearFilesInWorkingDirectory()
+        await fileservice.syncFromBrowser();
+
       }
       //await this.addFileFromBrowser(e)
     });

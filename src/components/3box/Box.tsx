@@ -14,7 +14,7 @@ interface BoxProps {
 export const BoxController: React.FC<BoxProps> = (p) => {
   const [status, setStatus] = useState(false);
   let address = "";
-  let mybox;
+  let mybox: Box;
   let space;
 
   
@@ -23,6 +23,7 @@ export const BoxController: React.FC<BoxProps> = (p) => {
   });
 
   modal.on("connect", async (provider) => {
+    
     
     if (!status) {
       const [eth] = await provider.enable();
@@ -51,7 +52,18 @@ export const BoxController: React.FC<BoxProps> = (p) => {
   });
 
   const startConnect = async () => {
-    modal.connect();
+    
+    console.log("get box", status, mybox)
+    if(!status){
+      await modal.connect()
+    }else{
+      loaderservice.setLoading(true);
+      if(p.storeData)
+      await boxservice.storeHashIn3Box(boxservice.space);
+      loaderservice.setLoading(false);
+    }
+    
+    
   };
 
   return (

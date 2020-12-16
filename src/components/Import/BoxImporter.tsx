@@ -51,17 +51,22 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
                     <Card.Title>
                   {o.key}
                   </Card.Title>
-                  <br />
-                  IPFS: {getUrlLink(o.cid)}
-                  <br />
-                  DATE: {o.datestored}
-                  <br />
-                  DATE OF LAST COMMIT: {o.datecommit}
-                  <br />
-                  MESSAGE: {o.message}
-                  <br />
-                  COMMIT: {o.ref}
-                  <br />
+                  <div className="row">
+                    <div className="col">IPFS</div>
+                    <div className="col">{getUrlLink(o.cid)}</div>
+                  </div>
+                  <div className="row">
+                    <div className="col">DATE EXPORTED</div>
+                    <div className="col">{o.datestored}</div>
+                  </div>
+                  <div className="row">
+                    <div className="col">DATE OF LAST COMMIT</div>
+                    <div className="col">{o.datecommit}</div>
+                  </div>
+                  <div className="row">
+                    <div className="col">MESSAGE</div>
+                    <div className="col">{o.message}</div>
+                  </div>
                 </Card.Body>
               </Card>
               <div className="col">

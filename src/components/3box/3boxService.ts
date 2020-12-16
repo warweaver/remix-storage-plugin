@@ -27,6 +27,10 @@ export class BoxService {
     this.space = space;
   }
 
+  async getStatus(){
+
+  }
+
   async storeHashIn3Box(space: any) {
     if (typeof this.space == "undefined") {
       toast.error("You should connect to 3Box first");
