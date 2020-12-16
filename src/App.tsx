@@ -29,6 +29,7 @@ import { useBehaviorSubject } from "use-subscribable";
 import { Help } from "./components/Help";
 import { RepoName } from "./components/git/RepoName";
 import { LocalIPFSStorage } from "./components/LocalStorage/LocalStorage";
+import { ConnectionWarning } from "./components/ConnectionWarning";
 
 export const fsConfig: any = new FS("remix-storage-config");
 export const fsConfigPromise: any = fsConfig.promises;
@@ -79,6 +80,7 @@ function App() {
       <Container fluid>
         {loading? <Loading loading background="#2ecc71" loaderColor="#3498db" />:<></>}
         <RepoName/>
+        <ConnectionWarning/>
         <h1>Storage: {repoName}</h1>
         <ToastContainer position="bottom-right" />
         <Tabs activeKey={activeKey} onSelect={async (k) => await setTab(k || "files")}>

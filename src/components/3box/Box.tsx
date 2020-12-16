@@ -5,65 +5,61 @@ import { getAddress } from "@ethersproject/address";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { boxservice, loaderservice, providerOptions } from "../../App";
 import { toast } from "react-toastify";
+import { useBehaviorSubject } from "use-subscribable";
 
 interface BoxProps {
-  buttonTitle:string,
-  storeData:boolean
+  buttonTitle: string;
+  storeData: boolean;
 }
 
 export const BoxController: React.FC<BoxProps> = (p) => {
-  const [status, setStatus] = useState(false);
+  const status = useBehaviorSubject(boxservice.status);
   let address = "";
   let mybox: Box;
   let space;
 
-  
-  const modal = new Web3Modal({
-    providerOptions: providerOptions, // required
-  });
+  boxservice.status.subscribe((x) => {}).unsubscribe();
 
-  modal.on("connect", async (provider) => {
-    
-    
-    if (!status) {
-      const [eth] = await provider.enable();
-      address = getAddress(eth);
-      loaderservice.setLoading(true);
-      toast.info("Please wait... this can take a while");
-      console.log(address);
-      mybox = await Box.openBox(address, window.ethereum);
-      toast.success("3box connected... waiting for space to open");
-      console.log(mybox);
-      space = await mybox.openSpace("remix-workspace");
-      //toast.success("space opened... getting data")
-      console.log(space);
+  let modal: Web3Modal;
 
-      await boxservice.setSpace(space);
-      await boxservice.getObjectsFrom3Box(space);
-      boxservice.status.next(true);
+  const setModalListener = async () => {
+    modal.on("connect", async (provider) => {
+      if (!status) {
+        const [eth] = await provider.enable();
+        address = getAddress(eth);
+        loaderservice.setLoading(true);
+        toast.info("Please wait... this can take a while");
+        console.log(address);
+        mybox = await Box.openBox(address, window.ethereum);
+        toast.success("3box connected... waiting for space to open");
+        console.log(mybox);
+        space = await mybox.openSpace("remix-workspace");
+        //toast.success("space opened... getting data")
+        console.log(space);
 
-      setStatus(true);
-    }
-    if(p.storeData)
-    await boxservice.storeHashIn3Box(boxservice.space);
-    loaderservice.setLoading(false);
-    // .then((x) => toast.success("connected to 3box"))
-    // .catch((x) => toast.error("can't connect to 3box"));
-  });
-
+        await boxservice.setSpace(space);
+        await boxservice.getObjectsFrom3Box(space);
+        boxservice.status.next(true);
+      }
+      if (p.storeData) await boxservice.storeHashIn3Box(boxservice.space);
+      loaderservice.setLoading(false);
+      // .then((x) => toast.success("connected to 3box"))
+      // .catch((x) => toast.error("can't connect to 3box"));
+    });
+  };
   const startConnect = async () => {
-    
-    console.log("get box", status, mybox)
-    if(!status){
-      await modal.connect()
-    }else{
+    modal = new Web3Modal({
+      providerOptions: providerOptions, // required
+    });
+    await setModalListener();
+    // console.log("get box", status,)
+    if (!status) {
+      await modal.connect();
+    } else {
       loaderservice.setLoading(true);
-      if(p.storeData)
-      await boxservice.storeHashIn3Box(boxservice.space);
+      if (p.storeData) await boxservice.storeHashIn3Box(boxservice.space);
       loaderservice.setLoading(false);
     }
-    
-    
   };
 
   return (
