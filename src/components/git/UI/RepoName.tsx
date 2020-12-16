@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useBehaviorSubject } from "use-subscribable";
-import { gitservice } from "../../App";
-import { gitService } from "./gitService";
+import { gitservice } from "../../../App";
+import { gitService } from "../gitService";
 
 interface RepoNameProps {}
 

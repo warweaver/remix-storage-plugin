@@ -1,7 +1,7 @@
 import IpfsHttpClient from "ipfs-http-client";
 import { toast } from "react-toastify";
 import { BehaviorSubject } from "rxjs";
-import { clearFileSystem, fileservice, fs, gitservice, ipfservice, loaderservice } from "../../App";
+import { resetFileSystem, fileservice, fs, gitservice, ipfservice, loaderservice } from "../../App";
 
 export interface ipfsConfig {
   host: string;
@@ -141,7 +141,7 @@ export class IPFSService {
       return false;
     }
     // return true;
-    await clearFileSystem()
+    await resetFileSystem()
     //await gitservice.init()
     await fileservice.clearFilesInIde()
     console.log("cloning");

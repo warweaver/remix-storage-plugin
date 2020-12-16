@@ -1,7 +1,7 @@
 import { ReadCommitResult } from "isomorphic-git";
 import React from "react";
 import { useBehaviorSubject } from "use-subscribable";
-import { gitservice } from "../../App";
+import { gitservice } from "../../../App";
 import { default as dateFormat } from 'dateformat'
 interface gitLogProps {}
 

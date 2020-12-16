@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { gitservice } from "../../App";
+import { gitservice } from "../../../App";
 import { GitBranch } from "./gitBranch";
 import { GitLog } from "./gitLog";
 

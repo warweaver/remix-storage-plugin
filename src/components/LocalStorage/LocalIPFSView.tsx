@@ -11,7 +11,7 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
   const boxobjects = useBehaviorSubject(localipfsstorage.boxObjects);
 
   useEffect(() => {
-    localipfsstorage.init();
+    //localipfsstorage.init();
   }, []);
 
   localipfsstorage.boxObjects

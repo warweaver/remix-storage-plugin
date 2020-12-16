@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import FS from "@isomorphic-git/lightning-fs";
 import {
-  clearFileSystem,
+  resetFileSystem,
   fileservice,
   fsNoPromise,
   gitservice,
@@ -42,9 +42,7 @@ export class LsFileService {
   fileStatusResult: fileStatusResult[] = [];
 
   constructor(){
-    client.clientLoaded.subscribe(async (load:boolean)=>{
-      if(load)await this.syncStart()
-    })
+
   }
 
   async addFileFromBrowser(file: string) {
@@ -95,7 +93,7 @@ export class LsFileService {
   }
 
   async startNewRepo() {
-    await clearFileSystem();
+    await resetFileSystem();
     await this.syncFromBrowser();
     await gitservice.init();
     await gitservice.clearRepoName()
@@ -115,7 +113,7 @@ export class LsFileService {
 
   async clearAll() {
     await this.clearFilesInWorkSpace();
-    await clearFileSystem();
+    await resetFileSystem();
     await gitservice.clearRepoName()
   }
 

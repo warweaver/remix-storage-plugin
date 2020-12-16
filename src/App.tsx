@@ -9,7 +9,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import FS from "@isomorphic-git/lightning-fs";
 import { FileExplorer } from "./components/Files/FileExplorer";
 import { BoxController } from "./components/3box/Box";
-import { GitControls } from "./components/git/gitControls";
+import { GitControls } from "./components/git/UI/gitControls";
 
 import { IPFSView } from "./components/IPFS/IPFSView";
 import { WorkSpacePlugin } from "./components/Remix/Client";
@@ -17,7 +17,7 @@ import { gitService } from "./components/git/gitService";
 
 import { LsFileService } from "./components/Files/FileService";
 import { FileTools } from "./components/Files/FileTools";
-import { DiffView } from "./components/git/Diff";
+import { DiffView } from "./components/git/diff/Diff";
 import { IPFSService } from "./components/IPFS/IPFSService";
 import { BoxService } from "./components/3box/3boxService";
 import { ToastContainer } from "react-toastify";
@@ -27,15 +27,15 @@ import Loading from "react-fullscreen-loading";
 import { LoaderService } from "./components/loaderService";
 import { useBehaviorSubject } from "use-subscribable";
 import { Help } from "./components/Help";
-import { RepoName } from "./components/git/RepoName";
+import { RepoName } from "./components/git/UI/RepoName";
 import { LocalIPFSStorage } from "./components/LocalStorage/LocalStorage";
 import { ConnectionWarning } from "./components/ConnectionWarning";
 
-export const fsConfig: any = new FS("remix-storage-config");
-export const fsConfigPromise: any = fsConfig.promises;
+export var fsConfig: any; //= new FS("remix-storage-config");
+export var fsConfigPromise: any; // = fsConfig.promises;
 
-export var fsNoPromise: any = new FS("remix-workspace");
-export var fs: any = fsNoPromise.promises;
+export var fsNoPromise: any; // = new FS("remix-workspace");
+export var fs: any; // = fsNoPromise.promises;
 export const gitservice: gitService = new gitService();
 export const client: WorkSpacePlugin = new WorkSpacePlugin();
 export const fileservice: LsFileService = new LsFileService();
@@ -44,11 +44,19 @@ export const boxservice: BoxService = new BoxService();
 export const loaderservice: LoaderService = new LoaderService();
 export const localipfsstorage: LocalIPFSStorage = new LocalIPFSStorage();
 
-export const clearFileSystem = async ()=>{
-  fsNoPromise = new FS("remix-workspace",{wipe:true});
-  fs = fsNoPromise.promises;
-  await fileservice.showFiles();
-}
+export const resetFileSystem = async () => {
+  try {
+    fsConfig = new FS("remix-storage-config");
+    fsConfigPromise = fsConfig.promises;
+    fsNoPromise = new FS("remix-workspace", { wipe: true });
+    fs = fsNoPromise.promises;
+    localipfsstorage.init()
+    client.clientLoaded.subscribe(async (load:boolean)=>{
+      if(load)await fileservice.syncStart()
+    })
+    //await fileservice.showFiles();
+  } catch (e) {}
+};
 
 export const providerOptions = {
   walletconnect: {
@@ -61,29 +69,38 @@ export const providerOptions = {
 
 function App() {
   const [activeKey, setActiveKey] = useState<string>("files");
-  const loading: boolean | undefined = useBehaviorSubject(loaderservice.loading);
-  const repoName = useBehaviorSubject(gitservice.reponameSubject)
-  gitservice.reponameSubject.subscribe((x)=>{}).unsubscribe()
+  const loading: boolean | undefined = useBehaviorSubject(
+    loaderservice.loading
+  );
+  const repoName = useBehaviorSubject(gitservice.reponameSubject);
+  gitservice.reponameSubject.subscribe((x) => {}).unsubscribe();
   loaderservice.loading.subscribe((x) => {}).unsubscribe();
 
   const setTab = async (key: string) => {
     setActiveKey(key);
-    if(key=="diff"){
-      loaderservice.setLoading(true)
-      await gitservice.diffFiles()
-      loaderservice.setLoading(false)
+    if (key == "diff") {
+      loaderservice.setLoading(true);
+      await gitservice.diffFiles();
+      loaderservice.setLoading(false);
     }
   };
 
   return (
     <div className="App">
       <Container fluid>
-        {loading? <Loading loading background="#2ecc71" loaderColor="#3498db" />:<></>}
-        <RepoName/>
-        <ConnectionWarning/>
+        {loading ? (
+          <Loading loading background="#2ecc71" loaderColor="#3498db" />
+        ) : (
+          <></>
+        )}
+        <RepoName />
+        <ConnectionWarning />
         <h1>Storage: {repoName}</h1>
         <ToastContainer position="bottom-right" />
-        <Tabs activeKey={activeKey} onSelect={async (k) => await setTab(k || "files")}>
+        <Tabs
+          activeKey={activeKey}
+          onSelect={async (k) => await setTab(k || "files")}
+        >
           <Tab className="mt-4 ml-1" eventKey="files" title="Files">
             <FileExplorer setTab={setTab} />
             <FileTools />
