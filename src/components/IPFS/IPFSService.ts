@@ -41,7 +41,9 @@ export class IPFSService {
     this.ipfs = IpfsHttpClient(this.ipfsconfig);
     try {
       await this.ipfs.config.getAll();
-
+      toast.success(
+        "IFPS Connection successfull!"
+      );
       return true;
     } catch (e) {
       console.log("IPFS error", e);
@@ -124,12 +126,14 @@ export class IPFSService {
     return true;
   }
 
-  async importFromCID(cid: string | undefined) {
+  async importFromCID(cid: string | undefined, name:string = "") {
     if (cid !== undefined) {
       console.log("cid", cid);
       this.cid = cid;
       //$("#ipfs").val(ipfservice.cid);
       await ipfservice.clone();
+      gitservice.reponameSubject.next(name)
+      gitservice.reponame = name
     }
   }
 

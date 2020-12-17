@@ -52,7 +52,7 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
       <div className="container-fluid">
         {(boxobjects || []).map((o) => {
           return (
-            <div className="row p-1 small">
+            <div key={o.key} className="row p-1 small">
               <Card className="w-75">
                 <Card.Body>
                   <Card.Title>{o.key}</Card.Title>
@@ -76,7 +76,7 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
               </Card>
               <div className="col">
                 <button
-                  onClick={async () => await ipfservice.importFromCID(o.cid)}
+                  onClick={async () => await ipfservice.importFromCID(o.cid, o.key)}
                   className="btn btn-primary btn-sm mr-2 import3b-btn"
                 >
                   import

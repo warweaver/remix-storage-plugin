@@ -61,19 +61,24 @@ export class LocalIPFSStorage {
 
   async createBoxObject() {
     await this.init();
-    const commits = await gitservice.getCommits();
-    let key = gitservice.reponame;
+    try{
+      const commits = await gitservice.getCommits();
+      let key = gitservice.reponame;
+  
+      let ob: boxObject = {
+        key: key,
+        cid: ipfservice.cid,
+        datestored: dateFormat(new Date(),"dddd, mmmm dS, yyyy, h:MM:ss TT"),
+        datecommit: dateFormat(new Date(commits[0].commit.committer.timestamp * 1000), "dddd, mmmm dS, yyyy, h:MM:ss TT"),
+        timestamp: commits[0].commit.committer.timestamp,
+        ref: commits[0].oid,
+        message: commits[0].commit.message,
+      };
+  
+      return ob;
+    }catch(e){
+      throw(e)
+    }
 
-    let ob: boxObject = {
-      key: key,
-      cid: ipfservice.cid,
-      datestored: dateFormat(new Date(),"dddd, mmmm dS, yyyy, h:MM:ss TT"),
-      datecommit: dateFormat(new Date(commits[0].commit.committer.timestamp * 1000), "dddd, mmmm dS, yyyy, h:MM:ss TT"),
-      timestamp: commits[0].commit.committer.timestamp,
-      ref: commits[0].oid,
-      message: commits[0].commit.message,
-    };
-
-    return ob;
   }
 }

@@ -1,6 +1,11 @@
 import { toast } from "react-toastify";
 import { BehaviorSubject } from "rxjs";
-import { gitservice, ipfservice, loaderservice, localipfsstorage } from "../../App";
+import {
+  gitservice,
+  ipfservice,
+  loaderservice,
+  localipfsstorage,
+} from "../../App";
 
 export interface boxObject {
   key?: string;
@@ -27,25 +32,25 @@ export class BoxService {
     this.space = space;
   }
 
-  async getStatus(){
-
-  }
+  async getStatus() {}
 
   async storeHashIn3Box(space: any) {
     if (typeof this.space == "undefined") {
       toast.error("You should connect to 3Box first");
       return false;
     }
-    loaderservice.setLoading(true)
+    loaderservice.setLoading(true);
     await ipfservice.addToIpfs();
     console.log("export 3box", ipfservice.cid, this.space);
 
-    const ob = await localipfsstorage.createBoxObject()
+    try {
+      const ob = await localipfsstorage.createBoxObject();
 
-    await this.space.private.set(ob.key, ob);
-    toast.success("Stored in 3box");
-    await this.getObjectsFrom3Box(space);
-    loaderservice.setLoading(false)
+      await this.space.private.set(ob.key, ob);
+      toast.success("Stored in 3box");
+      await this.getObjectsFrom3Box(space);
+      loaderservice.setLoading(false);
+    } catch (e) {}
   }
 
   async getObjectsFrom3Box(space: any) {
@@ -60,10 +65,10 @@ export class BoxService {
     if (args !== undefined) {
       const key = args;
       console.log("key", key);
-      loaderservice.setLoading(true)
+      loaderservice.setLoading(true);
       await this.space.private.remove(key);
       await this.getObjectsFrom3Box(this.space);
-      loaderservice.setLoading(false)
+      loaderservice.setLoading(false);
     }
   }
 }

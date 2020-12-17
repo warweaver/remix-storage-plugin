@@ -29,6 +29,7 @@ import { Help } from "./components/Help";
 import { RepoName } from "./components/git/UI/RepoName";
 import { LocalIPFSStorage } from "./components/LocalStorage/LocalStorage";
 import { ConnectionWarning } from "./components/ConnectionWarning";
+import { IPFSConfig } from "./components/IPFS/IPFSConfig";
 
 export var fsConfig: any; //= new FS("remix-storage-config");
 export var fsConfigPromise: any; // = fsConfig.promises;
@@ -43,11 +44,11 @@ export const boxservice: BoxService = new BoxService();
 export const loaderservice: LoaderService = new LoaderService();
 export const localipfsstorage: LocalIPFSStorage = new LocalIPFSStorage();
 
-export const resetFileSystem = async () => {
+export const resetFileSystem = async (wipe:boolean=false) => {
   try {
     fsConfig = new FS("remix-storage-config");
     fsConfigPromise = fsConfig.promises;
-    fsNoPromise = new FS("remix-workspace", { wipe: true });
+    fsNoPromise = new FS("remix-workspace", { wipe: wipe });
     fs = fsNoPromise.promises;
     localipfsstorage.init();
     client.clientLoaded.subscribe(async (load: boolean) => {
@@ -99,7 +100,7 @@ function App() {
     };
     request.onsuccess = function (event) {
       console.log("DB supported");
-      resetFileSystem().then((x) => setCanLoad(x));
+      resetFileSystem(false).then((x) => setCanLoad(x));
     };
 
     //setCanLoad(r)
@@ -139,6 +140,9 @@ function App() {
             </Tab>
             <Tab className="mt-4 ml-1" eventKey="diff" title="Diff">
               <DiffView />
+            </Tab>
+            <Tab className="mt-4 ml-1" eventKey="config" title="Config">
+              <IPFSConfig />
             </Tab>
             <Tab className="mt-4 ml-1" eventKey="help" title="Help">
               <Help />

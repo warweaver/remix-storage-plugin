@@ -66,7 +66,7 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
               </Card>
               <div className="col">
                 <button
-                  onClick={async () => await ipfservice.importFromCID(o.cid)}
+                  onClick={async () => await ipfservice.importFromCID(o.cid, o.key)}
                   className="btn btn-primary btn-sm mr-2 import3b-btn"
                 >
                   import

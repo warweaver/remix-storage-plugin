@@ -19,7 +19,7 @@ export const IPFSImporter: React.FC<ipfsimporterProps> = ({}) => {
         <input onChange={handleChange} className="form-control" type="text" id="ipfs" />
       </div>
       <div id="ipfsimportalert"></div>
-      <button onClick={async()=>ipfservice.importFromCID(cid.value)} className="btn w-25 btn-primary" id="clone-btn">
+      <button onClick={async()=>ipfservice.importFromCID(cid.value, cid.value)} className="btn w-25 btn-primary" id="clone-btn">
         import from IPFS
       </button>
       <hr />

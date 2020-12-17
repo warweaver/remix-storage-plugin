@@ -93,7 +93,7 @@ export class LsFileService {
   }
 
   async startNewRepo() {
-    await resetFileSystem();
+    await resetFileSystem(true);
     await this.syncFromBrowser();
     await gitservice.init();
     await gitservice.clearRepoName()
@@ -114,7 +114,7 @@ export class LsFileService {
 
   async clearAll() {
     await this.clearFilesInWorkSpace();
-    await resetFileSystem();
+    await resetFileSystem(true);
     await gitservice.clearRepoName()
   }
 
