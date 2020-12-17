@@ -107,7 +107,7 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <div className="App pt-5">
       {!canLoad ? (
         <ConnectionWarning canLoad={canLoad} />
       ) : (
@@ -141,11 +141,8 @@ function App() {
             <Tab className="mt-4 ml-1" eventKey="diff" title="Diff">
               <DiffView />
             </Tab>
-            <Tab className="mt-4 ml-1" eventKey="config" title="Config">
+            <Tab className="mt-4 ml-1" eventKey="config" title="IPFS Config">
               <IPFSConfig />
-            </Tab>
-            <Tab className="mt-4 ml-1" eventKey="help" title="Help">
-              <Help />
             </Tab>
           </Tabs>
 

@@ -36,6 +36,7 @@ export const IPFSConfig: React.FC<IPFSConfigProps> = ({}) => {
 
   return (
     <>
+    <h3>IPFS CONFIGURATION</h3>
         <label>HOST</label>
       <input
         onChange={setHostChange}

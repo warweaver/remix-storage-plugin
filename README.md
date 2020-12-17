@@ -1,4 +1,4 @@
 # Getting Started
 
-## What is the storage plugin?
+## Nothing here yet
 
