@@ -1,13 +1,17 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { useBehaviorSubject } from "use-subscribable";
 import { boxservice, ipfservice, localipfsstorage } from "../../App";
-import { BoxController } from "../3box/Box";
 
 interface IPFSViewProps {}
 
 export const IPFSView: React.FC<IPFSViewProps> = () => {
   const cid = useBehaviorSubject(ipfservice.cidBehavior);
   const boxconnected = useBehaviorSubject(boxservice.status);
+  const BoxController = React.lazy(() =>
+    import("../3box/Box").then(({ BoxController }) => ({
+      default: BoxController,
+    }))
+  );
 
   ipfservice.cidBehavior.subscribe((x) => {}).unsubscribe();
   boxservice.status.subscribe((x) => {}).unsubscribe();
@@ -24,14 +28,14 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
     }
   };
 
-  const addFilesToIpfs = async ()=>{
-    try{
-      await ipfservice.addToIpfs()
-      await localipfsstorage.addToStorage(await localipfsstorage.createBoxObject())
-    }catch(e){
-
-    }
-  }
+  const addFilesToIpfs = async () => {
+    try {
+      await ipfservice.addToIpfs();
+      await localipfsstorage.addToStorage(
+        await localipfsstorage.createBoxObject()
+      );
+    } catch (e) {}
+  };
 
   const getUrl = () => {
     return `${ipfservice.ipfsconfig.ipfsurl}${cid}`;
@@ -39,11 +43,11 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
 
   return (
     <>
-    <h4>Local storage & IPFS</h4>
+      <h4>Local storage & IPFS</h4>
       <button
         className="btn w-25 btn-primary"
         id="main-btn"
-        onClick={async () => await addFilesToIpfs() }
+        onClick={async () => await addFilesToIpfs()}
       >
         Export to IPFS only & store in local storage
       </button>
@@ -56,15 +60,9 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
       <div className="alert alert-info w-25" role="alert">
         This will export the files to IPFS and store a key in your 3Box account.
       </div>
-      <BoxController buttonTitle="Export to 3Box" storeData={true}/>
-      {/* <h4>Step 2</h4>
-      <button
-        className="btn w-25 btn-primary 3boxbtn"
-        disabled={!boxconnected}
-        onClick={async () => await boxservice.storeHashIn3Box(boxservice.space)}
-      >
-        Export to 3Box & IPFS
-      </button> */}
+      <Suspense fallback={<div>Loading...</div>}>
+        <BoxController buttonTitle="Export to 3Box" storeData={true} />
+      </Suspense>
       <div id="boxexportstatus"></div>
     </>
   );

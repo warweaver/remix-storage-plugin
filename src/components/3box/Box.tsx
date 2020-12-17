@@ -23,7 +23,7 @@ export const BoxController: React.FC<BoxProps> = (p) => {
   let modal: Web3Modal;
 
   const setModalListener = async () => {
-    modal.on("connect", async (provider) => {
+    modal.on("connect", async (provider:any) => {
       if (!status) {
         const [eth] = await provider.enable();
         address = getAddress(eth);

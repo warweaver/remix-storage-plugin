@@ -1,5 +1,5 @@
 import React from 'react'
-import { fileservice, localipfsstorage } from '../../App'
+import { fileservice, localipfsstorage, resetFileSystem } from '../../App'
 
 interface FileToolsProps {
 
@@ -18,7 +18,7 @@ export const FileTools: React.FC<FileToolsProps> = ({}) => {
 
         <button className="btn btn-danger w-10" onClick={async()=>fileservice.showFiles()}>show files</button>
 
-        <button className="btn btn-danger w-10" onClick={async()=>localipfsstorage.init()}>show config</button>
+        <button className="btn btn-danger w-10" onClick={async()=>resetFileSystem()}>show config</button>
         </>
         );
 }

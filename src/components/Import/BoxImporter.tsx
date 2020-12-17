@@ -1,16 +1,21 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { Suspense } from "react";
 import { Card } from "react-bootstrap";
 import { useBehaviorSubject } from "use-subscribable";
 import { boxservice, ipfservice } from "../../App";
 import { boxObject } from "../3box/3boxService";
-import { BoxController } from "../3box/Box";
+//import { BoxController } from "../3box/Box";
 
 interface boximporterProps {}
 
 export const BoxImporter: React.FC<boximporterProps> = ({}) => {
   const boxobjects = useBehaviorSubject(boxservice.boxObjects);
+  const BoxController = React.lazy(() =>
+    import("../3box/Box").then(({ BoxController }) => ({
+      default: BoxController,
+    }))
+  );
 
   boxservice.boxObjects
     .subscribe((x) => {
@@ -41,16 +46,16 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
       <div className="alert alert-info" role="alert">
         This will import the IPFS repo from a key stored in your 3Box account.
       </div>
-      <BoxController buttonTitle="Connect to 3Box" storeData={false}/>
+      <Suspense fallback={<div>Loading...</div>}>
+        <BoxController buttonTitle="Connect to 3Box" storeData={false} />
+      </Suspense>
       <div className="container-fluid">
         {(boxobjects || []).map((o) => {
           return (
             <div className="row p-1 small">
               <Card className="w-75">
                 <Card.Body>
-                    <Card.Title>
-                  {o.key}
-                  </Card.Title>
+                  <Card.Title>{o.key}</Card.Title>
                   <div className="row">
                     <div className="col">IPFS</div>
                     <div className="col">{getUrlLink(o.cid)}</div>
@@ -70,10 +75,16 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
                 </Card.Body>
               </Card>
               <div className="col">
-                <button onClick={async()=> await ipfservice.importFromCID(o.cid)} className="btn btn-primary btn-sm mr-2 import3b-btn">
+                <button
+                  onClick={async () => await ipfservice.importFromCID(o.cid)}
+                  className="btn btn-primary btn-sm mr-2 import3b-btn"
+                >
                   import
                 </button>
-                <button onClick={async()=> await boxservice.deleteFrom3Box(o.key)} className="btn btn-danger btn-sm delete3b-btn">
+                <button
+                  onClick={async () => await boxservice.deleteFrom3Box(o.key)}
+                  className="btn btn-danger btn-sm delete3b-btn"
+                >
                   <FontAwesomeIcon icon={faTrash} />
                 </button>
               </div>

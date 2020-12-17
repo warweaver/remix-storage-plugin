@@ -100,6 +100,7 @@ export class LsFileService {
   }
 
   async syncStart(){
+    //await resetFileSystem();
     await this.clearFilesInWorkingDirectory();
     await this.syncFromBrowser()
     await gitservice.init();

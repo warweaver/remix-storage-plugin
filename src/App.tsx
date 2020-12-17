@@ -8,7 +8,6 @@ import { getAddress } from "@ethersproject/address";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import FS from "@isomorphic-git/lightning-fs";
 import { FileExplorer } from "./components/Files/FileExplorer";
-import { BoxController } from "./components/3box/Box";
 import { GitControls } from "./components/git/UI/gitControls";
 
 import { IPFSView } from "./components/IPFS/IPFSView";
@@ -50,12 +49,16 @@ export const resetFileSystem = async () => {
     fsConfigPromise = fsConfig.promises;
     fsNoPromise = new FS("remix-workspace", { wipe: true });
     fs = fsNoPromise.promises;
-    localipfsstorage.init()
-    client.clientLoaded.subscribe(async (load:boolean)=>{
-      if(load)await fileservice.syncStart()
-    })
+    localipfsstorage.init();
+    client.clientLoaded.subscribe(async (load: boolean) => {
+      if (load) await fileservice.syncStart();
+    });
+    return true;
     //await fileservice.showFiles();
-  } catch (e) {}
+  } catch (e) {
+    console.log("FS WARNING");
+    return false;
+  }
 };
 
 export const providerOptions = {
@@ -72,6 +75,7 @@ function App() {
   const loading: boolean | undefined = useBehaviorSubject(
     loaderservice.loading
   );
+  const [canLoad, setCanLoad] = useState<boolean>(false);
   const repoName = useBehaviorSubject(gitservice.reponameSubject);
   gitservice.reponameSubject.subscribe((x) => {}).unsubscribe();
   loaderservice.loading.subscribe((x) => {}).unsubscribe();
@@ -85,16 +89,65 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    var request = window.indexedDB.open("MyTestDatabase", 3);
+    console.log(request);
+    request.onerror = function (event) {
+      console.log("DB not supported");
+      setCanLoad(false);
+      return false;
+    };
+    request.onsuccess = function (event) {
+      console.log("DB supported");
+      resetFileSystem().then((x) => setCanLoad(x));
+    };
+
+    //setCanLoad(r)
+  }, []);
+
   return (
     <div className="App">
-      <Container fluid>
-        {loading ? (
-          <Loading loading background="#2ecc71" loaderColor="#3498db" />
-        ) : (
-          <></>
-        )}
-        <RepoName />
-        <ConnectionWarning />
+      {!canLoad ? (
+        <ConnectionWarning canLoad={canLoad} />
+      ) : (
+        <Container fluid>
+          {loading ? (
+            <Loading loading background="#2ecc71" loaderColor="#3498db" />
+          ) : (
+            <></>
+          )}
+          <RepoName />
+          <h1>Storage: {repoName}</h1>
+          <ToastContainer position="bottom-right" />
+
+          <Tabs
+            activeKey={activeKey}
+            onSelect={async (k) => await setTab(k || "files")}
+          >
+            <Tab className="mt-4 ml-1" eventKey="files" title="Files">
+              <FileExplorer setTab={setTab} />
+              <FileTools />
+            </Tab>
+            <Tab className="mt-4 ml-1" eventKey="git" title="Git">
+              <GitControls />
+            </Tab>
+            <Tab className="mt-4 ml-1" eventKey="export" title="Export">
+              <IPFSView />
+            </Tab>
+            <Tab className="mt-4 ml-1" eventKey="import" title="Import">
+              <Importer />
+            </Tab>
+            <Tab className="mt-4 ml-1" eventKey="diff" title="Diff">
+              <DiffView />
+            </Tab>
+            <Tab className="mt-4 ml-1" eventKey="help" title="Help">
+              <Help />
+            </Tab>
+          </Tabs>
+
+          {/*        
+        
+        <ConnectionWarning canLoad={canLoad} />
         <h1>Storage: {repoName}</h1>
         <ToastContainer position="bottom-right" />
         <Tabs
@@ -120,8 +173,9 @@ function App() {
           <Tab className="mt-4 ml-1" eventKey="help" title="Help">
             <Help />
           </Tab>
-        </Tabs>
-      </Container>
+        </Tabs> */}
+        </Container>
+      )}
     </div>
   );
 }
