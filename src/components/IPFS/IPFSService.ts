@@ -23,10 +23,12 @@ export class IPFSService {
     ipfsurl: "https://ipfs.io/ipfs/",
   };
 
+
   ipfs = IpfsHttpClient(this.ipfsconfig);
   filesToSend: ipfsFileObject[] = [];
   cid: string = "";
   cidBehavior = new BehaviorSubject<string>("");
+  connectionStatus = new BehaviorSubject<boolean>(false)
 
   async getipfsurl() {
     return this.ipfsconfig.ipfsurl;
@@ -44,6 +46,7 @@ export class IPFSService {
       toast.success(
         "IFPS Connection successfull!"
       );
+      this.connectionStatus.next(true)
       return true;
     } catch (e) {
       console.log("IPFS error", e);
@@ -51,13 +54,15 @@ export class IPFSService {
       toast.error(
         "There was an error connecting to IPFS, please check your IPFS settings if applicable."
       );
-
+      this.connectionStatus.next(false)
       loaderservice.setLoading(false)
       return false;
     }
   }
 
   async addToIpfs() {
+    const connect = await this.setipfsHost()
+    if(!connect){toast.error("Unable to connect to IPFS check your settings."); return false;}
     loaderservice.setLoading(true)
     this.filesToSend = [];
     // first get files in current commit, not the files in the FS because they can be changed or unstaged

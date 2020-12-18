@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { useBehaviorSubject } from "use-subscribable";
 import { boxservice, ipfservice, localipfsstorage } from "../../App";
 
@@ -7,12 +7,13 @@ interface IPFSViewProps {}
 export const IPFSView: React.FC<IPFSViewProps> = () => {
   const cid = useBehaviorSubject(ipfservice.cidBehavior);
   const boxconnected = useBehaviorSubject(boxservice.status);
+  const IPFSStatus = useBehaviorSubject(ipfservice.connectionStatus)
   const BoxController = React.lazy(() =>
     import("../3box/Box").then(({ BoxController }) => ({
-      default: BoxController,
+      default: BoxController
     }))
   );
-
+  ipfservice.connectionStatus.subscribe((x)=>{}).unsubscribe(); 
   ipfservice.cidBehavior.subscribe((x) => {}).unsubscribe();
   boxservice.status.subscribe((x) => {}).unsubscribe();
 
@@ -27,6 +28,10 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
       return <></>;
     }
   };
+
+  useEffect(()=>{
+    ipfservice.setipfsHost()
+  },[])
 
   const addFilesToIpfs = async () => {
     try {
@@ -45,12 +50,16 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
     <>
       <h4>Local storage & IPFS</h4>
       <button
+        disabled={IPFSStatus?false:true}
         className="btn w-25 btn-primary"
         id="main-btn"
         onClick={async () => await addFilesToIpfs()}
       >
         Export to IPFS only & store in local storage
       </button>
+      {IPFSStatus?<></>:<div className="alert alert-warning w-25 mt-2" role="alert">
+        Your IPFS settings are incorrect. Unable to connect. Check your settings.
+      </div>}
       <br />
       <div id="ipfsAlert" role="alert"></div>
       <br />
@@ -61,7 +70,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
         This will export the files to IPFS and store a key in your 3Box account.
       </div>
       <Suspense fallback={<div>Loading...</div>}>
-        <BoxController buttonTitle="Export to 3Box" storeData={true} />
+        <BoxController buttonTitle="Export to 3Box" storeData={true} IPFSStatus={IPFSStatus} />
       </Suspense>
       <div id="boxexportstatus"></div>
     </>

@@ -11,12 +11,13 @@ interface boximporterProps {}
 
 export const BoxImporter: React.FC<boximporterProps> = ({}) => {
   const boxobjects = useBehaviorSubject(boxservice.boxObjects);
+  const IPFSStatus = useBehaviorSubject(ipfservice.connectionStatus)
   const BoxController = React.lazy(() =>
     import("../3box/Box").then(({ BoxController }) => ({
       default: BoxController,
     }))
   );
-
+  ipfservice.connectionStatus.subscribe((x)=>{}).unsubscribe(); 
   boxservice.boxObjects
     .subscribe((x) => {
       console.log("box objects", x);
@@ -47,7 +48,7 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
         This will import the IPFS repo from a key stored in your 3Box account.
       </div>
       <Suspense fallback={<div>Loading...</div>}>
-        <BoxController buttonTitle="Connect to 3Box" storeData={false} />
+        <BoxController buttonTitle="Connect to 3Box" storeData={false} IPFSStatus={IPFSStatus} />
       </Suspense>
       <div className="container-fluid">
         {(boxobjects || []).map((o) => {
