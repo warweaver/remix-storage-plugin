@@ -27,6 +27,18 @@ export const BoxController: React.FC<BoxProps> = (p) => {
   boxservice.status.subscribe((x) => {}).unsubscribe();
 
   let modal: Web3Modal;
+  let timer: NodeJS.Timeout;
+
+  const callTimedOut = async () => {
+    toast.error(
+      "There has been an error connnecting to 3BOX. If you continue having problems consider clearing your 3BOX cookies in your browser."
+    );
+    boxservice.status.next(false);
+    loaderservice.setLoading(false);
+    try {
+      clearTimeout(timer);
+    } catch (e) {}
+  };
 
   const setModalListener = async () => {
     modal.on("connect", async (provider: any) => {
@@ -36,12 +48,16 @@ export const BoxController: React.FC<BoxProps> = (p) => {
         return false;
       }
       if (!status) {
-        const [eth] = await provider.enable();
-        address = getAddress(eth);
-        loaderservice.setLoading(true);
-        toast.info("Please wait... this can take a while");
-        console.log(address);
         try {
+          timer = setTimeout(async () => {
+            await callTimedOut();
+          }, 60000);
+          const [eth] = await provider.enable();
+          address = getAddress(eth);
+          loaderservice.setLoading(true);
+          toast.info("Please wait... this can take a while");
+          console.log(address);
+
           mybox = await Box.openBox(address, provider);
           toast.success("3box connected... waiting for space to open");
           console.log(mybox);
@@ -52,15 +68,17 @@ export const BoxController: React.FC<BoxProps> = (p) => {
           await boxservice.setSpace(space);
           await boxservice.getObjectsFrom3Box(space);
           boxservice.status.next(true);
+          try {
+            clearTimeout(timer);
+          } catch (e) {}
         } catch (e) {
-          toast.error("There has been an error connnecting to 3BOX.")
-          boxservice.status.next(false);
+          await callTimedOut()
         }
       }
       try {
         if (p.storeData) await boxservice.storeHashIn3Box(boxservice.space);
       } catch (e) {
-        toast.error("There has been an error connnecting to 3BOX.")
+        toast.error("There has been an error connnecting to 3BOX.");
         boxservice.status.next(false);
       }
       loaderservice.setLoading(false);

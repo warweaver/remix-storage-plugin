@@ -21,7 +21,7 @@ export class LocalIPFSStorage {
       encoding: "utf8",
     });
     this.objects = JSON.parse(r);
-    this.objects.sort((a, b) => (a.datecommit < b.datecommit) ? -1 : 1)
+    this.objects.sort((a, b) => (a.timestamp > b.timestamp) ? -1 : 1)
     this.objects = await this.filterNulls();
     console.log("READ CONFIG",this.objects);
     this.boxObjects.next(this.objects);

@@ -82,6 +82,10 @@ export class LsFileService {
     for (let i = 0; i < files.length; i++) {
       await client.call("fileManager", "remove", files[i]);
     }
+
+    const dirs = await client.call("fileManager", "readdir", "/");
+    console.log(files);
+
   }
 
   async clearFilesInWorkingDirectory() {

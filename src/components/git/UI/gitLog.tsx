@@ -21,12 +21,6 @@ export const GitLog: React.FC<gitLogProps> = ({}) => {
 
   return (
     <>
-      <button
-        className="btn w-25 btn-primary"
-        onClick={async () => gitservice.gitlog()}
-      >
-        git log
-      </button>
 
       <hr />
       <h4>Commits</h4>

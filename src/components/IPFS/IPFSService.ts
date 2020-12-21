@@ -17,10 +17,10 @@ export interface ipfsFileObject {
 
 export class IPFSService {
   ipfsconfig: ipfsConfig = {
-    host: "localhost",
-    port: 5001,
-    protocol: "http",
-    ipfsurl: "https://ipfs.io/ipfs/",
+    host: "ipfs.komputing.org",
+    port: 443,
+    protocol: "https",
+    ipfsurl: "https://ipfsgw.komputing.org/ipfs/",
   };
 
 
@@ -132,6 +132,8 @@ export class IPFSService {
   }
 
   async importFromCID(cid: string | undefined, name:string = "") {
+    const connect = await this.setipfsHost()
+    if(!connect){toast.error("Unable to connect to IPFS check your settings."); return false;}
     if (cid !== undefined) {
       console.log("cid", cid);
       this.cid = cid;
@@ -143,7 +145,8 @@ export class IPFSService {
   }
 
   async clone() {
-  
+    const connect = await this.setipfsHost()
+    if(!connect){toast.error("Unable to connect to IPFS check your settings."); return false;}
     const cid = this.cid;
     console.log(cid);
     if (cid === "" || typeof cid == "undefined" || !cid) {

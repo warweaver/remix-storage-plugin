@@ -4,10 +4,10 @@ import { ipfservice } from "../../App";
 interface IPFSConfigProps {}
 
 export const IPFSConfig: React.FC<IPFSConfigProps> = ({}) => {
-  const [host, sethost] = useState<string>("localhost");
-  const [port, setport] = useState<string>("5001");
-  const [protocol, setprotocol] = useState<string>("http");
-  const [url, setUrl] = useState<string>("https://ipfs.io/ipfs/");
+  const [host, sethost] = useState<string>("ipfs.komputing.org");
+  const [port, setport] = useState<string>("443");
+  const [protocol, setprotocol] = useState<string>("https");
+  const [url, setUrl] = useState<string>("https://ipfsgw.komputing.org/ipfs/");
 
   const setHostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     sethost(e.currentTarget.value);

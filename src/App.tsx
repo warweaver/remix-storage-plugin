@@ -78,7 +78,9 @@ function App() {
   );
   const [canLoad, setCanLoad] = useState<boolean>(false);
   const repoName = useBehaviorSubject(gitservice.reponameSubject);
+  const canCommit = useBehaviorSubject(gitservice.canCommit);
   gitservice.reponameSubject.subscribe((x) => {}).unsubscribe();
+  gitservice.canCommit.subscribe((x) => {}).unsubscribe();
   loaderservice.loading.subscribe((x) => {}).unsubscribe();
 
   const setTab = async (key: string) => {
@@ -119,6 +121,7 @@ function App() {
           )}
           <RepoName />
           <h1>Storage: {repoName}</h1>
+          {canCommit?<></>:<div className='alert alert-warning w-25'>You are in a detached state.<br></br></div>}
           <ToastContainer position="bottom-right" />
 
           <Tabs

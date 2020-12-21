@@ -18,6 +18,7 @@ export class gitService {
   branches = new BehaviorSubject<string[] | undefined>(undefined);
   diffResult = new BehaviorSubject<diffObject[] | undefined>(undefined);
   reponameSubject = new BehaviorSubject<string>("");
+  canCommit = new BehaviorSubject<boolean>(true);
   reponame = ""
 
   constructor() {
@@ -157,10 +158,12 @@ export class gitService {
       const currentcommitoid = await this.getCommitFromRef("HEAD");
       this.branch.next(branch);
       if (typeof branch === "undefined" || branch === "") {
-        toast.warn(`You are in a detached state`);
+        //toast.warn(`You are in a detached state`);
         this.branch.next(`HEAD detached at ${currentcommitoid}`);
+        this.canCommit.next(false)
       } else {
         this.branch.next(`Branch is: ${branch} at commit ${currentcommitoid}`);
+        this.canCommit.next(true)
       }
     } catch (e) {
       this.branch.next('')
