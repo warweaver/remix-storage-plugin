@@ -18,7 +18,8 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
   boxservice.status.subscribe((x) => {}).unsubscribe();
 
   const getUrlLink = () => {
-    if (ipfservice.cid !== "" && ipfservice.cid !== undefined) {
+    if (cid !== "" && cid !== undefined && cid) {
+      console.log(ipfservice.cid)
       return (
         <a target="_blank" href={getUrl()} id="CID">
           Your data is here: {getUrl()}

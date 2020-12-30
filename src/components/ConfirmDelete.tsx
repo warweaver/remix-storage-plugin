@@ -2,7 +2,7 @@ import { Button, Modal } from 'react-bootstrap';
 import React from 'react'
 
 
-type MyProps = {  };
+type MyProps = { title:string, text:string };
 type MyState = { show: boolean };
 
 export default class ConfirmDelete extends React.Component<MyProps, MyState> {
@@ -52,9 +52,9 @@ export default class ConfirmDelete extends React.Component<MyProps, MyState> {
   
         <Modal show={show} onHide={async ()=> await this.hide()}>
           <Modal.Header closeButton>
-            <Modal.Title>CONFIRM DELETING FILES</Modal.Title>
+            <Modal.Title>{this.props.title}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Are you sure you want to erase all the files you are working on?</Modal.Body>
+          <Modal.Body>{this.props.text}</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={async ()=> await this.hide()}>
               No

@@ -76,7 +76,6 @@ export class LsFileService {
   }
 
   async clearFilesInIde() {
-
     var dirs = await client.call("fileManager", "readdir", "/");
     console.log(dirs);
     let files = await this.getDirectoryFromIde("/");
@@ -94,7 +93,6 @@ export class LsFileService {
       } catch (e) {}
     }
     return true;
-
   }
 
   async clearFilesInWorkingDirectory() {
@@ -245,6 +243,21 @@ export class LsFileService {
       });
     });
     //console.log("file status", this.fileStatusResult);
+  }
+
+  getFilesByStatus(status: string) {
+    let count = 0;
+    console.log("STATUS?", status);
+    this.fileStatusResult.map((m) => {
+      console.log("STATUS?", m);
+      if (m.statusNames !== undefined) {
+        if (m.statusNames?.indexOf(status) > -1) {
+          count++;
+          console.log("COUNT", count);
+        }
+      }
+    });
+    return count;
   }
 
   getFileStatusForFile(filename: string) {

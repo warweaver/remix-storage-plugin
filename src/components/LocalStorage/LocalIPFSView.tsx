@@ -11,6 +11,7 @@ interface LocalIPFSViewProps {}
 export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
   const boxobjects = useBehaviorSubject(localipfsstorage.boxObjects);
   let ModalRef = createRef<ConfirmDelete>();
+  let EraseModalRef = createRef<ConfirmDelete>();
   useEffect(() => {
     //localipfsstorage.init();
   }, []);
@@ -33,6 +34,18 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
     }
   };
 
+  const getViewButton = (cid: string | undefined) => {
+    if (cid !== "" && cid !== undefined) {
+      return (
+        <a className="btn btn-primary btn-sm mr-2" target="_blank" href={getUrl(cid)} id="CID">
+          View files
+        </a>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
   const getUrl = (cid: string) => {
     return `${ipfservice.ipfsconfig.ipfsurl}${cid}`;
   };
@@ -47,10 +60,21 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
     }
   };
 
+  const deleteItem = async(o:any) =>{
+    try {
+      await EraseModalRef.current?.show();
+      await localipfsstorage.deleteFromStorage(o?.cid)
+      console.log("yes");
+    } catch (e) {
+      console.log("no");
+    }
+  }
+
   return (
     <>
       <h4>Local Storage</h4>
-      <ConfirmDelete ref={ModalRef}></ConfirmDelete>
+      <ConfirmDelete title={"Importing"} text={"Importing will delete the files you are working on! Continue?"} ref={ModalRef}></ConfirmDelete>
+      <ConfirmDelete title={"Deleting"} text={"Are you sure you want to erase this item?"} ref={EraseModalRef}></ConfirmDelete>
       <div className="container-fluid">
         {(boxobjects || []).map((o, index) => {
           return (
@@ -83,9 +107,10 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
                 >
                   import
                 </button>
+               {getViewButton(o.cid)}
                 <button
                   onClick={async () =>
-                    await localipfsstorage.deleteFromStorage(o?.cid)
+                    await deleteItem(o)
                   }
                   className="btn btn-danger btn-sm delete3b-btn"
                 >

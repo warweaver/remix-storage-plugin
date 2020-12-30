@@ -30,6 +30,7 @@ import { RepoName } from "./components/git/UI/RepoName";
 import { LocalIPFSStorage } from "./components/LocalStorage/LocalStorage";
 import { ConnectionWarning } from "./components/ConnectionWarning";
 import { IPFSConfig } from "./components/IPFS/IPFSConfig";
+import { GitStatus } from "./components/git/UI/gitStatus";
 
 export var fsConfig: any; //= new FS("remix-storage-config");
 export var fsConfigPromise: any; // = fsConfig.promises;
@@ -125,6 +126,7 @@ function App() {
           )}
           <RepoName />
           <h1>Storage: {repoName}</h1>
+          <GitStatus></GitStatus>
           {canCommit?<></>:<div className='alert alert-warning w-25'>You are in a detached state.<br></br></div>}
           <ToastContainer position="bottom-right" />
           <Tabs

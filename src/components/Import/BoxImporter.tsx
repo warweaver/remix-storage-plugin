@@ -12,14 +12,15 @@ interface boximporterProps {}
 
 export const BoxImporter: React.FC<boximporterProps> = ({}) => {
   const boxobjects = useBehaviorSubject(boxservice.boxObjects);
-  const IPFSStatus = useBehaviorSubject(ipfservice.connectionStatus)
+  const IPFSStatus = useBehaviorSubject(ipfservice.connectionStatus);
   const BoxController = React.lazy(() =>
     import("../3box/Box").then(({ BoxController }) => ({
       default: BoxController,
     }))
   );
   let ModalRef = createRef<ConfirmDelete>();
-  ipfservice.connectionStatus.subscribe((x)=>{}).unsubscribe(); 
+  let EraseModalRef = createRef<ConfirmDelete>();
+  ipfservice.connectionStatus.subscribe((x) => {}).unsubscribe();
   boxservice.boxObjects
     .subscribe((x) => {
       console.log("box objects", x);
@@ -38,30 +39,62 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
     }
   };
 
+  const getViewButton = (cid: string | undefined) => {
+    if (cid !== "" && cid !== undefined) {
+      return (
+        <a
+          className="btn btn-primary btn-sm mr-2"
+          target="_blank"
+          href={getUrl(cid)}
+          id="CID"
+        >
+          View files
+        </a>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
   const getUrl = (cid: string) => {
     return `${ipfservice.ipfsconfig.ipfsurl}${cid}`;
   };
 
-  const importFromCID = async (cid: string | undefined, name:string = "") => {
+  const importFromCID = async (cid: string | undefined, name: string = "") => {
     try {
       await ModalRef.current?.show();
-      ipfservice.importFromCID(cid,name)
+      await ipfservice.importFromCID(cid, name);
       console.log("yes");
     } catch (e) {
       console.log("no");
     }
   };
 
+  const deleteFrom3Box = async(o:any) =>{
+    try {
+      await EraseModalRef.current?.show();
+      await boxservice.deleteFrom3Box(o.key)
+      console.log("yes");
+    } catch (e) {
+      console.log("no");
+    }
+  }
+
   return (
     <>
       <hr></hr>
       <h4>3Box storage</h4>
-      <ConfirmDelete ref={ModalRef}></ConfirmDelete>
+      <ConfirmDelete title={"Importing"} text={"Importing will delete the files you are working on! Continue?"} ref={ModalRef}></ConfirmDelete>
+      <ConfirmDelete title={"Deleting"} text={"Are you sure you want to erase this item?"} ref={EraseModalRef}></ConfirmDelete>
       <div className="alert alert-info" role="alert">
         This will import the IPFS repo from a key stored in your 3Box account.
       </div>
       <Suspense fallback={<div>Loading...</div>}>
-        <BoxController buttonTitle="Connect to 3Box" storeData={false} IPFSStatus={IPFSStatus} />
+        <BoxController
+          buttonTitle="Connect to 3Box"
+          storeData={false}
+          IPFSStatus={IPFSStatus}
+        />
       </Suspense>
       <div className="container-fluid">
         {(boxobjects || []).map((o) => {
@@ -95,8 +128,9 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
                 >
                   import
                 </button>
+                {getViewButton(o.cid)}
                 <button
-                  onClick={async () => await boxservice.deleteFrom3Box(o.key)}
+                  onClick={async () => await deleteFrom3Box(o)}
                   className="btn btn-danger btn-sm delete3b-btn"
                 >
                   <FontAwesomeIcon icon={faTrash} />
