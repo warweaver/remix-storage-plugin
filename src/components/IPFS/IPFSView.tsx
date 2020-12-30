@@ -70,6 +70,9 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
       <div className="alert alert-info w-25" role="alert">
         This will export the files to IPFS and store a key in your 3Box account.
       </div>
+      <div className="alert alert-warning w-25" role="alert">
+        Please make sure the IDE is on HTTPS otherwise you can't connect.
+      </div>
       <Suspense fallback={<div>Loading...</div>}>
         <BoxController buttonTitle="Export to 3Box" storeData={true} IPFSStatus={IPFSStatus} />
       </Suspense>

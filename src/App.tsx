@@ -152,6 +152,9 @@ function App() {
             <Tab className="mt-4 ml-1" eventKey="config" title="IPFS Config">
               <IPFSConfig />
             </Tab>
+            <Tab className="mt-4 ml-1" eventKey="help" title="Help">
+              <Help />
+            </Tab>
           </Tabs>
         </Container>
       )}

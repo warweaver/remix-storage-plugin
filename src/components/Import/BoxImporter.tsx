@@ -89,6 +89,9 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
       <div className="alert alert-info" role="alert">
         This will import the IPFS repo from a key stored in your 3Box account.
       </div>
+      <div className="alert alert-warning" role="alert">
+        Please make sure the IDE is on HTTPS otherwise you can't connect.
+      </div>
       <Suspense fallback={<div>Loading...</div>}>
         <BoxController
           buttonTitle="Connect to 3Box"
