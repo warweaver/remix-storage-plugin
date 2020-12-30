@@ -42,7 +42,7 @@ export class WorkSpacePlugin extends PluginClient {
     this.on("fileManager", "fileSaved", async (e) => {
       // Do something
       if (this.callBackEnabled) {
-        console.log(e);
+        console.log("file save",e);
         await fileservice.syncFromBrowser();
 
       }
@@ -70,8 +70,9 @@ export class WorkSpacePlugin extends PluginClient {
 
     this.on("fileManager", "currentFileChanged", async (e) => {
       // Do something
+      console.log("CHANGED",e, this);
       if (this.callBackEnabled) {
-        console.log(e, this);
+        
         await fileservice.syncFromBrowser();
       }
       //await this.rmFile(e)

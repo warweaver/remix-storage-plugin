@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { createRef, useEffect, useRef, useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import { Container, Tabs, Tab } from "react-bootstrap";
+import { Container, Tabs, Tab, Button } from "react-bootstrap";
 import Box from "3box";
 import Web3Modal from "web3modal";
 import { getAddress } from "@ethersproject/address";
@@ -71,6 +71,8 @@ export const providerOptions = {
   },
 };
 
+
+
 function App() {
   const [activeKey, setActiveKey] = useState<string>("files");
   const loading: boolean | undefined = useBehaviorSubject(
@@ -79,6 +81,8 @@ function App() {
   const [canLoad, setCanLoad] = useState<boolean>(false);
   const repoName = useBehaviorSubject(gitservice.reponameSubject);
   const canCommit = useBehaviorSubject(gitservice.canCommit);
+  const [confirmShow, setConfirmShow] = React.useState(false);
+  
   gitservice.reponameSubject.subscribe((x) => {}).unsubscribe();
   gitservice.canCommit.subscribe((x) => {}).unsubscribe();
   loaderservice.loading.subscribe((x) => {}).unsubscribe();
@@ -123,7 +127,6 @@ function App() {
           <h1>Storage: {repoName}</h1>
           {canCommit?<></>:<div className='alert alert-warning w-25'>You are in a detached state.<br></br></div>}
           <ToastContainer position="bottom-right" />
-
           <Tabs
             activeKey={activeKey}
             onSelect={async (k) => await setTab(k || "files")}
@@ -148,36 +151,6 @@ function App() {
               <IPFSConfig />
             </Tab>
           </Tabs>
-
-          {/*        
-        
-        <ConnectionWarning canLoad={canLoad} />
-        <h1>Storage: {repoName}</h1>
-        <ToastContainer position="bottom-right" />
-        <Tabs
-          activeKey={activeKey}
-          onSelect={async (k) => await setTab(k || "files")}
-        >
-          <Tab className="mt-4 ml-1" eventKey="files" title="Files">
-            <FileExplorer setTab={setTab} />
-            <FileTools />
-          </Tab>
-          <Tab className="mt-4 ml-1" eventKey="git" title="Git">
-            <GitControls />
-          </Tab>
-          <Tab className="mt-4 ml-1" eventKey="export" title="Export">
-            <IPFSView />
-          </Tab>
-          <Tab className="mt-4 ml-1" eventKey="import" title="Import">
-            <Importer />
-          </Tab>
-          <Tab className="mt-4 ml-1" eventKey="diff" title="Diff">
-            <DiffView />
-          </Tab>
-          <Tab className="mt-4 ml-1" eventKey="help" title="Help">
-            <Help />
-          </Tab>
-        </Tabs> */}
         </Container>
       )}
     </div>

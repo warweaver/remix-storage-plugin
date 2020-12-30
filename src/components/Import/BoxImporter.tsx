@@ -1,10 +1,11 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { Suspense } from "react";
+import React, { createRef, Suspense } from "react";
 import { Card } from "react-bootstrap";
 import { useBehaviorSubject } from "use-subscribable";
 import { boxservice, ipfservice } from "../../App";
 import { boxObject } from "../3box/3boxService";
+import ConfirmDelete from "../ConfirmDelete";
 //import { BoxController } from "../3box/Box";
 
 interface boximporterProps {}
@@ -17,6 +18,7 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
       default: BoxController,
     }))
   );
+  let ModalRef = createRef<ConfirmDelete>();
   ipfservice.connectionStatus.subscribe((x)=>{}).unsubscribe(); 
   boxservice.boxObjects
     .subscribe((x) => {
@@ -40,10 +42,21 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
     return `${ipfservice.ipfsconfig.ipfsurl}${cid}`;
   };
 
+  const importFromCID = async (cid: string | undefined, name:string = "") => {
+    try {
+      await ModalRef.current?.show();
+      ipfservice.importFromCID(cid,name)
+      console.log("yes");
+    } catch (e) {
+      console.log("no");
+    }
+  };
+
   return (
     <>
       <hr></hr>
       <h4>3Box storage</h4>
+      <ConfirmDelete ref={ModalRef}></ConfirmDelete>
       <div className="alert alert-info" role="alert">
         This will import the IPFS repo from a key stored in your 3Box account.
       </div>
@@ -77,7 +90,7 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
               </Card>
               <div className="col">
                 <button
-                  onClick={async () => await ipfservice.importFromCID(o.cid, o.key)}
+                  onClick={async () => await importFromCID(o.cid, o.key)}
                   className="btn btn-primary btn-sm mr-2 import3b-btn"
                 >
                   import

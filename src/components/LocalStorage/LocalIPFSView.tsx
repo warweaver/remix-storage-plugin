@@ -1,15 +1,16 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect } from "react";
+import React, { createRef, useEffect } from "react";
 import { Card } from "react-bootstrap";
 import { useBehaviorSubject } from "use-subscribable";
 import { ipfservice, localipfsstorage } from "../../App";
+import ConfirmDelete from "../ConfirmDelete";
 
 interface LocalIPFSViewProps {}
 
 export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
   const boxobjects = useBehaviorSubject(localipfsstorage.boxObjects);
-
+  let ModalRef = createRef<ConfirmDelete>();
   useEffect(() => {
     //localipfsstorage.init();
   }, []);
@@ -36,9 +37,20 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
     return `${ipfservice.ipfsconfig.ipfsurl}${cid}`;
   };
 
+  const importFromCID = async (cid: string | undefined, name:string = "") => {
+    try {
+      await ModalRef.current?.show();
+      ipfservice.importFromCID(cid,name)
+      console.log("yes");
+    } catch (e) {
+      console.log("no");
+    }
+  };
+
   return (
     <>
       <h4>Local Storage</h4>
+      <ConfirmDelete ref={ModalRef}></ConfirmDelete>
       <div className="container-fluid">
         {(boxobjects || []).map((o, index) => {
           return (
@@ -66,7 +78,7 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
               </Card>
               <div className="col">
                 <button
-                  onClick={async () => await ipfservice.importFromCID(o.cid, o.key)}
+                  onClick={async () => await importFromCID(o.cid, o.key)}
                   className="btn btn-primary btn-sm mr-2 import3b-btn"
                 >
                   import

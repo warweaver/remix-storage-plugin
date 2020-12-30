@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import FS from "@isomorphic-git/lightning-fs";
-import {
+import App, {
   resetFileSystem,
   fileservice,
   fsNoPromise,
@@ -39,11 +39,10 @@ console.log("matrix", statusmatrix);
 
 export class LsFileService {
   filetreecontent = new BehaviorSubject<fileExplorerNode>({ children: [] });
+  confirmDeletion = new BehaviorSubject<boolean | undefined>(undefined);
   fileStatusResult: fileStatusResult[] = [];
 
-  constructor(){
-
-  }
+  constructor() {}
 
   async addFileFromBrowser(file: string) {
     try {
@@ -70,21 +69,31 @@ export class LsFileService {
 
   async clearFilesInWorkSpace() {
     await client.disableCallBacks();
-    await this.clearFilesInIde()
-    await this.clearFilesInWorkingDirectory()
+    await this.clearFilesInIde();
+    await this.clearFilesInWorkingDirectory();
     await this.showFiles();
     await client.enableCallBacks();
   }
 
-  async clearFilesInIde(){
-    const files = await this.getDirectoryFromIde("/");
-    console.log(files);
-    for (let i = 0; i < files.length; i++) {
-      await client.call("fileManager", "remove", files[i]);
-    }
+  async clearFilesInIde() {
 
-    const dirs = await client.call("fileManager", "readdir", "/");
-    console.log(files);
+    var dirs = await client.call("fileManager", "readdir", "/");
+    console.log(dirs);
+    let files = await this.getDirectoryFromIde("/");
+    console.log("FILES", files);
+    for (let i = 0; i < files.length; i++) {
+      try {
+        await client.call("fileManager", "remove", files[i]);
+      } catch (e) {}
+    }
+    files = await this.getDirectoryFromIde("/", true);
+    console.log("DIRECTORY", files);
+    for (let i = 0; i < files.length; i++) {
+      try {
+        await client.call("fileManager", "remove", files[i]);
+      } catch (e) {}
+    }
+    return true;
 
   }
 
@@ -100,26 +109,25 @@ export class LsFileService {
     await resetFileSystem(true);
     await this.syncFromBrowser();
     await gitservice.init();
-    await gitservice.clearRepoName()
+    await gitservice.clearRepoName();
   }
 
-  async syncStart(){
+  async syncStart() {
     //await resetFileSystem();
     await this.clearFilesInWorkingDirectory();
-    await this.syncFromBrowser()
+    await this.syncFromBrowser();
     await gitservice.init();
   }
 
-  async clearLocalAndSyncFromBrowser(){
+  async clearLocalAndSyncFromBrowser() {
     await this.clearFilesInWorkingDirectory();
-    await this.syncFromBrowser()
+    await this.syncFromBrowser();
   }
-
 
   async clearAll() {
     await this.clearFilesInWorkSpace();
     await resetFileSystem(true);
-    await gitservice.clearRepoName()
+    await gitservice.clearRepoName();
   }
 
   // SYNC FUNCTIONS
@@ -296,7 +304,7 @@ export class LsFileService {
     return result;
   }
 
-  async getDirectoryFromIde(dir: string) {
+  async getDirectoryFromIde(dir: string, onlyDirectories: boolean = false) {
     console.log("get directory", dir);
     let result: string[] = [];
     const files = await client.call("fileManager", "readdir", dir);
@@ -319,13 +327,17 @@ export class LsFileService {
         //console.log("type",type)
         if (type === true) {
           //console.log('is directory, so get ', `${fi.filename}`)
+          if (onlyDirectories === true) result.push(`browser/${fi.filename}`);
           result = [
             ...result,
-            ...(await this.getDirectoryFromIde(`${fi.filename}`)),
+            ...(await this.getDirectoryFromIde(
+              `${fi.filename}`,
+              onlyDirectories
+            )),
           ];
         } else {
           // console.log('is file ', `${dir}/${fi}`)
-          result.push(`browser/${fi.filename}`);
+          if (onlyDirectories === false) result.push(`browser/${fi.filename}`);
         }
       }
     }
