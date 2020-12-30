@@ -47,6 +47,9 @@ export const RepoName: React.FC<RepoNameProps> = ({}) => {
         <Modal.Footer>
           <Button onClick={() => saveName()}>Save</Button>
         </Modal.Footer>
+        <Modal.Footer>
+          New user? Consult the help section to find out more about this plugin.
+        </Modal.Footer>
       </Modal>
     </>
   );

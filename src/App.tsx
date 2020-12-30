@@ -126,8 +126,10 @@ function App() {
             <></>
           )}
           <RepoName />
-          <h1>Storage: {repoName}</h1>
+          <h2>Decentralized git plugin</h2>
+          <h4>Your repository: {repoName}</h4>
           <GitStatus></GitStatus>
+          <br></br>
           {canCommit ? (
             <></>
           ) : (

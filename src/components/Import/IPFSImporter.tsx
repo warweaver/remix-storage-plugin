@@ -33,7 +33,8 @@ export const IPFSImporter: React.FC<ipfsimporterProps> = ({}) => {
       </div>
       <ConfirmDelete title={"Importing"} text={"Importing will delete the files you are working on! Continue?"} ref={ModalRef}></ConfirmDelete>
       <div className="form-group">
-        <label>IPFS CID</label>
+        <h4>Import from IPFS hash</h4>
+        <label>IPFS HASH</label>
         <input onChange={handleChange} className="form-control" type="text" id="ipfs" />
       </div>
       <div id="ipfsimportalert"></div>

@@ -49,7 +49,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
 
   return (
     <>
-      <h4>Local storage & IPFS</h4>
+      <h4>Export to Local storage & IPFS</h4>
       <button
         disabled={IPFSStatus?false:true}
         className="btn w-25 btn-primary"
@@ -66,7 +66,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
       <br />
       {getUrlLink()}
       <hr />
-      <h4>3Box Storage</h4>
+      <h4>Export to 3Box Storage</h4>
       <div className="alert alert-info w-25" role="alert">
         This will export the files to IPFS and store a key in your 3Box account.
       </div>

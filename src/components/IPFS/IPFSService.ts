@@ -180,7 +180,7 @@ export class IPFSService {
       await fileservice.syncToBrowser();
       await fileservice.syncStart()
     } catch (e) {
-      toast.error("This IPFS cid is probably not correct....");
+      toast.error("This IPFS hash is probably not correct....");
     }
   }
 }

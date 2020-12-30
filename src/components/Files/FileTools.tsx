@@ -1,5 +1,5 @@
 import React, { createRef } from "react";
-import { fileservice, localipfsstorage, resetFileSystem } from "../../App";
+import { fileservice, gitservice, localipfsstorage, resetFileSystem } from "../../App";
 import ConfirmDelete from "../ConfirmDelete";
 
 interface FileToolsProps {}
@@ -11,7 +11,7 @@ export const FileTools: React.FC<FileToolsProps> = ({}) => {
     try {
       
       await ModalRef.current?.show()
-      fileservice.clearAll();
+      await fileservice.clearAll();
       console.log("yes");
     } catch (e) {
       console.log("no");
@@ -35,7 +35,12 @@ export const FileTools: React.FC<FileToolsProps> = ({}) => {
       >
         Start new repo
       </button>{" "}
-      |
+      <button
+        className="btn btn-primary w-10 ml-2"
+        onClick={async () => await gitservice.clearRepoName()}
+      >
+        Rename your repo
+      </button> | 
       <button
         className="btn btn-danger w-10 ml-2"
         onClick={async () => await clearAll()}

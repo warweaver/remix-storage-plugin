@@ -53,7 +53,7 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
   const importFromCID = async (cid: string | undefined, name:string = "") => {
     try {
       await ModalRef.current?.show();
-      ipfservice.importFromCID(cid,name)
+      await ipfservice.importFromCID(cid,name)
       console.log("yes");
     } catch (e) {
       console.log("no");
@@ -72,7 +72,7 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
 
   return (
     <>
-      <h4>Local Storage</h4>
+      <h4>Import from Local Storage</h4>
       <ConfirmDelete title={"Importing"} text={"Importing will delete the files you are working on! Continue?"} ref={ModalRef}></ConfirmDelete>
       <ConfirmDelete title={"Deleting"} text={"Are you sure you want to erase this item?"} ref={EraseModalRef}></ConfirmDelete>
       <div className="container-fluid">
