@@ -9,6 +9,7 @@ export const GitBranch: React.FC<gitBranchProps> = ({}) => {
   const branches = useBehaviorSubject(gitservice.branches);
   const branch = useBehaviorSubject(gitservice.branch);
   const [newBranch,setNewBranch] = useState({value:''})
+  let show:boolean = false
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
       setNewBranch({value:e.currentTarget.value})
@@ -17,6 +18,9 @@ export const GitBranch: React.FC<gitBranchProps> = ({}) => {
   gitservice.branches
     .subscribe((x) => {
       console.log(branches);
+      if(branches){
+        show = (branches.length>0)
+      }
     })
     .unsubscribe();
 
@@ -28,6 +32,7 @@ export const GitBranch: React.FC<gitBranchProps> = ({}) => {
 
   return (
     <>
+    <div className={show?"":"d-none"}>
       <h4>Branches</h4>
       <Alert className="w-50" variant="success">
         {branch}
@@ -58,6 +63,7 @@ export const GitBranch: React.FC<gitBranchProps> = ({}) => {
       <button onClick={async()=>gitservice.createBranch(newBranch.value)} className="btn w-25 btn-primary" id="createbranch-btn">
         git branch
       </button>
+      </div>
     </>
   );
 };
