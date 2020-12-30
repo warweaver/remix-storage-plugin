@@ -26,11 +26,14 @@ export const GitStatus: React.FC<GitStatusProps> = ({}) => {
   return (
     <>
     {show?
+    <>
+    <hr></hr>
+    <h4>Git status</h4>
     <div className="alert alert-success">
       {staged > 0 ? <div>{staged} staged</div> : <></>}
       {untracked > 0 ? <div>{untracked} untracked</div> : <></>}
       {deleted > 0 ? <div>{deleted} deleted</div> : <></>}
-    </div>
+    </div></>
     :<></>}
     </>
   );
