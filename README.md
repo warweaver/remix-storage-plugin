@@ -1,4 +1,5 @@
-# Getting Started
+# A decentralized git plugin for Remix
+______________________________________
 
 ## Requirements
 
