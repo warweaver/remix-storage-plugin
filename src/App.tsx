@@ -32,6 +32,9 @@ import { ConnectionWarning } from "./components/ConnectionWarning";
 import { IPFSConfig } from "./components/IPFS/IPFSConfig";
 import { GitStatus } from "./components/git/UI/gitStatus";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFile } from "@fortawesome/free-solid-svg-icons";
+
 export var fsConfig: any; //= new FS("remix-storage-config");
 export var fsConfigPromise: any; // = fsConfig.promises;
 
@@ -45,7 +48,7 @@ export const boxservice: BoxService = new BoxService();
 export const loaderservice: LoaderService = new LoaderService();
 export const localipfsstorage: LocalIPFSStorage = new LocalIPFSStorage();
 
-export const resetFileSystem = async (wipe:boolean=false) => {
+export const resetFileSystem = async (wipe: boolean = false) => {
   try {
     fsConfig = new FS("remix-storage-config");
     fsConfigPromise = fsConfig.promises;
@@ -72,8 +75,6 @@ export const providerOptions = {
   },
 };
 
-
-
 function App() {
   const [activeKey, setActiveKey] = useState<string>("files");
   const loading: boolean | undefined = useBehaviorSubject(
@@ -83,7 +84,7 @@ function App() {
   const repoName = useBehaviorSubject(gitservice.reponameSubject);
   const canCommit = useBehaviorSubject(gitservice.canCommit);
   const [confirmShow, setConfirmShow] = React.useState(false);
-  
+
   gitservice.reponameSubject.subscribe((x) => {}).unsubscribe();
   gitservice.canCommit.subscribe((x) => {}).unsubscribe();
   loaderservice.loading.subscribe((x) => {}).unsubscribe();
@@ -127,7 +128,13 @@ function App() {
           <RepoName />
           <h1>Storage: {repoName}</h1>
           <GitStatus></GitStatus>
-          {canCommit?<></>:<div className='alert alert-warning w-25'>You are in a detached state.<br></br></div>}
+          {canCommit ? (
+            <></>
+          ) : (
+            <div className="alert alert-warning w-25">
+              You are in a detached state.<br></br>
+            </div>
+          )}
           <ToastContainer position="bottom-right" />
           <Tabs
             activeKey={activeKey}

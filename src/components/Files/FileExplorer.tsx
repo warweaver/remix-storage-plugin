@@ -56,8 +56,8 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
     <>
       <h2>Files</h2>
       <div className="alert alert-info" role="alert">
-        Files will be added automatically from the IDE when you change, add or
-        save them.
+        Files will be shown here automatically when you change, add or
+        save them in Remix.
       </div>
       {(files || { children: [] }).children?.map((x: any) => {
         return (
