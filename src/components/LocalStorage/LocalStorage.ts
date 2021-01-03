@@ -70,7 +70,7 @@ export class LocalIPFSStorage {
         cid: ipfservice.cid,
         datestored: dateFormat(new Date(),"dddd, mmmm dS, yyyy, h:MM:ss TT"),
         datecommit: dateFormat(new Date(commits[0].commit.committer.timestamp * 1000), "dddd, mmmm dS, yyyy, h:MM:ss TT"),
-        timestamp: commits[0].commit.committer.timestamp,
+        timestamp: Date.now(),
         ref: commits[0].oid,
         message: commits[0].commit.message,
       };

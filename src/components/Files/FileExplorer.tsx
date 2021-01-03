@@ -54,14 +54,9 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
 
   return (
     <>
-      <h2>Files</h2>
-      <div className="alert alert-info" role="alert">
-        Files will be shown here automatically when you change, add or
-        save them in Remix.
-      </div>
       {(files || { children: [] }).children?.map((x: any) => {
         return (
-          <ul className="mw-50" key={x.id} id="filetree">
+          <ul className="mw-50 basefiletree" key={x.id} id="filetree">
             {renderChildren(x)}
           </ul>
         );

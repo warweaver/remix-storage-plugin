@@ -58,9 +58,20 @@ export class BoxService {
   async getObjectsFrom3Box(space: any) {
     console.log("get objects from box");
     const hashes: boxObject[] = await space.private.all();
-    this.boxObjects.next(Object.values(hashes));
+    let vals = Object.values(hashes)
+    vals = await this.filterNulls(vals)
+    console.log(vals)
+    vals.sort((a, b) => (a.timestamp > b.timestamp) ? -1 : 1)
+    this.boxObjects.next(vals);
     console.log(hashes);
     return Object.values(hashes);
+  }
+
+  async filterNulls(objects: boxObject[]) {
+    var filtered = objects.filter(function (el) {
+      return el.timestamp != null && el.timestamp!== undefined;
+    });
+    return filtered;
   }
 
   async deleteFrom3Box(args: string | undefined) {

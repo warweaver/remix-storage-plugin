@@ -84,7 +84,7 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
                   <Card.Title>{o.key}</Card.Title>
                   <div className="row">
                     <div className="col">IPFS</div>
-                    <div className="col">{getUrlLink(o.cid)}</div>
+                    <div className="col">{o.cid}</div>
                   </div>
                   <div className="row">
                     <div className="col">DATE EXPORTED</div>

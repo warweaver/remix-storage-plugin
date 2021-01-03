@@ -43,9 +43,9 @@ export class IPFSService {
     this.ipfs = IpfsHttpClient(this.ipfsconfig);
     try {
       await this.ipfs.config.getAll();
-      toast.success(
-        "IFPS Connection successfull!"
-      );
+      //toast.success(
+      //  "IFPS Connection successfull!"
+      //);
       this.connectionStatus.next(true)
       return true;
     } catch (e) {

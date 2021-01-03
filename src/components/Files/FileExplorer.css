@@ -2,6 +2,10 @@
 ul, #filetree {
     list-style-type: none;
   }
+
+  .basefiletree {
+    padding-inline-start: 0px;
+  }
   
   /* Remove margins and padding from the parent ul */
   #fileTree {

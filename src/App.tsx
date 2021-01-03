@@ -115,7 +115,7 @@ function App() {
   }, []);
 
   return (
-    <div className="App pt-5">
+    <div className="App">
       {!canLoad ? (
         <ConnectionWarning canLoad={canLoad} />
       ) : (
@@ -126,8 +126,8 @@ function App() {
             <></>
           )}
           <RepoName />
-          <h2>Decentralized git plugin</h2>
-          <h4>Your repository: {repoName}</h4>
+          <div className="nav navbar bg-light p-3"><div><h4 className="float-left pr-1">dGit</h4> | repo: {repoName}</div></div>
+          
           <GitStatus></GitStatus>
           <br></br>
           {canCommit ? (
@@ -137,7 +137,7 @@ function App() {
               You are in a detached state.<br></br>
             </div>
           )}
-          <ToastContainer position="bottom-right" />
+          <ToastContainer position="top-right" />
           <Tabs
             activeKey={activeKey}
             onSelect={async (k) => await setTab(k || "files")}

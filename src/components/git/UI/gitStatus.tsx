@@ -30,7 +30,7 @@ export const GitStatus: React.FC<GitStatusProps> = ({}) => {
     {show?
     <>
     <hr></hr>
-    <h4>Git status</h4>
+    <div>Git status</div>
     <div className="alert alert-success">
       {staged > 0 ? <div>{staged} staged</div> : <></>}
       {modified > 0 ? <div>{modified} modified</div> : <></>}
