@@ -18,9 +18,12 @@ export const FileButtons: React.FC<FileButtonsProps> = ({
 
   const gitaddButton = (file: fileExplorerNode) => {
     let status = fileservice.getFileStatusForFile(file.fullname || "");
+    //console.log("file status",status,status?.indexOf("with unstaged changes"))
     if (
-      status?.indexOf("deleted") === -1 &&
-      status?.indexOf("unmodified") === -1
+      (status?.indexOf("deleted") === -1 &&
+        status?.indexOf("unmodified") === -1 &&
+        status?.indexOf("staged") === -1) ||
+      status?.indexOf("with unstaged changes") !== -1
     ) {
       return (
         <div
@@ -65,7 +68,7 @@ export const FileButtons: React.FC<FileButtonsProps> = ({
             git rm
           </div>
         );
-      }else{
+      } else {
         return <div className={"badge badge-secondary addgit"}>git rm</div>;
       }
     }
