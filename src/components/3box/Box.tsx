@@ -53,7 +53,7 @@ export const BoxController: React.FC<BoxProps> = (p) => {
         try {
           timer = setTimeout(async () => {
             await callTimedOut();
-          }, 60000);
+          }, 120000);
           const [eth] = await provider.enable();
           address = getAddress(eth);
           loaderservice.setLoading(true);
