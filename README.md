@@ -4,8 +4,8 @@ ______________________________________
 ## Requirements
 
 - Run the IDE on HTTPS
-- Do not run in icognito mode or block third party cookies
-- You will need a walletconnect app or metamask if you wish to use the 3Box connection
+- Do not run in icognito mode when third party cookies are blocked
+- You will need a walletconnect app or metamask plugin if you wish to use the 3Box connection
 
 ## What does it do?
 
