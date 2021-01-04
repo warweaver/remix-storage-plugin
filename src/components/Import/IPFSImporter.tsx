@@ -28,9 +28,6 @@ export const IPFSImporter: React.FC<ipfsimporterProps> = ({}) => {
 
   return (
     <>
-      <div className="alert alert-warning" role="alert">
-        Importing files will clear the filelist.
-      </div>
       <ConfirmDelete title={"Importing"} text={"Importing will delete the files you are working on! Continue?"} ref={ModalRef}></ConfirmDelete>
       <div className="form-group">
         <h4>Import from IPFS hash</h4>
