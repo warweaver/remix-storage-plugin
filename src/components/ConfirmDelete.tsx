@@ -2,7 +2,7 @@ import { Button, Modal } from 'react-bootstrap';
 import React from 'react'
 
 
-type MyProps = { title:string, text:string };
+type MyProps = { title:string, text:any };
 type MyState = { show: boolean };
 
 export default class ConfirmDelete extends React.Component<MyProps, MyState> {

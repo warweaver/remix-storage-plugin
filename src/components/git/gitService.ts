@@ -19,6 +19,7 @@ export class gitService {
   diffResult = new BehaviorSubject<diffObject[] | undefined>(undefined);
   reponameSubject = new BehaviorSubject<string>("");
   canCommit = new BehaviorSubject<boolean>(true);
+  canExport = new BehaviorSubject<boolean>(false);
   reponame = ""
 
   constructor() {
@@ -93,6 +94,7 @@ export class gitService {
   async checkout(args: string) {
     const oid = args; //$(args[0].currentTarget).data('oid')
     console.log("checkout", oid);
+    await fileservice.clearFilesInIde()
 
     try {
       await git.checkout({
@@ -264,6 +266,17 @@ export class gitService {
       return f.filename;
     });
     return files;
+  }
+
+  async checkForFilesCommmited(){
+    try {
+      await this.listFiles();
+      this.canExport.next(true)
+      return true
+    } catch (e) {
+      this.canExport.next(false)
+      return false;
+    }
   }
 
   async listFiles(dir: string = "/", ref: string = "HEAD") {

@@ -5,6 +5,7 @@ ______________________________________
 
 - Run the IDE on HTTPS
 - Do not run in icognito mode or block third party cookies
+- You will need a walletconnect app or metamask if you wish to use the 3Box connection
 
 ## What does it do?
 
@@ -58,7 +59,7 @@ If the connection failes please check if you are on HTTPS.
 
 By default the IPFS used is a node from the Remix team.<br>
 You can start your own IPFS daemon and set it to localhost in the config of the plugin.<br>
-However you need to configure your IPFS daemon to accept calls from a web app.<br>
+However you need to configure your IPFS daemon to accept calls from a web app by setting the Access-control-allow or CORS headers.<br>
 Checkout the IPFS daemon documentation on how to do this.<br>
 
 ```

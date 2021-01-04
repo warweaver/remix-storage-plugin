@@ -34,6 +34,11 @@ import { GitStatus } from "./components/git/UI/gitStatus";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile } from "@fortawesome/free-solid-svg-icons";
+import { FileHelp } from "./components/Files/FileHelp";
+import { GitHelp } from "./components/git/UI/GitHelp";
+import { ExportHelp } from "./components/IPFS/ExportHelp";
+import { ImportHelp } from "./components/Import/ImportHelp";
+import { ConfigHelp } from "./components/IPFS/ConfigHelp";
 
 export var fsConfig: any; //= new FS("remix-storage-config");
 export var fsConfigPromise: any; // = fsConfig.promises;
@@ -92,9 +97,9 @@ function App() {
   const setTab = async (key: string) => {
     setActiveKey(key);
     if (key == "diff") {
-      loaderservice.setLoading(true);
+      //loaderservice.setLoading(true);
       await gitservice.diffFiles();
-      loaderservice.setLoading(false);
+      //loaderservice.setLoading(false);
     }
   };
 
@@ -126,7 +131,7 @@ function App() {
             <></>
           )}
           <RepoName />
-          <div className="nav navbar bg-light p-3"><div><h4 className="float-left pr-1">dGit</h4> | repo: {repoName}</div></div>
+          <div className="nav navbar bg-light p-3"><div><div className="float-left pr-1 m-0 text-white">dGit</div> | repo: {repoName}</div></div>
           
           <GitStatus></GitStatus>
           <br></br>
@@ -142,26 +147,31 @@ function App() {
             activeKey={activeKey}
             onSelect={async (k) => await setTab(k || "files")}
           >
-            <Tab className="mt-4 ml-1" eventKey="files" title="Files">
+            <Tab className="mt-4 ml-1" eventKey="files" title="FILES">
               <FileExplorer setTab={setTab} />
               <FileTools />
+              <FileHelp/>
             </Tab>
-            <Tab className="mt-4 ml-1" eventKey="git" title="Git">
+            <Tab className="mt-4 ml-1" eventKey="git" title="GIT">
               <GitControls />
+              <GitHelp/>
             </Tab>
-            <Tab className="mt-4 ml-1" eventKey="export" title="Export">
+            <Tab className="mt-4 ml-1" eventKey="export" title="EXPORT">
               <IPFSView />
+              <ExportHelp/>
             </Tab>
-            <Tab className="mt-4 ml-1" eventKey="import" title="Import">
+            <Tab className="mt-4 ml-1" eventKey="import" title="IMPORT">
               <Importer />
+              <ImportHelp></ImportHelp>
             </Tab>
-            <Tab className="mt-4 ml-1" eventKey="diff" title="Diff">
+            <Tab className="mt-4 ml-1" eventKey="diff" title="DIFF">
               <DiffView />
             </Tab>
-            <Tab className="mt-4 ml-1" eventKey="config" title="IPFS Config">
+            <Tab className="mt-4 ml-1" eventKey="config" title="SETTINGS">
               <IPFSConfig />
+              <ConfigHelp/>
             </Tab>
-            <Tab className="mt-4 ml-1" eventKey="help" title="Help">
+            <Tab className="mt-4 ml-1" eventKey="help" title="HELP">
               <Help />
             </Tab>
           </Tabs>

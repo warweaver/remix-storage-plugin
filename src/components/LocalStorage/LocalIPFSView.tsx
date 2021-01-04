@@ -78,10 +78,10 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
       <div className="container-fluid">
         {(boxobjects || []).map((o, index) => {
           return (
-            <div key={index} className="row p-1 small">
+            <div key={index} className="row p-1">
               <Card className="w-75">
                 <Card.Body>
-                  <Card.Title>{o.key}</Card.Title>
+                  <h5>{o.key}</h5>
                   <div className="row">
                     <div className="col">IPFS</div>
                     <div className="col">{o.cid}</div>

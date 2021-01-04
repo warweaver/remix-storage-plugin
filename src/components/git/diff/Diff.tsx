@@ -28,6 +28,7 @@ export const DiffView: React.FC<DiffProps> = ({}) => {
          
         );
       })}
+      {diffs?.length===0?<>Nothing to see here.</>:<></>}
  </div>
   );
 };

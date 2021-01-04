@@ -86,9 +86,7 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
       <h4>Import from 3Box storage</h4>
       <ConfirmDelete title={"Importing"} text={"Importing will delete the files you are working on! Continue?"} ref={ModalRef}></ConfirmDelete>
       <ConfirmDelete title={"Deleting"} text={"Are you sure you want to erase this item?"} ref={EraseModalRef}></ConfirmDelete>
-      <div className="alert alert-info" role="alert">
-        This will import the IPFS repo from a key stored in your 3Box account.
-      </div>
+      
       <div className="alert alert-warning" role="alert">
         Please make sure the IDE is on HTTPS otherwise you can't connect.
       </div>
@@ -102,10 +100,10 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
       <div className="container-fluid">
         {(boxobjects || []).map((o) => {
           return (
-            <div key={o.key} className="row p-1 small">
+            <div key={o.key} className="row p-1">
               <Card className="w-75">
                 <Card.Body>
-                  <Card.Title>{o.key}</Card.Title>
+                  <h5>{o.key}</h5>
                   <div className="row">
                     <div className="col">IPFS</div>
                     <div className="col">{o.cid}</div>

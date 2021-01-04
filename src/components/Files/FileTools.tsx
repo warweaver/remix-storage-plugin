@@ -21,7 +21,7 @@ export const FileTools: React.FC<FileToolsProps> = ({}) => {
   return (
     <>
       <hr />
-      <ConfirmDelete title={"Clear Files"} text={"This action will delete the files you are working on! Continue?"} ref={ModalRef}></ConfirmDelete>
+      <ConfirmDelete title={"Clear Files"} text={<div>This action will delete the files you are working on! Continue?</div>} ref={ModalRef}></ConfirmDelete>
       {/*         <button className="btn btn-danger w-10" onClick={async()=>fileservice.getDirectory("/")}>get dir</button> */}
       <button
         className="btn btn-danger w-10 d-none"

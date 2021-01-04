@@ -1,0 +1,25 @@
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfo } from "@fortawesome/free-solid-svg-icons";
+
+interface FileHelpProps {}
+
+export const FileHelp: React.FC<FileHelpProps> = ({}) => {
+  return (
+    <div className="">
+      <hr></hr>
+      <div className="mt-4">
+        <FontAwesomeIcon icon={faInfo} className="mr-2" />
+        <br></br>
+        In this section you can manage your files in git. Files from remix will
+        be added automatically.<br></br>
+        Starting a new repo clears git and uses the files in remix to create a
+        new repo.<br></br>
+        Clearing all files clears git & remix to create a new repo.<br></br>
+        Check out the help section to learn more.
+      </div>
+      <br></br>
+      <br></br>
+    </div>
+  );
+};

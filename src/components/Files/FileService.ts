@@ -288,7 +288,7 @@ export class LsFileService {
     try {
       await gitservice.getBranches();
     } catch (e) {}
-    //await gitservice.diffFiles()
+    await gitservice.checkForFilesCommmited()
     return true;
   }
 
