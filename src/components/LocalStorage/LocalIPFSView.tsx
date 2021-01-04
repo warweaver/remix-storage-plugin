@@ -120,6 +120,7 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
             </div>
           );
         })}
+        {boxobjects?.length===0?<>Nothing has been stored here yet.</>:<></>}
       </div>
     </>
   );

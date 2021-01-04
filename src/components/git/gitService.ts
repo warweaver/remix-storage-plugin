@@ -94,6 +94,7 @@ export class gitService {
   async checkout(args: string) {
     const oid = args; //$(args[0].currentTarget).data('oid')
     console.log("checkout", oid);
+    toast.dismiss()
     await fileservice.clearFilesInIde()
 
     try {
@@ -106,7 +107,7 @@ export class gitService {
       this.gitlog();
     } catch (e) {
       console.log(e);
-      toast.error(" " + e);
+      toast.error(" " + e, {autoClose:false});
     }
 
     console.log("done");

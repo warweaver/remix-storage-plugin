@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { useBehaviorSubject } from "use-subscribable";
 import { ipfservice } from "../../App";
 
 interface IPFSConfigProps {}
@@ -8,7 +10,8 @@ export const IPFSConfig: React.FC<IPFSConfigProps> = ({}) => {
   const [port, setport] = useState<string>("443");
   const [protocol, setprotocol] = useState<string>("https");
   const [url, setUrl] = useState<string>("https://ipfsgw.komputing.org/ipfs/");
-
+  const IPFSStatus = useBehaviorSubject(ipfservice.connectionStatus)
+  ipfservice.connectionStatus.subscribe((x)=>{}).unsubscribe(); 
   const setHostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     sethost(e.currentTarget.value);
     ipfservice.ipfsconfig.host = e.currentTarget.value
@@ -31,12 +34,14 @@ export const IPFSConfig: React.FC<IPFSConfigProps> = ({}) => {
   };
 
   const checkconfig = ()=>{
+    toast.dismiss()
     ipfservice.setipfsHost()
   }
 
   return (
     <>
         <label>HOST</label>
+        
       <input
         onChange={setHostChange}
         className="form-control w-100"
@@ -69,6 +74,11 @@ export const IPFSConfig: React.FC<IPFSConfigProps> = ({}) => {
         value={url}
       />
       <button className="btn btn-primary mt-5" onClick={checkconfig}>Check connection</button>
+      {IPFSStatus?<div className="alert alert-success w-25 mt-2" role="alert">
+        Your IPFS settings are working correctly.
+      </div>:<div className="alert alert-warning w-25 mt-2" role="alert">
+        Your IPFS settings are incorrect. Unable to connect. Check your settings.
+      </div>}
     </>
   );
 };

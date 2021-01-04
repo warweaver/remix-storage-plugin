@@ -30,8 +30,9 @@ export const BoxController: React.FC<BoxProps> = (p) => {
   let timer: NodeJS.Timeout;
 
   const callTimedOut = async () => {
+    toast.dismiss()
     toast.error(
-      "There has been an error connnecting to 3BOX. If you continue having problems consider clearing your 3BOX cookies in your browser."
+      "There has been an error connnecting to 3BOX. If you continue having problems consider clearing your 3BOX cookies in your browser.", { autoClose: false }
     );
     boxservice.status.next(false);
     loaderservice.setLoading(false);
@@ -42,9 +43,10 @@ export const BoxController: React.FC<BoxProps> = (p) => {
 
   const setModalListener = async () => {
     modal.on("connect", async (provider: any) => {
+      toast.dismiss()
       const connect = await ipfservice.setipfsHost();
       if (!connect) {
-        toast.error("Unable to connect to IPFS check your settings.");
+        toast.error("Unable to connect to IPFS check your settings.", {autoClose:false});
         return false;
       }
       if (!status) {
@@ -55,11 +57,11 @@ export const BoxController: React.FC<BoxProps> = (p) => {
           const [eth] = await provider.enable();
           address = getAddress(eth);
           loaderservice.setLoading(true);
-          toast.info("Please wait... this can take a while");
+          toast.info("Please wait... this can take a while", {autoClose:false});
           console.log(address);
 
           mybox = await Box.openBox(address, provider);
-          toast.success("3box connected... waiting for space to open");
+          toast.success("3box connected... waiting for space to open ... this might even take longer.", {autoClose:false});
           console.log(mybox);
           space = await mybox.openSpace("remix-workspace");
           //toast.success("space opened... getting data")
@@ -68,6 +70,7 @@ export const BoxController: React.FC<BoxProps> = (p) => {
           await boxservice.setSpace(space);
           await boxservice.getObjectsFrom3Box(space);
           boxservice.status.next(true);
+          toast.dismiss()
           try {
             clearTimeout(timer);
           } catch (e) {}
@@ -78,7 +81,7 @@ export const BoxController: React.FC<BoxProps> = (p) => {
       try {
         if (p.storeData) await boxservice.storeHashIn3Box(boxservice.space);
       } catch (e) {
-        toast.error("There has been an error connnecting to 3BOX.");
+        toast.error("There has been an error connnecting to 3BOX.",{autoClose:false});
         boxservice.status.next(false);
       }
       loaderservice.setLoading(false);

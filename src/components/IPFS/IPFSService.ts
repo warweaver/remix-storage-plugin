@@ -62,7 +62,7 @@ export class IPFSService {
 
   async addToIpfs() {
     const connect = await this.setipfsHost()
-    if(!connect){toast.error("Unable to connect to IPFS check your settings."); return false;}
+    if(!connect){toast.error("Unable to connect to IPFS check your settings.",{autoClose:false}); return false;}
     loaderservice.setLoading(true)
     this.filesToSend = [];
     // first get files in current commit, not the files in the FS because they can be changed or unstaged
@@ -71,7 +71,7 @@ export class IPFSService {
     try {
       filescommited = await gitservice.listFiles();
     } catch (e) {
-      toast.error("No files commited");
+      toast.error("No files commited",{autoClose:false});
       loaderservice.setLoading(false)
       return false;
     }
@@ -123,7 +123,7 @@ export class IPFSService {
       toast.error(
         "There was an error uploading to IPFS, please check your IPFS settings if applicable."
       );
-      toast.error("There was an error uploading to IPFS!");
+      toast.error("There was an error uploading to IPFS!",{autoClose:false});
       loaderservice.setLoading(false)
       console.log(e);
     }
@@ -132,8 +132,9 @@ export class IPFSService {
   }
 
   async importFromCID(cid: string | undefined, name:string = "") {
+    toast.dismiss()
     const connect = await this.setipfsHost()
-    if(!connect){toast.error("Unable to connect to IPFS check your settings."); return false;}
+    if(!connect){toast.error("Unable to connect to IPFS check your settings.",{autoClose:false}); return false;}
     if (cid !== undefined) {
       console.log("cid", cid);
       this.cid = cid;
@@ -146,7 +147,7 @@ export class IPFSService {
 
   async clone() {
     const connect = await this.setipfsHost()
-    if(!connect){toast.error("Unable to connect to IPFS check your settings."); return false;}
+    if(!connect){toast.error("Unable to connect to IPFS check your settings.",{autoClose:false}); return false;}
     const cid = this.cid;
     console.log(cid);
     if (cid === "" || typeof cid == "undefined" || !cid) {
@@ -180,7 +181,7 @@ export class IPFSService {
       await fileservice.syncToBrowser();
       await fileservice.syncStart()
     } catch (e) {
-      toast.error("This IPFS hash is probably not correct....");
+      toast.error("This IPFS hash is probably not correct....",{autoClose:false});
     }
   }
 }

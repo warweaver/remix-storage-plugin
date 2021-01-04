@@ -36,9 +36,9 @@ export class BoxService {
 
   async storeHashIn3Box(space: any) {
     const connect = await ipfservice.setipfsHost()
-    if(!connect){toast.error("Unable to connect to IPFS check your settings."); return false;}
+    if(!connect){toast.error("Unable to connect to IPFS check your settings.", {autoClose:false}); return false;}
     if (typeof this.space == "undefined") {
-      toast.error("You should connect to 3Box first");
+      toast.error("You should connect to 3Box first", {autoClose:false});
       return false;
     }
     loaderservice.setLoading(true);

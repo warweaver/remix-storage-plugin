@@ -222,7 +222,7 @@ export class LsFileService {
     try {
       await client.call("fileManager", "open", `${removeSlash(filename)}`);
     } catch (e) {
-      toast.error("file does not exist in Remix");
+      toast.error("file does not exist in Remix",{autoClose:false});
     }
   }
 
