@@ -6,6 +6,8 @@ import {
   ipfservice,
   localipfsstorage,
 } from "../../App";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { toast } from "react-toastify";
 
 interface IPFSViewProps {}
 
@@ -28,9 +30,17 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
     if (cid !== "" && cid !== undefined && cid) {
       console.log(ipfservice.cid);
       return (
-        <a target="_blank" href={getUrl()} id="CID">
-          Your data is here: {getUrl()}
-        </a>
+        <>
+          IPFS Hash: {ipfservice.cid}
+          <br></br>
+          <CopyToClipboard text={ipfservice.cid} onCopy={() => {toast.success("Copied to clipboard.")}}>
+            <button className="btn btn-primary">Copy to clipboard</button>
+          </CopyToClipboard>
+          <br></br>
+          <a className="pl-2" target="_blank" href={getUrl()} id="CID">
+            View files
+          </a>
+        </>
       );
     } else {
       return <></>;
@@ -74,7 +84,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
       )}
       <h4>Export to Local storage & IPFS</h4>
       <button
-        disabled={(IPFSStatus ? false : true) || (canExport?false:true)}
+        disabled={(IPFSStatus ? false : true) || (canExport ? false : true)}
         className="btn w-25 btn-primary"
         id="main-btn"
         onClick={async () => await addFilesToIpfs()}

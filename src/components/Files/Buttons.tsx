@@ -18,7 +18,7 @@ export const FileButtons: React.FC<FileButtonsProps> = ({
 
   const gitaddButton = (file: fileExplorerNode) => {
     let status = fileservice.getFileStatusForFile(file.fullname || "");
-    //console.log("file status",status,status?.indexOf("with unstaged changes"))
+    console.log("file status",status,status?.indexOf("with unstaged changes"))
     if (
       (status?.indexOf("deleted") === -1 &&
         status?.indexOf("unmodified") === -1 &&

@@ -17,7 +17,7 @@ import { fileExplorerNode, fileStatusResult, statusMatrix } from "./types";
 export const fileStatuses = [
   ["new,untracked", 0, 2, 0], // new, untracked
   ["added,staged", 0, 2, 2], //
-  ["added,staged, with unstaged changes", 0, 2, 3], // added, staged, with unstaged changes
+  ["added,staged,with unstaged changes", 0, 2, 3], // added, staged, with unstaged changes
   ["unmodified", 1, 1, 1], // unmodified
   ["modified,unstaged", 1, 2, 1], // modified, unstaged
   ["modified,staged", 1, 2, 2], // modified, staged
