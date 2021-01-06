@@ -1,7 +1,7 @@
 import IpfsHttpClient from "ipfs-http-client";
 import { toast } from "react-toastify";
 import { BehaviorSubject } from "rxjs";
-import { resetFileSystem, fileservice, fs, gitservice, ipfservice, loaderservice } from "../../App";
+import { resetFileSystem, fileservice, fs, gitservice, ipfservice, loaderservice, client } from "../../App";
 
 export interface ipfsConfig {
   host: string;
@@ -146,6 +146,8 @@ export class IPFSService {
   }
 
   async clone() {
+    await client.disableCallBacks()
+    loaderservice.setLoading(true)
     const connect = await this.setipfsHost()
     if(!connect){toast.error("Unable to connect to IPFS check your settings.",{autoClose:false}); return false;}
     const cid = this.cid;
@@ -178,10 +180,14 @@ export class IPFSService {
         }
         await fs.writeFile(file.path, content[0] || new Uint8Array());
       }
+      loaderservice.setLoading(false)
       await fileservice.syncToBrowser();
       await fileservice.syncStart()
     } catch (e) {
+      loaderservice.setLoading(false)
+      await client.enableCallBacks()
       toast.error("This IPFS hash is probably not correct....",{autoClose:false});
     }
+    
   }
 }

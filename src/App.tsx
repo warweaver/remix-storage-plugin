@@ -33,7 +33,7 @@ import { IPFSConfig } from "./components/IPFS/IPFSConfig";
 import { GitStatus } from "./components/git/UI/gitStatus";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile } from "@fortawesome/free-solid-svg-icons";
+import { faFile, faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { FileHelp } from "./components/Files/FileHelp";
 import { GitHelp } from "./components/git/UI/GitHelp";
 import { ExportHelp } from "./components/IPFS/ExportHelp";
@@ -131,6 +131,7 @@ function App() {
             <></>
           )}
           <RepoName />
+          <FontAwesomeIcon icon={faExclamationTriangle}></FontAwesomeIcon><a className='small pl-2' href='https://github.com/bunsenstraat/remix-storage-plugin/issues' target='_blank'>Submit issues</a>
           <div className="nav navbar bg-light p-3"><div><div className="float-left pr-1 m-0 text-white">dGit</div> | repo: {repoName}</div></div>
           
           <GitStatus></GitStatus>
@@ -143,6 +144,8 @@ function App() {
             </div>
           )}
           <ToastContainer position="top-right" />
+          
+          
           <Tabs
             activeKey={activeKey}
             onSelect={async (k) => await setTab(k || "files")}
