@@ -98,7 +98,6 @@ export const FileButtons: React.FC<FileButtonsProps> = ({
   if (file.type === "file") {
     return (
       <span className="status float-right ml-3">
-        {giteditButton(file)}
         {gitrmbutton(file)}
         {gitaddButton(file)}
         {checkoutbutton(file)}

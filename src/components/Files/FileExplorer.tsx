@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useBehaviorSubject } from "use-subscribable";
 import { fileservice, Utils } from "../../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile, faFolder } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFile,
+  faFolder,
+  faPlusSquare,
+  faMinusSquare,
+  faFolderPlus,
+  faFolderMinus,
+} from "@fortawesome/free-solid-svg-icons";
 import "./FileExplorer.css";
 import { fileExplorerNode } from "./types";
 import { StatusButtons } from "./statuses";
@@ -14,10 +21,14 @@ interface FileExplorerProps {
 
 export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
   const files = useBehaviorSubject(fileservice.filetreecontent);
+  const [fileVisibility, setfileVisibility] = useState<Record<string, boolean>>(
+    {}
+  );
+  const [render, setRender] = useState({});
 
   fileservice.filetreecontent
     .subscribe((x) => {
-      Utils.log(files);
+      Utils.log("SUB FILES", files);
     })
     .unsubscribe();
 
@@ -27,20 +38,64 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
     return <StatusButtons statuses={result} />;
   };
 
+  const handleClick = async (files: fileExplorerNode) => {
+    if (files.type !== "dir") {
+      await fileservice.viewFile(files.fullname)
+    } else {
+      await toggleVisibility(files);
+    }
+  };
+
+  const toggleVisibility = async (files: fileExplorerNode) => {
+    let v = fileVisibility;
+    files.collapse = !files.collapse;
+    Utils.log("toggle", files);
+
+    if (files.fullname && v) {
+      v[files.fullname] = files.collapse;
+      setfileVisibility(v);
+      Utils.log(v);
+      setRender({});
+    }
+  };
+
+  const getVisisbilityForNode = (files: fileExplorerNode) => {
+    let v = fileVisibility;
+    if (files.fullname && v) {
+      if (v[files.fullname]) {
+        files.collapse = v[files.fullname];
+      }
+    }
+    return files.collapse;
+  };
+
   const renderChildren = function (files: fileExplorerNode) {
     return (
       <li className={`${files.type === "file" ? "fileborder" : ""}`}>
         {files.type === `dir` ? (
-          <FontAwesomeIcon icon={faFolder} />
+          <FontAwesomeIcon
+            onClick={async () => await toggleVisibility(files)}
+            icon={getVisisbilityForNode(files) ? faFolderPlus : faFolderMinus}
+            style={{ cursor: "pointer" }}
+          />
         ) : (
           <FontAwesomeIcon icon={faFile} />
         )}
         <span className="pr-1" />
-        {files.name}
+        <span
+          style={{ cursor: "pointer" }}
+          onClick={async () => await handleClick(files)}
+        >
+          {files.name}
+        </span>
 
         {(files || { children: [] }).children?.map((x: any) => {
           return (
-            <ul className={`${files.collapse ? "d-none" : "d-block"}`} key={x.id} id="filetree">
+            <ul
+              className={`${files.collapse ? "d-none" : "d-block"}`}
+              key={x.id}
+              id="filetree"
+            >
               {renderChildren(x)}
             </ul>
           );
