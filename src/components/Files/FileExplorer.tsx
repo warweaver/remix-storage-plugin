@@ -40,7 +40,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
 
         {(files || { children: [] }).children?.map((x: any) => {
           return (
-            <ul key={x.id} id="filetree">
+            <ul className={`${files.collapse ? "d-none" : "d-block"}`} key={x.id} id="filetree">
               {renderChildren(x)}
             </ul>
           );

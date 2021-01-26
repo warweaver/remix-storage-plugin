@@ -39,6 +39,7 @@ import { GitHelp } from "./components/git/UI/GitHelp";
 import { ExportHelp } from "./components/IPFS/ExportHelp";
 import { ImportHelp } from "./components/Import/ImportHelp";
 import { ConfigHelp } from "./components/IPFS/ConfigHelp";
+import { utils } from "./components/Utils";
 
 export var fsConfig: any; //= new FS("remix-storage-config");
 export var fsConfigPromise: any; // = fsConfig.promises;
@@ -52,6 +53,7 @@ export const ipfservice: IPFSService = new IPFSService();
 export const boxservice: BoxService = new BoxService();
 export const loaderservice: LoaderService = new LoaderService();
 export const localipfsstorage: LocalIPFSStorage = new LocalIPFSStorage();
+export const Utils:utils = new utils();
 
 export const resetFileSystem = async (wipe: boolean = false) => {
   try {
@@ -66,7 +68,7 @@ export const resetFileSystem = async (wipe: boolean = false) => {
     return true;
     //await fileservice.showFiles();
   } catch (e) {
-    console.log("FS WARNING");
+    Utils.log("FS WARNING")
     return false;
   }
 };

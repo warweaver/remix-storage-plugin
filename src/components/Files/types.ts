@@ -10,6 +10,7 @@ export type fileExplorerNode = {
     type?: string;
     directory?:string
     status?:any[]
+    collapse?:boolean
   };
 
   export type fileStatusResult = {

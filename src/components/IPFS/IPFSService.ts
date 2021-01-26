@@ -49,7 +49,7 @@ export class IPFSService {
       this.connectionStatus.next(true)
       return true;
     } catch (e) {
-      console.log("IPFS error", e);
+      Utils.log("IPFS error", e);
 
       toast.error(
         "There was an error connecting to IPFS, please check your IPFS settings if applicable."
@@ -86,16 +86,16 @@ export class IPFSService {
       };
       this.filesToSend.push(ob);
     }
-    console.log(this.filesToSend);
+    Utils.log(this.filesToSend);
     //return true;
 
     // then we get the git objects folder
     const files = await fileservice.getDirectory("/.git");
-    console.log("files to send", files, files.length);
+    Utils.log("files to send", files, files.length);
 
     for (let i = 0; i < files.length; i++) {
       const fi = files[i];
-      console.log("fetching ", fi);
+      Utils.log("fetching ", fi);
       const ob = {
         path: fi,
         content: await fs.readFile(fi),
@@ -111,7 +111,7 @@ export class IPFSService {
     };
     try {
       await this.ipfs.add(this.filesToSend, addOptions).then((x) => {
-        console.log(x.cid.string);
+        Utils.log(x.cid.string);
         /* $('#CID').attr('href', `${ipfsurl}${x.cid.string}`)
             $('#CID').html(`Your files are here: ${x.cid.string}`) */
         this.cid = x.cid.string;
@@ -125,7 +125,7 @@ export class IPFSService {
       );
       toast.error("There was an error uploading to IPFS!",{autoClose:false});
       loaderservice.setLoading(false)
-      console.log(e);
+      Utils.log(e);
     }
 
     return true;
@@ -136,7 +136,7 @@ export class IPFSService {
     const connect = await this.setipfsHost()
     if(!connect){toast.error("Unable to connect to IPFS check your settings.",{autoClose:false}); return false;}
     if (cid !== undefined) {
-      console.log("cid", cid);
+      Utils.log("cid", cid);
       this.cid = cid;
       //$("#ipfs").val(ipfservice.cid);
       await ipfservice.clone();
@@ -151,7 +151,7 @@ export class IPFSService {
     const connect = await this.setipfsHost()
     if(!connect){toast.error("Unable to connect to IPFS check your settings.",{autoClose:false}); return false;}
     const cid = this.cid;
-    console.log(cid);
+    Utils.log(cid);
     if (cid === "" || typeof cid == "undefined" || !cid) {
       return false;
     }
@@ -159,21 +159,21 @@ export class IPFSService {
     await resetFileSystem()
     //await gitservice.init()
     await fileservice.clearFilesInIde()
-    console.log("cloning");
+    Utils.log("cloning");
     let connected = await this.setipfsHost();
     if (!connected) return false;
 
     try {
       for await (const file of this.ipfs.get(cid)) {
         file.path = file.path.replace(cid, "");
-        console.log(file.path);
+        Utils.log(file.path);
         if (!file.content) {
           //
-          console.log("CREATE DIR", file.path);
+          Utils.log("CREATE DIR", file.path);
           await fileservice.createDirectoriesFromString(file.path);
           continue;
         }
-        console.log("CREATE FILE", file.path);
+        Utils.log("CREATE FILE", file.path);
         const content = [];
         for await (const chunk of file.content) {
           content.push(chunk);

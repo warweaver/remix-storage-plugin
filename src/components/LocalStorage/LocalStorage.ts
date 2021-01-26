@@ -11,7 +11,7 @@ export class LocalIPFSStorage {
     try {
       await this.read();
     } catch (e) {
-      console.log(e);
+      Utils.log(e);
       await this.write();
     }
   }
@@ -23,7 +23,7 @@ export class LocalIPFSStorage {
     this.objects = JSON.parse(r);
     this.objects.sort((a, b) => (a.timestamp > b.timestamp) ? -1 : 1)
     this.objects = await this.filterNulls();
-    console.log("READ CONFIG",this.objects);
+    Utils.log("READ CONFIG",this.objects);
     this.boxObjects.next(this.objects);
   }
 
