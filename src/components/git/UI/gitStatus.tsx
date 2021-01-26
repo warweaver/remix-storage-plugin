@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useBehaviorSubject } from "use-subscribable";
-import { fileservice } from "../../../App";
+import { fileservice, Utils } from "../../../App";
 
 interface GitStatusProps {}
 

@@ -1,7 +1,7 @@
 import React, { createRef, useState } from "react";
 import { Alert } from "react-bootstrap";
 import { useBehaviorSubject } from "use-subscribable";
-import { gitservice } from "../../../App";
+import { gitservice, Utils } from "../../../App";
 import ConfirmDelete from "../../ConfirmDelete";
 
 interface gitBranchProps {}

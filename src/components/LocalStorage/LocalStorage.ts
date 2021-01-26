@@ -1,6 +1,6 @@
 import { unstable_batchedUpdates } from "react-dom";
 import { BehaviorSubject } from "rxjs";
-import { fsConfigPromise, gitservice, ipfservice } from "../../App";
+import { fsConfigPromise, gitservice, ipfservice, Utils } from "../../App";
 import { boxObject } from "../3box/3boxService";
 import { default as dateFormat } from 'dateformat'
 export class LocalIPFSStorage {

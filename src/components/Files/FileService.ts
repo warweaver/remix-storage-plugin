@@ -6,6 +6,7 @@ import App, {
   fsNoPromise,
   gitservice,
   loaderservice,
+  Utils,
 } from "../../App";
 import { client } from "../../App";
 import path from "path";
@@ -35,7 +36,7 @@ const statusmatrix: statusMatrix[] = fileStatuses.map((x: any) => {
     status: x,
   };
 });
-Utils.log("matrix", statusmatrix);
+
 
 export class LsFileService {
   filetreecontent = new BehaviorSubject<fileExplorerNode>({ children: [] });

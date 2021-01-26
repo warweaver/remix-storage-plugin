@@ -1,7 +1,7 @@
 import IpfsHttpClient from "ipfs-http-client";
 import { toast } from "react-toastify";
 import { BehaviorSubject } from "rxjs";
-import { resetFileSystem, fileservice, fs, gitservice, ipfservice, loaderservice, client } from "../../App";
+import { resetFileSystem, fileservice, fs, gitservice, ipfservice, loaderservice, client, Utils } from "../../App";
 
 export interface ipfsConfig {
   host: string;

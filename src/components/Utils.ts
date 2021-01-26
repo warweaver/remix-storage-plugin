@@ -1,10 +1,10 @@
 import { env } from "process";
 
-export class utils {
+export class devutils {
     constructor() {}
 
     async log(...message:any){
         if (process.env.NODE_ENV === 'production') return;
-        Utils.log(message)
+        console.log(...message)
     }
 }

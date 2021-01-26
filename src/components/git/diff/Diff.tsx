@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ReactGhLikeDiff } from "react-gh-like-diff";
 import "./diff.css"
 import { useBehaviorSubject } from "use-subscribable";
-import { gitservice } from "../../../App";
+import { gitservice, Utils } from "../../../App";
 
 interface DiffProps {}
 

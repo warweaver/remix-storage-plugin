@@ -1,5 +1,5 @@
 import git, { ReadCommitResult } from "isomorphic-git";
-import { fileservice, fs, fsNoPromise } from "../../App";
+import { fileservice, fs, fsNoPromise, Utils } from "../../App";
 import { toast } from "react-toastify";
 import path from "path";
 import { removeSlash } from "../Files/utils";

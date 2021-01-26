@@ -5,6 +5,7 @@ import {
   ipfservice,
   loaderservice,
   localipfsstorage,
+  Utils,
 } from "../../App";
 
 export interface boxObject {

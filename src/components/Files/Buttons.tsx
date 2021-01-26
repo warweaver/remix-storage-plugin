@@ -1,5 +1,5 @@
 import React from "react";
-import { client, fileservice, gitservice } from "../../App";
+import { client, fileservice, gitservice, Utils } from "../../App";
 import "./FileExplorer.css";
 import { fileExplorerNode } from "./types";
 interface FileButtonsProps {

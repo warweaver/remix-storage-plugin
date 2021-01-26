@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { createRef, Suspense } from "react";
 import { Card } from "react-bootstrap";
 import { useBehaviorSubject } from "use-subscribable";
-import { boxservice, ipfservice } from "../../App";
+import { boxservice, ipfservice, Utils } from "../../App";
 import { boxObject } from "../3box/3boxService";
 import ConfirmDelete from "../ConfirmDelete";
 //import { BoxController } from "../3box/Box";

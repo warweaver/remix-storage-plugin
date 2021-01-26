@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { createRef, useEffect } from "react";
 import { Card } from "react-bootstrap";
 import { useBehaviorSubject } from "use-subscribable";
-import { ipfservice, localipfsstorage } from "../../App";
+import { ipfservice, localipfsstorage, Utils } from "../../App";
 import ConfirmDelete from "../ConfirmDelete";
 
 interface LocalIPFSViewProps {}
