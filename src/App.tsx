@@ -107,14 +107,14 @@ function App() {
 
   useEffect(() => {
     var request = window.indexedDB.open("MyTestDatabase", 3);
-    console.log(request);
+    Utils.log(request);
     request.onerror = function (event) {
-      console.log("DB not supported");
+      Utils.log("DB not supported");
       setCanLoad(false);
       return false;
     };
     request.onsuccess = function (event) {
-      console.log("DB supported");
+      Utils.log("DB supported");
       resetFileSystem(false).then((x) => setCanLoad(x));
     };
 

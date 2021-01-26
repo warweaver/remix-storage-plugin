@@ -7,7 +7,7 @@ interface ConnectionWarningProps {
 }
 
 export const ConnectionWarning: React.FC<ConnectionWarningProps> = (props) => {
-  console.log("WARNING",props)
+  Utils.log("WARNING",props)
   return (
     <>
       <Modal show={!props.canLoad} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>

@@ -12,9 +12,9 @@ export const FileTools: React.FC<FileToolsProps> = ({}) => {
       
       await ModalRef.current?.show()
       await fileservice.clearAll();
-      console.log("yes");
+      Utils.log("yes");
     } catch (e) {
-      console.log("no");
+      Utils.log("no");
     }
   };
 
@@ -51,7 +51,7 @@ export const FileTools: React.FC<FileToolsProps> = ({}) => {
         className="btn btn-danger w-10 ml-2 d-none"
         onClick={async () => {
           await fileservice.clearFilesInIde();
-          console.log("done");
+          Utils.log("done");
         }}
       >
         Clear files in IDE

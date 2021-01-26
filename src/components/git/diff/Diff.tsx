@@ -10,7 +10,7 @@ export const DiffView: React.FC<DiffProps> = ({}) => {
   const [mock, setMock] = useState("");
   const diffs = useBehaviorSubject(gitservice.diffResult);
 
-  gitservice.diffResult.subscribe((x) => console.log("diff", x)).unsubscribe();
+  gitservice.diffResult.subscribe((x) => Utils.log("diff", x)).unsubscribe();
 
   return (
     <div className='container-fluid'>

@@ -23,7 +23,7 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
   ipfservice.connectionStatus.subscribe((x) => {}).unsubscribe();
   boxservice.boxObjects
     .subscribe((x) => {
-      console.log("box objects", x);
+      Utils.log("box objects", x);
     })
     .unsubscribe();
 
@@ -64,9 +64,9 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
     try {
       await ModalRef.current?.show();
       await ipfservice.importFromCID(cid, name);
-      console.log("yes");
+      Utils.log("yes");
     } catch (e) {
-      console.log("no");
+      Utils.log("no");
     }
   };
 
@@ -74,9 +74,9 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
     try {
       await EraseModalRef.current?.show();
       await boxservice.deleteFrom3Box(o.key)
-      console.log("yes");
+      Utils.log("yes");
     } catch (e) {
-      console.log("no");
+      Utils.log("no");
     }
   }
 

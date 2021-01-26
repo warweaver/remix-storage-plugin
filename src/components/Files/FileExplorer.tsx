@@ -17,13 +17,13 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
 
   fileservice.filetreecontent
     .subscribe((x) => {
-      console.log(files);
+      Utils.log(files);
     })
     .unsubscribe();
 
   const getFileStatus = function (file: fileExplorerNode) {
     let result = fileservice.getFileStatusForFile(file.fullname || "");
-    //console.log("file status", file, result);
+    //Utils.log("file status", file, result);
     return <StatusButtons statuses={result} />;
   };
 
