@@ -44,7 +44,7 @@ export class BoxService {
     }
     loaderservice.setLoading(true);
     await ipfservice.addToIpfs();
-    Utils.log("export 3box", ipfservice.cid, this.space);
+    //Utils.log("export 3box", ipfservice.cid, this.space);
 
     try {
       const ob = await localipfsstorage.createBoxObject();
@@ -57,14 +57,14 @@ export class BoxService {
   }
 
   async getObjectsFrom3Box(space: any) {
-    Utils.log("get objects from box");
+    //Utils.log("get objects from box");
     const hashes: boxObject[] = await space.private.all();
     let vals = Object.values(hashes)
     vals = await this.filterNulls(vals)
-    Utils.log(vals)
+    //Utils.log(vals)
     vals.sort((a, b) => (a.timestamp > b.timestamp) ? -1 : 1)
     this.boxObjects.next(vals);
-    Utils.log(hashes);
+    //Utils.log(hashes);
     return Object.values(hashes);
   }
 
@@ -78,7 +78,7 @@ export class BoxService {
   async deleteFrom3Box(args: string | undefined) {
     if (args !== undefined) {
       const key = args;
-      Utils.log("key", key);
+      //Utils.log("key", key);
       loaderservice.setLoading(true);
       await this.space.private.remove(key);
       await this.getObjectsFrom3Box(this.space);

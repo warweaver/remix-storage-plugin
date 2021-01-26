@@ -13,7 +13,7 @@ export const GitLog: React.FC<gitLogProps> = ({}) => {
 
   gitservice.commits
     .subscribe((x) => {
-      Utils.log(commits);
+      //Utils.log(commits);
       if (commits) {
         show = commits.length > 0;
       }
@@ -32,9 +32,9 @@ export const GitLog: React.FC<gitLogProps> = ({}) => {
     try {
       await ModalRef.current?.show();
       gitservice.checkout(oid)
-      Utils.log("yes");
+      //Utils.log("yes");
     } catch (e) {
-      Utils.log("no");
+      //Utils.log("no");
     }
   };
 

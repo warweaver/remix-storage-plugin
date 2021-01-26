@@ -70,7 +70,7 @@ export const resetFileSystem = async (wipe: boolean = false) => {
     return true;
     //await fileservice.showFiles();
   } catch (e) {
-    Utils.log("FS WARNING")
+    //Utils.log("FS WARNING")
     return false;
   }
 };
@@ -109,14 +109,14 @@ function App() {
 
   useEffect(() => {
     var request = window.indexedDB.open("MyTestDatabase", 3);
-    Utils.log(request);
+    //Utils.log(request);
     request.onerror = function (event) {
-      Utils.log("DB not supported");
+      //Utils.log("DB not supported");
       setCanLoad(false);
       return false;
     };
     request.onsuccess = function (event) {
-      Utils.log("DB supported");
+      //Utils.log("DB supported");
       resetFileSystem(false).then((x) => setCanLoad(x));
     };
 

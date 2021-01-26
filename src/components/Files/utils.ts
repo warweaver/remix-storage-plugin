@@ -84,14 +84,14 @@ export const jsonObjectFromFileList = (files: string[]) => {
       });
       f.parentId = parent ? parent.id : null;
     } else {
-      //Utils.log(f)
+      ////Utils.log(f)
       const parent = ob.find((x) => {
         return x.fullname === f.parentDir && x.type === "dir";
       });
       f.parentId = parent ? parent.id : null;
     }
   });
-  Utils.log("build tree from", ob.sort(sortbydirectorylevel));
+  //Utils.log("build tree from", ob.sort(sortbydirectorylevel));
   // first we need it sorted
   const nest = (items: any, id = null, link = "parentId") =>
     items
@@ -101,19 +101,19 @@ export const jsonObjectFromFileList = (files: string[]) => {
         children: nest(items, item.id),
       }));
 
-  Utils.log("build tree from", ob);
+  //Utils.log("build tree from", ob);
 
   let t: fileExplorerNode[] = nest(ob);
 
   let result: fileExplorerNode = {
     children: t,
   };
-  // Utils.log('OB', ob)
+  // //Utils.log('OB', ob)
   return result;
 };
 
 const sortbydirectorylevel = (a: any, b: any) => {
-  //Utils.log(a,b);
+  ////Utils.log(a,b);
   if (a.fullname.split("/").length < b.fullname.split("/").length) {
     return -1;
   }

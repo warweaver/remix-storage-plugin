@@ -13,7 +13,7 @@ export const GitStatus: React.FC<GitStatusProps> = ({}) => {
   let show = false
   fileservice.filetreecontent
     .subscribe((x) => {
-      Utils.log("GIT STATUS", files);
+      //Utils.log("GIT STATUS", files);
       staged = fileservice.getFilesByStatus("staged");
       untracked = fileservice.getFilesByStatus("untracked");
       deleted = fileservice.getFilesByStatus("deleted");

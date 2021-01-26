@@ -29,7 +29,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
 
   const getUrlLink = () => {
     if (cid !== "" && cid !== undefined && cid) {
-      Utils.log(ipfservice.cid);
+      //Utils.log(ipfservice.cid);
       return (
         <>
           IPFS Hash: {ipfservice.cid}
@@ -49,7 +49,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
   };
 
   useEffect(() => {
-    Utils.log("export view");
+    //Utils.log("export view");
     ipfservice.setipfsHost();
   }, []);
 

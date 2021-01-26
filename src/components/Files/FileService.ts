@@ -48,7 +48,7 @@ export class LsFileService {
   async addFileFromBrowser(file: string) {
     try {
       const content = await client.call("fileManager", "readFile", file);
-      Utils.log(content);
+      ////Utils.log(content);
       await this.addFile(file, content);
       //return content
     } catch (e) {}
@@ -78,16 +78,16 @@ export class LsFileService {
 
   async clearFilesInIde() {
     var dirs = await client.call("fileManager", "readdir", "/");
-    Utils.log(dirs);
+    //Utils.log(dirs);
     let files = await this.getDirectoryFromIde("/");
-    Utils.log("FILES", files);
+    ////Utils.log("FILES", files);
     for (let i = 0; i < files.length; i++) {
       try {
         await client.call("fileManager", "remove", files[i]);
       } catch (e) {}
     }
     files = await this.getDirectoryFromIde("/", true);
-    Utils.log("DIRECTORY", files);
+    ////Utils.log("DIRECTORY", files);
     for (let i = 0; i < files.length; i++) {
       try {
         await client.call("fileManager", "remove", files[i]);
@@ -148,16 +148,16 @@ export class LsFileService {
           currentcommitoid
         ),
       };
-      Utils.log("sync file", ob);
+      //Utils.log("sync file", ob);
       try {
         await client.call("fileManager", "setFile", ob.path, ob.content);
       } catch (e) {
-        Utils.log("could not load file", e);
+        //Utils.log("could not load file", e);
         loaderservice.setLoading(false);
       }
       filesToSync.push(ob);
     }
-    Utils.log("files to sync", filesToSync);
+    //Utils.log("files to sync", filesToSync);
 
     await this.showFiles();
     await client.enableCallBacks();
@@ -172,7 +172,7 @@ export class LsFileService {
     /// get files from ID and sync them
     let files = await this.getDirectoryFromIde("/");
 
-    Utils.log(files);
+    //Utils.log(files);
     for (let i = 0; i < files.length; i++) {
       await this.addFileFromBrowser(files[i]);
     }
@@ -181,16 +181,16 @@ export class LsFileService {
   }
 
   async addFile(file: string, content: string) {
-    Utils.log("add file ", file);
+    //Utils.log("add file ", file);
     const directories = path.dirname(file);
     await this.createDirectoriesFromString(directories);
-    Utils.log(fs);
+    ////Utils.log(fs);
     await fs.writeFile("/" + file, content);
   }
 
   async rmFile(file: string) {
     try {
-      Utils.log("rm file ", file);
+      //Utils.log("rm file ", file);
       await fs.unlink("/" + file);
     } catch (e) {}
     //await this.showFiles();
@@ -198,27 +198,27 @@ export class LsFileService {
 
   async createDirectoriesFromString(strdirectories: string) {
     const ignore = [".", "/.", ""];
-    Utils.log("directory", strdirectories, ignore.indexOf(strdirectories));
+    ////Utils.log("directory", strdirectories, ignore.indexOf(strdirectories));
     if (ignore.indexOf(strdirectories) > -1) return false;
     let directories: string[] = strdirectories.split("/");
-    Utils.log("create directory", directories);
+    ////Utils.log("create directory", directories);
     for (let i = 0; i < directories.length; i++) {
-      Utils.log(directories[i]);
+      ////Utils.log(directories[i]);
       let previouspath = "";
       if (i > 0) previouspath = "/" + directories.slice(0, i).join("/");
       const finalPath = previouspath + "/" + directories[i];
-      Utils.log("creating ", finalPath);
+      ////Utils.log("creating ", finalPath);
       try {
         await fs.mkdir(finalPath);
       } catch (e) {
-        // Utils.log(e)
+        // //Utils.log(e)
       }
     }
   }
 
   async viewFile(args: any) {
     const filename = args;
-    Utils.log("view file", filename);
+    //Utils.log("view file", filename);
     //$(args[0].currentTarget).data('file')
     try {
       await client.call("fileManager", "open", `${removeSlash(filename)}`);
@@ -229,32 +229,32 @@ export class LsFileService {
 
   async getFileStatusMatrix() {
     this.fileStatusResult = await gitservice.statusMatrix();
-    Utils.log("STATUS MATRIX", this.fileStatusResult);
+    //Utils.log("STATUS MATRIX", this.fileStatusResult);
     // let filesinstaging = await gitservice.listFilesInstaging();
-    // Utils.log("FILES IN STAGING", filesinstaging);
+    // //Utils.log("FILES IN STAGING", filesinstaging);
     // let filesingit = await gitservice.listFiles();
-    // Utils.log("FILES IN GIT", filesingit);
+    // //Utils.log("FILES IN GIT", filesingit);
 
     this.fileStatusResult.map((m) => {
       statusmatrix.map((sm) => {
         if (JSON.stringify(sm.status) === JSON.stringify(m.status)) {
-          Utils.log(m, sm);
+          //Utils.log(m, sm);
           m.statusNames = sm.matrix;
         }
       });
     });
-    //Utils.log("file status", this.fileStatusResult);
+    ////Utils.log("file status", this.fileStatusResult);
   }
 
   getFilesByStatus(status: string) {
     let count = 0;
-    Utils.log("STATUS?", status);
+    ////Utils.log("STATUS?", status);
     this.fileStatusResult.map((m) => {
-      Utils.log("STATUS?", m);
+      ////Utils.log("STATUS?", m);
       if (m.statusNames !== undefined) {
         if (m.statusNames?.indexOf(status) > -1) {
           count++;
-          Utils.log("COUNT", count);
+          ////Utils.log("COUNT", count);
         }
       }
     });
@@ -262,7 +262,7 @@ export class LsFileService {
   }
 
   getFileStatusForFile(filename: string) {
-    //Utils.log("checking file status", filename);
+    ////Utils.log("checking file status", filename);
     for (let i: number = 0; i < this.fileStatusResult.length; i++) {
       if (this.fileStatusResult[i].filename === filename)
         return this.fileStatusResult[i].statusNames;
@@ -273,15 +273,15 @@ export class LsFileService {
     //$('#files').show()
     //$('#diff-container').hide()
     let files = await gitservice.getStatusMatrixFiles(); //await this.getDirectory("/");
-    Utils.log("get directory result", files);
+    //Utils.log("get directory result", files);
 
     try {
       await this.getFileStatusMatrix();
       let jsonfiles = await jsonObjectFromFileList(files);
-      Utils.log("files", jsonfiles);
+      //Utils.log("files", jsonfiles);
       this.filetreecontent.next(jsonfiles);
     } catch (e) {
-      Utils.log(e);
+      //Utils.log(e);
     }
     try {
       await gitservice.gitlog();
@@ -294,53 +294,53 @@ export class LsFileService {
   }
 
   async getDirectory(dir: string) {
-    Utils.log("get directory");
+    //Utils.log("get directory");
     let result: string[] = [];
     const files = await fs.readdir(`${dir}`);
-    Utils.log(files);
+    //Utils.log(files);
 
     for (let i = 0; i < files.length; i++) {
       const fi = files[i];
       if (typeof fi !== "undefined") {
-        // Utils.log('looking into ', fi, dir)
+        // //Utils.log('looking into ', fi, dir)
         if (dir === "/") dir = "";
         const type = await fs.stat(`${dir}/${fi}`);
         if (type.type === "dir") {
-          // Utils.log('is directory, so get ', `${dir}/${fi}`)
+          // //Utils.log('is directory, so get ', `${dir}/${fi}`)
           result = [...result, ...(await this.getDirectory(`${dir}/${fi}`))];
         } else {
-          // Utils.log('is file ', `${dir}/${fi}`)
+          // //Utils.log('is file ', `${dir}/${fi}`)
           result.push(`${dir}/${fi}`);
         }
       }
     }
-    Utils.log(result);
+    //Utils.log(result);
     return result;
   }
 
   async getDirectoryFromIde(dir: string, onlyDirectories: boolean = false) {
-    Utils.log("get directory", dir);
+    //Utils.log("get directory", dir);
     let result: string[] = [];
     const files = await client.call("fileManager", "readdir", dir);
-    Utils.log(files);
+    //Utils.log(files);
 
     let fileArray = Object.keys(files).map(function (i: any) {
       // do something with person
       return { filename: i, data: files[i] };
     });
 
-    Utils.log(fileArray);
+    //Utils.log(fileArray);
 
     for (let i = 0; i < fileArray.length; i++) {
       const fi: any = fileArray[i];
       if (typeof fi !== "undefined") {
-        //Utils.log('looking into ', fi, dir)
+        ////Utils.log('looking into ', fi, dir)
         //if (dir === "/") dir = "";
         //dir = removeSlash(dir)
         const type = fi.data.isDirectory;
-        //Utils.log("type",type)
+        ////Utils.log("type",type)
         if (type === true) {
-          //Utils.log('is directory, so get ', `${fi.filename}`)
+          ////Utils.log('is directory, so get ', `${fi.filename}`)
           if (onlyDirectories === true) result.push(`browser/${fi.filename}`);
           result = [
             ...result,
@@ -350,13 +350,13 @@ export class LsFileService {
             )),
           ];
         } else {
-          // Utils.log('is file ', `${dir}/${fi}`)
+          // //Utils.log('is file ', `${dir}/${fi}`)
           if (onlyDirectories === false) result.push(`browser/${fi.filename}`);
         }
       }
     }
 
-    Utils.log(result);
+    //Utils.log(result);
     return result;
   }
 }

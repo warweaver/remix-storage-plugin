@@ -19,7 +19,7 @@ export const GitBranch: React.FC<gitBranchProps> = ({}) => {
 
   gitservice.branches
     .subscribe((x) => {
-      Utils.log(branches);
+      //Utils.log(branches);
       if (branches) {
         show = branches.length > 0;
       }
@@ -28,16 +28,16 @@ export const GitBranch: React.FC<gitBranchProps> = ({}) => {
 
   gitservice.branch
     .subscribe((x) => {
-      Utils.log(branch);
+      //Utils.log(branch);
     })
     .unsubscribe();
   const checkout = async (oid: string) => {
     try {
       await ModalRef.current?.show();
       gitservice.checkout(oid);
-      Utils.log("yes");
+      //Utils.log("yes");
     } catch (e) {
-      Utils.log("no");
+      //Utils.log("no");
     }
   };
   return (

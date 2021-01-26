@@ -43,11 +43,11 @@ export class gitService {
 
   async addToGit(args: string | undefined) {
     if (args !== undefined) {
-      //Utils.log('ADD TO GIT', $(args[0].currentTarget).data('file'))
+      ////Utils.log('ADD TO GIT', $(args[0].currentTarget).data('file'))
       const filename = args; // $(args[0].currentTarget).data('file')
       const basename = path.basename(filename);
       const directory = path.dirname(filename);
-      Utils.log("will add", basename, directory);
+      //Utils.log("will add", basename, directory);
 
       await git.add({
         fs: fsNoPromise,
@@ -60,7 +60,7 @@ export class gitService {
   }
 
   async gitrm(args: any) {
-    //Utils.log('RM GIT', $(args[0].currentTarget).data('file'))
+    ////Utils.log('RM GIT', $(args[0].currentTarget).data('file'))
     const filename = args; // $(args[0].currentTarget).data('file')
 
     await git.remove({
@@ -72,9 +72,9 @@ export class gitService {
     toast.success(`Removed file file ${filename}`);
   }
 
-  async checkoutfile(args: any) {
-    const filename = ""; //$(args[0].currentTarget).data('file')
-    Utils.log("checkout", filename);
+  async checkoutfile(filename: any) {
+    ///const filename = ""; //$(args[0].currentTarget).data('file')
+    //Utils.log("checkout", filename);
 
     try {
       await git.checkout({
@@ -82,18 +82,20 @@ export class gitService {
         dir: "/",
         filepaths: [`/${filename}`],
       });
+      //Utils.log("done");
+      await fileservice.syncToBrowser();
+      await fileservice.syncStart()
     } catch (e) {
-      Utils.log(e);
+      //Utils.log(e);
+      toast.error("No such file")
       //this.addAlert("checkoutMessage", e)
     }
-    Utils.log("done");
-    await fileservice.syncToBrowser();
-    await fileservice.syncStart()
+
   }
 
   async checkout(args: string) {
     const oid = args; //$(args[0].currentTarget).data('oid')
-    Utils.log("checkout", oid);
+    //Utils.log("checkout", oid);
     toast.dismiss()
     await fileservice.clearFilesInIde()
 
@@ -106,17 +108,17 @@ export class gitService {
 
       this.gitlog();
     } catch (e) {
-      Utils.log(e);
+      //Utils.log(e);
       toast.error(" " + e, {autoClose:false});
     }
 
-    Utils.log("done");
+    //Utils.log("done");
     await fileservice.syncToBrowser();
     await fileservice.syncStart()
   }
 
   async getCommits() {
-    Utils.log("get commits");
+    //Utils.log("get commits");
     try {
       const commits: ReadCommitResult[] = await git.log({
         fs: fsNoPromise,
@@ -130,14 +132,14 @@ export class gitService {
   }
 
   async gitlog() {
-    Utils.log("log");
+    //Utils.log("log");
     try {
       const commits: ReadCommitResult[] = await this.getCommits();
       this.commits.next(commits);
-      Utils.log(commits);
+      //Utils.log(commits);
     } catch (e) {
       this.commits.next([]);
-      Utils.log(e);
+      //Utils.log(e);
     }
 
     await this.showCurrentBranch();
@@ -191,7 +193,7 @@ export class gitService {
           dir: "/",
           fullname: false,
         })) || "";
-      Utils.log("BRANCH", branch);
+      //Utils.log("BRANCH", branch);
       return branch;
     } catch (e) {
       throw e;
@@ -240,7 +242,7 @@ export class gitService {
       });
       content = Buffer.from(blob).toString("utf8");
     } catch (e) {
-      Utils.log(e);
+      //Utils.log(e);
     }
     return content;
   }
@@ -299,7 +301,7 @@ export class gitService {
 
   async addAll() {
     const statuses = fileservice.fileStatusResult;
-    Utils.log(statuses);
+    //Utils.log(statuses);
 
     for (let i: number = 0; i < statuses.length; i++) {
       await this.addToGit(statuses[i].filename);
@@ -308,11 +310,11 @@ export class gitService {
 
   async diffFiles() {
     const statuses = fileservice.fileStatusResult;
-    Utils.log(statuses);
+    //Utils.log(statuses);
     const diffs: diffObject[] = [];
     for (let i: number = 0; i < statuses.length; i++) {
       if ((statuses[i].statusNames?.indexOf("modified") || false) > -1) {
-        Utils.log(statuses[i].statusNames?.indexOf("modified"));
+        //Utils.log(statuses[i].statusNames?.indexOf("modified"));
         const diff: diffObject = await this.diffFile(statuses[i].filename);
         diffs.push(diff);
       }
@@ -323,7 +325,7 @@ export class gitService {
   async diffFile(args: any) {
     //$('#files').hide()
     //$('#diff-container').show()
-    Utils.log("DIFF", args);
+    //Utils.log("DIFF", args);
     const fullfilename = args; // $(args[0].currentTarget).data('file')
     try {
       const commitOid = await git.resolveRef({
@@ -344,10 +346,10 @@ export class gitService {
       });
       const original = Buffer.from(blob).toString("utf8");
 
-      Utils.log(original);
-      Utils.log(newcontent);
+      //Utils.log(original);
+      //Utils.log(newcontent);
       //const filediff = createPatch(filename, original, newcontent); // diffLines(original,newcontent)
-      //Utils.log(filediff)
+      ////Utils.log(filediff)
       const filediff: diffObject = {
         originalFileName: fullfilename,
         updatedFileName: fullfilename,

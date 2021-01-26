@@ -18,7 +18,7 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
 
   localipfsstorage.boxObjects
     .subscribe((x) => {
-      Utils.log("box objects", x);
+      //Utils.log("box objects", x);
     })
     .unsubscribe();
 
@@ -54,9 +54,9 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
     try {
       await ModalRef.current?.show();
       await ipfservice.importFromCID(cid,name)
-      Utils.log("yes");
+      //Utils.log("yes");
     } catch (e) {
-      Utils.log("no");
+      //Utils.log("no");
     }
   };
 
@@ -64,9 +64,9 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
     try {
       await EraseModalRef.current?.show();
       await localipfsstorage.deleteFromStorage(o?.cid)
-      Utils.log("yes");
+      //Utils.log("yes");
     } catch (e) {
-      Utils.log("no");
+      //Utils.log("no");
     }
   }
 

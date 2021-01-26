@@ -59,14 +59,14 @@ export const BoxController: React.FC<BoxProps> = (p) => {
           address = getAddress(eth);
           loaderservice.setLoading(true);
           toast.info("Please wait... this can take a while", {autoClose:false, position:"top-left"});
-          Utils.log(address);
+          //Utils.log(address);
 
           mybox = await Box.openBox(address, provider);
           toast.success("3box connected... waiting for space to open ... this might even take longer.", {autoClose:false, position:"top-left"});
-          Utils.log(mybox);
+          //Utils.log(mybox);
           space = await mybox.openSpace("remix-workspace");
           //toast.success("space opened... getting data")
-          Utils.log(space);
+          //Utils.log(space);
 
           await boxservice.setSpace(space);
           await boxservice.getObjectsFrom3Box(space);
@@ -95,7 +95,7 @@ export const BoxController: React.FC<BoxProps> = (p) => {
       providerOptions: providerOptions, // required
     });
     await setModalListener();
-    // Utils.log("get box", status,)
+    // //Utils.log("get box", status,)
     if (!status) {
       await modal.connect();
     } else {

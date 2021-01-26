@@ -28,13 +28,13 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
 
   fileservice.filetreecontent
     .subscribe((x) => {
-      Utils.log("SUB FILES", files);
+      //Utils.log("SUB FILES", files);
     })
     .unsubscribe();
 
   const getFileStatus = function (file: fileExplorerNode) {
     let result = fileservice.getFileStatusForFile(file.fullname || "");
-    //Utils.log("file status", file, result);
+    ////Utils.log("file status", file, result);
     return <StatusButtons statuses={result} />;
   };
 
@@ -49,12 +49,12 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
   const toggleVisibility = async (files: fileExplorerNode) => {
     let v = fileVisibility;
     files.collapse = !files.collapse;
-    Utils.log("toggle", files);
+    ////Utils.log("toggle", files);
 
     if (files.fullname && v) {
       v[files.fullname] = files.collapse;
       setfileVisibility(v);
-      Utils.log(v);
+      ////Utils.log(v);
       setRender({});
     }
   };
@@ -89,12 +89,24 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
           {files.name}
         </span>
         {files.type === `dir` ? (
-          <span className="status float-right ml-3 diraddbutton pr-2">
+          <span className="status float-right ml-3">
             <div
-              className={"badge badge-primary addgit w-100 text-left"}
+              className={"badge badge-primary addgit"}
               onClick={async () => await gitservice.addToGit(files.fullname)}
             >
-              git add <FontAwesomeIcon icon={faFolder} /> {files.name}
+              git add
+            </div>
+            <div
+              className={"badge badge-primary addgit"}
+              onClick={async () => await gitservice.gitrm(files.fullname)}
+            >
+              git rm
+            </div>
+            <div
+              className={"badge badge-primary addgit"}
+              onClick={async () => await gitservice.checkoutfile(files.fullname)}
+            >
+              git checkout {files.fullname}
             </div>
           </span>
         ) : (
