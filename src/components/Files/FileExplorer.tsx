@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useBehaviorSubject } from "use-subscribable";
-import { fileservice, Utils } from "../../App";
+import { fileservice, gitservice, Utils } from "../../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFile,
@@ -40,7 +40,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
 
   const handleClick = async (files: fileExplorerNode) => {
     if (files.type !== "dir") {
-      await fileservice.viewFile(files.fullname)
+      await fileservice.viewFile(files.fullname);
     } else {
       await toggleVisibility(files);
     }
@@ -88,7 +88,18 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
         >
           {files.name}
         </span>
-
+        {files.type === `dir` ? (
+          <span className="status float-right ml-3 diraddbutton pr-2">
+            <div
+              className={"badge badge-primary addgit w-100 text-left"}
+              onClick={async () => await gitservice.addToGit(files.fullname)}
+            >
+              git add <FontAwesomeIcon icon={faFolder} /> {files.name}
+            </div>
+          </span>
+        ) : (
+          ""
+        )}
         {(files || { children: [] }).children?.map((x: any) => {
           return (
             <ul

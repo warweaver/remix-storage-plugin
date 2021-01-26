@@ -85,3 +85,7 @@ ul, #filetree {
 .fileborder{
   padding: 2px;
 }
+
+.diraddbutton {
+  width: 325px;
+}

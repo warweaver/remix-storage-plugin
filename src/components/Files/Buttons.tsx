@@ -18,7 +18,7 @@ export const FileButtons: React.FC<FileButtonsProps> = ({
 
   const gitaddButton = (file: fileExplorerNode) => {
     let status = fileservice.getFileStatusForFile(file.fullname || "");
-    Utils.log("file status",status,status?.indexOf("with unstaged changes"))
+    Utils.log("file status", status, status?.indexOf("with unstaged changes"));
     if (
       (status?.indexOf("deleted") === -1 &&
         status?.indexOf("unmodified") === -1 &&
@@ -98,8 +98,8 @@ export const FileButtons: React.FC<FileButtonsProps> = ({
   if (file.type === "file") {
     return (
       <span className="status float-right ml-3">
-        {gitrmbutton(file)}
         {gitaddButton(file)}
+        {gitrmbutton(file)}
         {checkoutbutton(file)}
       </span>
     );
