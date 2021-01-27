@@ -11,6 +11,7 @@ export const jsonObjectFromFileList = (files: string[]) => {
   // reindex filelist
   files.map((f, i) => {
     const dirname = path.dirname(files[i]);
+    Utils.log(dirname, dirname.startsWith("/."))
     if (dirname.startsWith("/.")) return true;
     const basename = path.basename(files[i]);
     const directories = removeSlash(dirname).split("/");
@@ -30,6 +31,8 @@ export const jsonObjectFromFileList = (files: string[]) => {
       };
       ob.push(node);
     }
+
+    Utils.log(ob)
 
     let previouspath = "";
     for (let i = 0; i < directories.length; i++) {
@@ -93,7 +96,9 @@ export const jsonObjectFromFileList = (files: string[]) => {
   });
   //Utils.log("build tree from", ob.sort(sortbydirectorylevel));
   // first we need it sorted
-  const nest = (items: any, id = null, link = "parentId") =>
+  ob.sort(sortbydirectorylevel)
+  ob[0].parentId = null
+  const nest = (items: any, id:any = null, link = "parentId") =>
     items
       .filter((item: any) => item[link] === id)
       .map((item: any) => ({
@@ -108,7 +113,7 @@ export const jsonObjectFromFileList = (files: string[]) => {
   let result: fileExplorerNode = {
     children: t,
   };
-  // //Utils.log('OB', ob)
+  Utils.log('OB', ob)
   return result;
 };
 

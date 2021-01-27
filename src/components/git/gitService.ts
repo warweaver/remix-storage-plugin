@@ -1,5 +1,5 @@
 import git, { ReadCommitResult } from "isomorphic-git";
-import { fileservice, fs, fsNoPromise, Utils } from "../../App";
+import { client, fileservice, fs, fsNoPromise, Utils } from "../../App";
 import { toast } from "react-toastify";
 import path from "path";
 import { removeSlash } from "../Files/utils";
@@ -20,7 +20,7 @@ export class gitService {
   reponameSubject = new BehaviorSubject<string>("");
   canCommit = new BehaviorSubject<boolean>(true);
   canExport = new BehaviorSubject<boolean>(false);
-  reponame = ""
+  reponame = "";
 
   constructor() {
     //this.init();
@@ -37,25 +37,61 @@ export class gitService {
     await fileservice.showFiles();
   }
 
-  async clearRepoName(){
-    this.reponameSubject.next("")
+  async clearRepoName() {
+    this.reponameSubject.next("");
+  }
+
+  async addAllToGit() {
+    let repo = {
+      fs: fsNoPromise,
+      dir: "/",
+    };
+    try {
+      await git
+        .statusMatrix(repo)
+        .then((status) =>
+          Promise.all(
+            status.map(([filepath, , worktreeStatus]) =>
+              worktreeStatus
+                ? git.add({ ...repo, filepath })
+                : git.remove({ ...repo, filepath })
+            )
+          )
+        );
+      await fileservice.showFiles();
+      toast.success(`Added all`);
+    } catch (e) {
+      toast.error(`${e}`);
+    }
   }
 
   async addToGit(args: string | undefined) {
     if (args !== undefined) {
-      ////Utils.log('ADD TO GIT', $(args[0].currentTarget).data('file'))
-      const filename = args; // $(args[0].currentTarget).data('file')
-      const basename = path.basename(filename);
-      const directory = path.dirname(filename);
-      //Utils.log("will add", basename, directory);
-
-      await git.add({
-        fs: fsNoPromise,
-        dir: "/",
-        filepath: removeSlash(filename),
-      });
-      await fileservice.showFiles();
-      toast.success(`Added file ${filename}`);
+      let filename = args; // $(args[0].currentTarget).data('file')
+      let stagingfiles;
+      if (filename !== "/") {
+        filename = removeSlash(filename);
+        stagingfiles = [filename];
+      } else {
+        await this.addAllToGit();
+        return;
+      }
+      Utils.log(stagingfiles);
+      try {
+        for (const filepath of stagingfiles) {
+          try {
+            await git.add({
+              fs: fsNoPromise,
+              dir: "/",
+              filepath: removeSlash(filepath),
+            });
+          } catch (e) {}
+        }
+        await fileservice.showFiles();
+        toast.success(`Added ${filename}`);
+      } catch (e) {
+        toast.error(`${e}`);
+      }
     }
   }
 
@@ -74,30 +110,42 @@ export class gitService {
 
   async checkoutfile(filename: any) {
     ///const filename = ""; //$(args[0].currentTarget).data('file')
-    //Utils.log("checkout", filename);
+    Utils.log("checkout", [`${filename}`]);
 
     try {
       await git.checkout({
         fs: fsNoPromise,
         dir: "/",
-        filepaths: [`/${filename}`],
+        ref: "HEAD",
+        filepaths: [`${filename}`],
       });
-      //Utils.log("done");
-      await fileservice.syncToBrowser();
-      await fileservice.syncStart()
+
+      const newcontent = await fs.readFile(filename, {
+        encoding: "utf8",
+      });
+      Utils.log(newcontent, filename);
+      client.disableCallBacks();
+      client.call(
+        "fileManager",
+        "setFile",
+        Utils.addSlash(filename),
+        newcontent
+      );
+      client.enableCallBacks();
+      //await fileservice.syncToBrowser();
+      //await fileservice.syncStart()
     } catch (e) {
       //Utils.log(e);
-      toast.error("No such file")
+      toast.error("No such file");
       //this.addAlert("checkoutMessage", e)
     }
-
   }
 
   async checkout(args: string) {
     const oid = args; //$(args[0].currentTarget).data('oid')
     //Utils.log("checkout", oid);
-    toast.dismiss()
-    await fileservice.clearFilesInIde()
+    toast.dismiss();
+    await fileservice.clearFilesInIde();
 
     try {
       await git.checkout({
@@ -109,12 +157,12 @@ export class gitService {
       this.gitlog();
     } catch (e) {
       //Utils.log(e);
-      toast.error(" " + e, {autoClose:false});
+      toast.error(" " + e, { autoClose: false });
     }
 
     //Utils.log("done");
     await fileservice.syncToBrowser();
-    await fileservice.syncStart()
+    await fileservice.syncStart();
   }
 
   async getCommits() {
@@ -127,7 +175,7 @@ export class gitService {
       });
       return commits;
     } catch (e) {
-      return []
+      return [];
     }
   }
 
@@ -161,17 +209,18 @@ export class gitService {
     try {
       const branch = await this.currentBranch();
       const currentcommitoid = await this.getCommitFromRef("HEAD");
+      Utils.log("current commid id", currentcommitoid);
       this.branch.next(branch);
       if (typeof branch === "undefined" || branch === "") {
         //toast.warn(`You are in a detached state`);
         this.branch.next(`HEAD detached at ${currentcommitoid}`);
-        this.canCommit.next(false)
+        this.canCommit.next(false);
       } else {
         this.branch.next(`Branch is: ${branch} at commit ${currentcommitoid}`);
-        this.canCommit.next(true)
+        this.canCommit.next(true);
       }
     } catch (e) {
-      this.branch.next('')
+      this.branch.next("");
     }
   }
 
@@ -201,6 +250,13 @@ export class gitService {
   }
 
   async commit(message: string = "") {
+    Utils.log("commit");
+    let filescommited = await this.listFilesInstaging();
+    Utils.log(filescommited);
+    if (filescommited.length === 0) {
+      toast.error("no files to commit");
+      return;
+    }
     const sha = await git.commit({
       fs: fsNoPromise,
       dir: "/",
@@ -211,6 +267,7 @@ export class gitService {
       message: message, //$('#message').val()
     });
     toast.success(`Commited: ${sha}`);
+
     await fileservice.showFiles();
   }
 
@@ -271,13 +328,13 @@ export class gitService {
     return files;
   }
 
-  async checkForFilesCommmited(){
+  async checkForFilesCommmited() {
     try {
       await this.listFiles();
-      this.canExport.next(true)
-      return true
+      this.canExport.next(true);
+      return true;
     } catch (e) {
-      this.canExport.next(false)
+      this.canExport.next(false);
       return false;
     }
   }

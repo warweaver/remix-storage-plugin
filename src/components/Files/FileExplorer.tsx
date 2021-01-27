@@ -96,18 +96,6 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
             >
               git add
             </div>
-            <div
-              className={"badge badge-primary addgit"}
-              onClick={async () => await gitservice.gitrm(files.fullname)}
-            >
-              git rm
-            </div>
-            <div
-              className={"badge badge-primary addgit"}
-              onClick={async () => await gitservice.checkoutfile(files.fullname)}
-            >
-              git checkout {files.fullname}
-            </div>
           </span>
         ) : (
           ""

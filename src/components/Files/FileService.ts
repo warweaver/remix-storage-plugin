@@ -37,7 +37,6 @@ const statusmatrix: statusMatrix[] = fileStatuses.map((x: any) => {
   };
 });
 
-
 export class LsFileService {
   filetreecontent = new BehaviorSubject<fileExplorerNode>({ children: [] });
   confirmDeletion = new BehaviorSubject<boolean | undefined>(undefined);
@@ -47,7 +46,7 @@ export class LsFileService {
 
   async addFileFromBrowser(file: string) {
     try {
-      const content = await client.call("fileManager", "readFile", file);
+      const content = await client.call("fileManager", "readFile", Utils.addSlash(file));
       ////Utils.log(content);
       await this.addFile(file, content);
       //return content
@@ -83,14 +82,14 @@ export class LsFileService {
     ////Utils.log("FILES", files);
     for (let i = 0; i < files.length; i++) {
       try {
-        await client.call("fileManager", "remove", files[i]);
+        await client.call("fileManager", "remove", Utils.addSlash(files[i]));
       } catch (e) {}
     }
     files = await this.getDirectoryFromIde("/", true);
     ////Utils.log("DIRECTORY", files);
     for (let i = 0; i < files.length; i++) {
       try {
-        await client.call("fileManager", "remove", files[i]);
+        await client.call("fileManager", "remove", Utils.addSlash(files[i]));
       } catch (e) {}
     }
     return true;
@@ -148,9 +147,9 @@ export class LsFileService {
           currentcommitoid
         ),
       };
-      //Utils.log("sync file", ob);
+      Utils.log("sync file", ob);
       try {
-        await client.call("fileManager", "setFile", ob.path, ob.content);
+        await client.call("fileManager", "setFile", Utils.addSlash(ob.path), ob.content);
       } catch (e) {
         //Utils.log("could not load file", e);
         loaderservice.setLoading(false);
@@ -172,7 +171,7 @@ export class LsFileService {
     /// get files from ID and sync them
     let files = await this.getDirectoryFromIde("/");
 
-    //Utils.log(files);
+    Utils.log("files to add ", files);
     for (let i = 0; i < files.length; i++) {
       await this.addFileFromBrowser(files[i]);
     }
@@ -221,9 +220,9 @@ export class LsFileService {
     //Utils.log("view file", filename);
     //$(args[0].currentTarget).data('file')
     try {
-      await client.call("fileManager", "open", `${removeSlash(filename)}`);
+      await client.call("fileManager", "open", Utils.addSlash(filename));
     } catch (e) {
-      toast.error("file does not exist in Remix",{autoClose:false});
+      toast.error("file does not exist in Remix", { autoClose: false });
     }
   }
 
@@ -273,12 +272,12 @@ export class LsFileService {
     //$('#files').show()
     //$('#diff-container').hide()
     let files = await gitservice.getStatusMatrixFiles(); //await this.getDirectory("/");
-    //Utils.log("get directory result", files);
+    Utils.log("get matrix result", files);
 
     try {
       await this.getFileStatusMatrix();
       let jsonfiles = await jsonObjectFromFileList(files);
-      //Utils.log("files", jsonfiles);
+      Utils.log("json files", jsonfiles);
       this.filetreecontent.next(jsonfiles);
     } catch (e) {
       //Utils.log(e);
@@ -289,12 +288,12 @@ export class LsFileService {
     try {
       await gitservice.getBranches();
     } catch (e) {}
-    await gitservice.checkForFilesCommmited()
+    await gitservice.checkForFilesCommmited();
     return true;
   }
 
   async getDirectory(dir: string) {
-    //Utils.log("get directory");
+    Utils.log("get directory");
     let result: string[] = [];
     const files = await fs.readdir(`${dir}`);
     //Utils.log(files);
@@ -319,10 +318,13 @@ export class LsFileService {
   }
 
   async getDirectoryFromIde(dir: string, onlyDirectories: boolean = false) {
-    //Utils.log("get directory", dir);
+    Utils.log("get directory from ide", dir);
     let result: string[] = [];
+    if (!dir.startsWith("/")) {
+      dir = "/" + dir;
+    }
     const files = await client.call("fileManager", "readdir", dir);
-    //Utils.log(files);
+    Utils.log(files);
 
     let fileArray = Object.keys(files).map(function (i: any) {
       // do something with person
@@ -340,8 +342,9 @@ export class LsFileService {
         const type = fi.data.isDirectory;
         ////Utils.log("type",type)
         if (type === true) {
-          ////Utils.log('is directory, so get ', `${fi.filename}`)
-          if (onlyDirectories === true) result.push(`browser/${fi.filename}`);
+          Utils.log("is directory, so get ", `${fi.filename}`);
+          if (onlyDirectories === true) result.push(`${fi.filename}`);
+
           result = [
             ...result,
             ...(await this.getDirectoryFromIde(
@@ -350,13 +353,13 @@ export class LsFileService {
             )),
           ];
         } else {
-          // //Utils.log('is file ', `${dir}/${fi}`)
-          if (onlyDirectories === false) result.push(`browser/${fi.filename}`);
+          Utils.log("is file ", `${fi.filename}`);
+          if (onlyDirectories === false) result.push(`${fi.filename}`);
         }
       }
     }
 
-    //Utils.log(result);
+    Utils.log("TREE", result);
     return result;
   }
 }
