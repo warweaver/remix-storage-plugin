@@ -110,35 +110,40 @@ export class gitService {
 
   async checkoutfile(filename: any) {
     ///const filename = ""; //$(args[0].currentTarget).data('file')
-    Utils.log("checkout", [`${filename}`]);
-
-    try {
-      await git.checkout({
-        fs: fsNoPromise,
-        dir: "/",
-        ref: "HEAD",
-        filepaths: [`${filename}`],
-      });
-
-      const newcontent = await fs.readFile(filename, {
-        encoding: "utf8",
-      });
-      Utils.log(newcontent, filename);
-      client.disableCallBacks();
-      client.call(
-        "fileManager",
-        "setFile",
-        Utils.addSlash(filename),
-        newcontent
-      );
-      client.enableCallBacks();
-      //await fileservice.syncToBrowser();
-      //await fileservice.syncStart()
-    } catch (e) {
-      //Utils.log(e);
-      toast.error("No such file");
-      //this.addAlert("checkoutMessage", e)
-    }
+    Utils.log("checkout", [`${filename}`], removeSlash(filename));
+    let oid = await this.getLastCommmit();
+    if (oid)
+      try {
+        const commitOid = await git.resolveRef({
+          fs: fsNoPromise,
+          dir: "/",
+          ref: "HEAD",
+        }); 
+        const { blob } = await git.readBlob({
+          fs: fsNoPromise,
+          dir: "/",
+          oid: commitOid,
+          filepath: removeSlash(filename),
+        });
+        const original = Buffer.from(blob).toString("utf8");
+        Utils.log(original, filename);
+        await client.disableCallBacks();
+        await client.call(
+          "fileManager",
+          "setFile",
+          Utils.addSlash(filename),
+          original
+        );
+        await client.enableCallBacks()
+        await fileservice.syncFromBrowser();
+        //await fileservice.showFiles()
+        //await fileservice.syncToBrowser();
+        //await fileservice.syncStart()
+      } catch (e) {
+        //Utils.log(e);
+        toast.error("No such file");
+        //this.addAlert("checkoutMessage", e)
+      }
   }
 
   async checkout(args: string) {

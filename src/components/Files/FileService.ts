@@ -147,7 +147,7 @@ export class LsFileService {
           currentcommitoid
         ),
       };
-      Utils.log("sync file", ob);
+      //Utils.log("sync file", ob);
       try {
         await client.call("fileManager", "setFile", Utils.addSlash(ob.path), ob.content);
       } catch (e) {
@@ -318,13 +318,13 @@ export class LsFileService {
   }
 
   async getDirectoryFromIde(dir: string, onlyDirectories: boolean = false) {
-    Utils.log("get directory from ide", dir);
+    //Utils.log("get directory from ide", dir);
     let result: string[] = [];
     if (!dir.startsWith("/")) {
       dir = "/" + dir;
     }
     const files = await client.call("fileManager", "readdir", dir);
-    Utils.log(files);
+    //Utils.log(files);
 
     let fileArray = Object.keys(files).map(function (i: any) {
       // do something with person
@@ -342,7 +342,7 @@ export class LsFileService {
         const type = fi.data.isDirectory;
         ////Utils.log("type",type)
         if (type === true) {
-          Utils.log("is directory, so get ", `${fi.filename}`);
+          //Utils.log("is directory, so get ", `${fi.filename}`);
           if (onlyDirectories === true) result.push(`${fi.filename}`);
 
           result = [
@@ -353,13 +353,13 @@ export class LsFileService {
             )),
           ];
         } else {
-          Utils.log("is file ", `${fi.filename}`);
+          //Utils.log("is file ", `${fi.filename}`);
           if (onlyDirectories === false) result.push(`${fi.filename}`);
         }
       }
     }
 
-    Utils.log("TREE", result);
+    //Utils.log("TREE", result);
     return result;
   }
 }
