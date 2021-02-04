@@ -2,10 +2,12 @@
   "name": "boxtest",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
     "3box": "^1.22.2",
     "@ethersproject/address": "^5.0.8",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-regular-svg-icons": "^5.15.1",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/react-fontawesome": "^0.1.13",
     "@isomorphic-git/lightning-fs": "^4.4.0",

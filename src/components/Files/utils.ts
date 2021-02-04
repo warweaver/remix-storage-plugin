@@ -1,4 +1,5 @@
 import path from "path";
+import { isForOfStatement } from "typescript";
 import { Utils } from "../../App";
 import { fileExplorerNode } from "./types";
 
@@ -9,9 +10,13 @@ export const removeSlash = (s: string) => {
 export const jsonObjectFromFileList = (files: string[]) => {
   const ob: fileExplorerNode[] = [];
   // reindex filelist
+
+  //Utils.log("F", files);
+
   files.map((f, i) => {
+    files[i] = Utils.addSlash(files[i]);
     const dirname = path.dirname(files[i]);
-    Utils.log(dirname, dirname.startsWith("/."))
+    //Utils.log(dirname, dirname.startsWith("/."));
     if (dirname.startsWith("/.")) return true;
     const basename = path.basename(files[i]);
     const directories = removeSlash(dirname).split("/");
@@ -32,7 +37,7 @@ export const jsonObjectFromFileList = (files: string[]) => {
       ob.push(node);
     }
 
-    Utils.log(ob)
+    //Utils.log(ob);
 
     let previouspath = "";
     for (let i = 0; i < directories.length; i++) {
@@ -92,13 +97,15 @@ export const jsonObjectFromFileList = (files: string[]) => {
         return x.fullname === f.parentDir && x.type === "dir";
       });
       f.parentId = parent ? parent.id : null;
+      if (f.fullname === "/") f.parentId = null;
     }
   });
   //Utils.log("build tree from", ob.sort(sortbydirectorylevel));
   // first we need it sorted
-  ob.sort(sortbydirectorylevel)
-  ob[0].parentId = null
-  const nest = (items: any, id:any = null, link = "parentId") =>
+  //Utils.log("OB", ob);
+  //ob.sort(sortbydirectorylevel)
+
+  const nest = (items: any, id: any = null, link = "parentId") =>
     items
       .filter((item: any) => item[link] === id)
       .map((item: any) => ({
@@ -113,7 +120,7 @@ export const jsonObjectFromFileList = (files: string[]) => {
   let result: fileExplorerNode = {
     children: t,
   };
-  Utils.log('OB', ob)
+  //Utils.log("OB", ob);
   return result;
 };
 
@@ -127,3 +134,16 @@ const sortbydirectorylevel = (a: any, b: any) => {
   }
   return 0;
 };
+
+
+export const arrayUnique = (array:any)=>{
+  var a = array.concat();
+  for(var i=0; i<a.length; ++i) {
+      for(var j=i+1; j<a.length; ++j) {
+          if(a[i] === a[j])
+              a.splice(j--, 1);
+      }
+  }
+
+  return a;
+}

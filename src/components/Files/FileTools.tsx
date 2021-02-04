@@ -47,15 +47,6 @@ export const FileTools: React.FC<FileToolsProps> = ({}) => {
       >
         Clear all files & git init
       </button>
-      <button
-        className="btn btn-danger w-10 ml-2 d-none"
-        onClick={async () => {
-          await fileservice.clearFilesInIde();
-          //Utils.log("done");
-        }}
-      >
-        Clear files in IDE
-      </button>
       {/*         <button className="btn btn-danger w-10 ml-2" onClick={async()=>fileservice.clearFilesInWorkingDirectory()}>Clear files in browser</button>
         <button className="btn btn-danger w-10 ml-2" onClick={async()=>fileservice.syncStart()}>sync start</button>
 

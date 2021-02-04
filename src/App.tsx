@@ -136,7 +136,7 @@ function App() {
           )}
           <RepoName />
           <FontAwesomeIcon icon={faExclamationTriangle}></FontAwesomeIcon><a className='small pl-2' href='https://github.com/bunsenstraat/remix-storage-plugin/issues' target='_blank'>Submit issues</a>
-          <div className="nav navbar bg-light p-3"><div><div className="float-left pr-1 m-0 text-white">dGit</div> | repo: {repoName}</div></div>
+          <div className="nav navbar bg-light p-3"><div><div className="float-left pr-1 m-0">dGit</div> | repo: {repoName}</div></div>
           
           <GitStatus></GitStatus>
           <br></br>

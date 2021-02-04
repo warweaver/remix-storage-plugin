@@ -3,13 +3,15 @@ import { useBehaviorSubject } from "use-subscribable";
 import { fileservice, gitservice, Utils } from "../../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faFile,
-  faFolder,
-  faPlusSquare,
-  faMinusSquare,
   faFolderPlus,
   faFolderMinus,
+  faFolderOpen,
+  faFolder
 } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFileAlt,
+  faFile
+}from "@fortawesome/free-regular-svg-icons"
 import "./FileExplorer.css";
 import { fileExplorerNode } from "./types";
 import { StatusButtons } from "./statuses";
@@ -75,7 +77,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
         {files.type === `dir` ? (
           <FontAwesomeIcon
             onClick={async () => await toggleVisibility(files)}
-            icon={getVisisbilityForNode(files) ? faFolderPlus : faFolderMinus}
+            icon={getVisisbilityForNode(files) ? faFolder : faFolderOpen}
             style={{ cursor: "pointer" }}
           />
         ) : (
@@ -94,7 +96,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
               className={"badge badge-primary addgit"}
               onClick={async () => await gitservice.addToGit(files.fullname)}
             >
-              git add
+              {files.fullname === "/"?"git add -A":"git add"}
             </div>
           </span>
         ) : (

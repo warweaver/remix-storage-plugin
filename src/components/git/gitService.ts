@@ -76,7 +76,7 @@ export class gitService {
         await this.addAllToGit();
         return;
       }
-      Utils.log(stagingfiles);
+      //Utils.log(stagingfiles);
       try {
         for (const filepath of stagingfiles) {
           try {
@@ -110,7 +110,7 @@ export class gitService {
 
   async checkoutfile(filename: any) {
     ///const filename = ""; //$(args[0].currentTarget).data('file')
-    Utils.log("checkout", [`${filename}`], removeSlash(filename));
+    //Utils.log("checkout", [`${filename}`], removeSlash(filename));
     let oid = await this.getLastCommmit();
     if (oid)
       try {
@@ -126,7 +126,7 @@ export class gitService {
           filepath: removeSlash(filename),
         });
         const original = Buffer.from(blob).toString("utf8");
-        Utils.log(original, filename);
+        //(original, filename);
         await client.disableCallBacks();
         await client.call(
           "fileManager",
@@ -150,6 +150,7 @@ export class gitService {
     const oid = args; //$(args[0].currentTarget).data('oid')
     //Utils.log("checkout", oid);
     toast.dismiss();
+    await client.disableCallBacks()
     await fileservice.clearFilesInIde();
 
     try {
@@ -164,7 +165,7 @@ export class gitService {
       //Utils.log(e);
       toast.error(" " + e, { autoClose: false });
     }
-
+    await client.enableCallBacks()
     //Utils.log("done");
     await fileservice.syncToBrowser();
     await fileservice.syncStart();
@@ -214,7 +215,7 @@ export class gitService {
     try {
       const branch = await this.currentBranch();
       const currentcommitoid = await this.getCommitFromRef("HEAD");
-      Utils.log("current commid id", currentcommitoid);
+      //Utils.log("current commid id", currentcommitoid);
       this.branch.next(branch);
       if (typeof branch === "undefined" || branch === "") {
         //toast.warn(`You are in a detached state`);
@@ -255,9 +256,9 @@ export class gitService {
   }
 
   async commit(message: string = "") {
-    Utils.log("commit");
+    //Utils.log("commit");
     let filescommited = await this.listFilesInstaging();
-    Utils.log(filescommited);
+    //Utils.log(filescommited);
     if (filescommited.length === 0) {
       toast.error("no files to commit");
       return;
