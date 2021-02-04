@@ -54,7 +54,7 @@ ul, #filetree {
     background-color: purple;
   }
 
-  .unstaged {
+  .unstaged, .new {
     background-color: blue;
   }
 
@@ -62,7 +62,7 @@ ul, #filetree {
     background-color: dimgray;
   }
 
-  .new {
+  .deleted {
       background-color: firebrick;
   }
 
