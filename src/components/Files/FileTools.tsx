@@ -8,10 +8,8 @@ export const FileTools: React.FC<FileToolsProps> = ({}) => {
   let ModalRef = createRef<ConfirmDelete>();
 
   const clearAll = async () => {
-    try {
-      
+    try {  
       await ModalRef.current?.show()
-      await fileservice.clearAll();
       //Utils.log("yes");
     } catch (e) {
       //Utils.log("no");
@@ -47,12 +45,6 @@ export const FileTools: React.FC<FileToolsProps> = ({}) => {
       >
         Clear all files & git init
       </button>
-      {/*         <button className="btn btn-danger w-10 ml-2" onClick={async()=>fileservice.clearFilesInWorkingDirectory()}>Clear files in browser</button>
-        <button className="btn btn-danger w-10 ml-2" onClick={async()=>fileservice.syncStart()}>sync start</button>
-
-        <button className="btn btn-danger w-10" onClick={async()=>fileservice.showFiles()}>show files</button>
-
-        <button className="btn btn-danger w-10" onClick={async()=>resetFileSystem()}>show config</button> */}
     </>
   );
 };

@@ -62,7 +62,6 @@ export class WorkSpacePlugin extends PluginClient {
       // Do something
       //Utils.log(e);
       if (this.callBackEnabled) {
-        await fileservice.clearFilesInWorkingDirectory()
         await fileservice.syncFromBrowser();
       }
       // await this.rmFile(e)
@@ -82,7 +81,6 @@ export class WorkSpacePlugin extends PluginClient {
       // Do something
       if (this.callBackEnabled) {
         //Utils.log(oldfile, newfile);
-        await fileservice.clearFilesInWorkingDirectory()
         await fileservice.syncFromBrowser();
 
       }

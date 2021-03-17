@@ -71,14 +71,6 @@ export class LsFileService {
     };
   }
 
-  async clearFilesInWorkSpace() {
-    await client.disableCallBacks();
-    await this.clearFilesInIde();
-    await this.clearFilesInWorkingDirectory();
-    await this.showFiles();
-    await client.enableCallBacks();
-  }
-
   async clearFilesInIde() {
     await client.disableCallBacks();
     var files = await client.call("fileManager", "readdir", "/");
@@ -116,20 +108,8 @@ export class LsFileService {
 
   async syncStart() {
     //await resetFileSystem();
-    await this.clearFilesInWorkingDirectory();
     await this.syncFromBrowser();
     await gitservice.init();
-  }
-
-  async clearLocalAndSyncFromBrowser() {
-    await this.clearFilesInWorkingDirectory();
-    await this.syncFromBrowser();
-  }
-
-  async clearAll() {
-    await this.clearFilesInWorkSpace();
-    await resetFileSystem(true);
-    await gitservice.clearRepoName();
   }
 
   // SYNC FUNCTIONS
@@ -304,7 +284,7 @@ export class LsFileService {
   async getDirectory(dir: string) {
     //Utils.log("get directory");
     let result: string[] = [];
-    const files = await fs.readdir(`${dir}`);
+    const files = await client.call("fileManager", "readdir", dir);
     //Utils.log(files);
 
     for (let i = 0; i < files.length; i++) {
@@ -393,11 +373,5 @@ const normalize = (filesList:any): File[] => {
   })
 
   return [...folders, ...files]
-}
-
-const extractNameFromKey = (key: string):string => {
-  const keyPath = key.split('/')
-
-  return keyPath[keyPath.length - 1]
 }
 

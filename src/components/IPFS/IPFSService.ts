@@ -90,7 +90,7 @@ export class IPFSService {
     //return true;
 
     // then we get the git objects folder
-    const files = await fileservice.getDirectory("/.git");
+    const files = await fileservice.getDirectoryFromIde(".git");
     Utils.log("files to send", files, this.filesToSend);
 
     for (let i = 0; i < files.length; i++) {
@@ -98,7 +98,7 @@ export class IPFSService {
       //Utils.log("fetching ", fi);
       const ob = {
         path: fi,
-        content: await fs.readFile(fi),
+        content: await client.call("fileManager", "readFile", fi),
       };
       this.filesToSend.push(ob);
     }

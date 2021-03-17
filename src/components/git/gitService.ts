@@ -22,14 +22,8 @@ export class gitService {
   canExport = new BehaviorSubject<boolean>(false);
   reponame = "";
 
-  constructor() {
-    //this.init();
-  }
-
   async init() {
     await client.call("dGitProvider","init")
-    //toast.info(`Git version ${git.version()}`);
-
     await fileservice.showFiles();
   }
 
@@ -43,8 +37,7 @@ export class gitService {
       dir: "/",
     };
     try {
-      await git
-        .statusMatrix(repo)
+      await client.call("dGitProvider","status",'HEAD')
         .then((status) =>
           Promise.all(
             status.map(([filepath, , worktreeStatus]) =>
@@ -102,17 +95,8 @@ export class gitService {
     let oid = await this.getLastCommmit();
     if (oid)
       try {
-        const commitOid = await git.resolveRef({
-          fs: fsNoPromise,
-          dir: "/",
-          ref: "HEAD",
-        }); 
-        const { blob } = await git.readBlob({
-          fs: fsNoPromise,
-          dir: "/",
-          oid: commitOid,
-          filepath: removeSlash(filename),
-        });
+        const commitOid = await client.call('dGitProvider','resolveref',oid)
+        const { blob }= await client.call('dGitProvider','readblob',commitOid, removeSlash(filename))
         const original = Buffer.from(blob).toString("utf8");
         //(original, filename);
         await client.disableCallBacks();
@@ -142,12 +126,7 @@ export class gitService {
     await fileservice.clearFilesInIde();
 
     try {
-      await git.checkout({
-        fs: fsNoPromise,
-        dir: "/",
-        ref: oid,
-      });
-
+      await client.call("dGitProvider","checkout",oid)
       this.gitlog();
     } catch (e) {
       //Utils.log(e);
@@ -162,11 +141,7 @@ export class gitService {
   async getCommits() {
     //Utils.log("get commits");
     try {
-      const commits: ReadCommitResult[] = await git.log({
-        fs: fsNoPromise,
-        dir: "/",
-        depth: 200,
-      });
+      const commits: ReadCommitResult[] = await client.call('dGitProvider','log','HEAD')
       return commits;
     } catch (e) {
       return [];
@@ -190,11 +165,7 @@ export class gitService {
   async createBranch(name: string = "") {
     const branch = name; //|| $("#newbranchname").val();
     if (branch)
-      await git.branch({
-        fs: fsNoPromise,
-        dir: "/",
-        ref: branch,
-      });
+      await await client.call('dGitProvider','branch',branch)
 
     fileservice.showFiles();
   }
@@ -230,12 +201,7 @@ export class gitService {
 
   async currentBranch() {
     try {
-      const branch: string =
-        (await git.currentBranch({
-          fs: fsNoPromise,
-          dir: "/",
-          fullname: false,
-        })) || "";
+      const branch: string = await client.call("dGitProvider","currentbranch") || "";
       //Utils.log("BRANCH", branch);
       return branch;
     } catch (e) {
@@ -251,46 +217,32 @@ export class gitService {
       toast.error("no files to commit");
       return;
     }
-    const sha = await git.commit({
-      fs: fsNoPromise,
-      dir: "/",
-      author: {
+    const sha = await client.call("dGitProvider","commit", 
+      {
         name: "Remix Workspace",
         email: "",
       },
-      message: message, //$('#message').val()
-    });
+      message
+    );
     toast.success(`Commited: ${sha}`);
 
     await fileservice.showFiles();
   }
 
   async getBranches() {
-    let branches: string[] = await git.listBranches({
-      fs: fsNoPromise,
-      dir: "/",
-    });
+    let branches: string[] = await client.call("dGitProvider","branches")
     this.branches.next(branches);
   }
 
   async getCommitFromRef(ref: string) {
-    const commitOid = await git.resolveRef({
-      fs: fsNoPromise,
-      dir: "/",
-      ref: ref,
-    });
+    const commitOid = await client.call('dGitProvider','resolveref',ref)
     return commitOid;
   }
 
   async getFileContentCommit(fullfilename: string, commitOid: string) {
     let content = "";
     try {
-      const { blob } = await git.readBlob({
-        fs: fsNoPromise,
-        dir: "/",
-        oid: commitOid,
-        filepath: removeSlash(fullfilename),
-      });
+      const { blob } = await client.call('dGitProvider','readblob',commitOid, removeSlash(fullfilename))
       content = Buffer.from(blob).toString("utf8");
     } catch (e) {
       //Utils.log(e);
@@ -373,25 +325,14 @@ export class gitService {
     //Utils.log("DIFF", args);
     const fullfilename = args; // $(args[0].currentTarget).data('file')
     try {
-      const commitOid = await git.resolveRef({
-        fs: fsNoPromise,
-        dir: "/",
-        ref: "HEAD",
-      });
+      const commitOid = await await client.call('dGitProvider','resolveref','HEAD')
 
-      const { blob } = await git.readBlob({
-        fs: fsNoPromise,
-        dir: "/",
-        oid: commitOid,
-        filepath: removeSlash(fullfilename),
-      });
+      const { blob } = await client.call('dGitProvider','readblob',commitOid, removeSlash(fullfilename))
 
-      const newcontent = await fs.readFile(fullfilename, {
-        encoding: "utf8",
-      });
+      const newcontent = await client.call("fileManager","readFile", removeSlash(fullfilename))
       const original = Buffer.from(blob).toString("utf8");
 
-      //Utils.log(original);
+      // Utils.log(original);
       //Utils.log(newcontent);
       //const filediff = createPatch(filename, original, newcontent); // diffLines(original,newcontent)
       ////Utils.log(filediff)
