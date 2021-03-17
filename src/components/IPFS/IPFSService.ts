@@ -181,7 +181,7 @@ export class IPFSService {
         await fs.writeFile(file.path, content[0] || new Uint8Array());
       }
       loaderservice.setLoading(false)
-      await fileservice.syncToBrowser();
+      //await fileservice.syncToBrowser();
       await fileservice.syncStart()
     } catch (e) {
       loaderservice.setLoading(false)

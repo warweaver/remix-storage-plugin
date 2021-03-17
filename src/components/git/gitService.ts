@@ -27,11 +27,7 @@ export class gitService {
   }
 
   async init() {
-    await git.init({
-      fs: fsNoPromise,
-      dir: "/",
-      defaultBranch: "master",
-    });
+    await client.call("dGitProvider","init")
     //toast.info(`Git version ${git.version()}`);
 
     await fileservice.showFiles();
@@ -53,8 +49,8 @@ export class gitService {
           Promise.all(
             status.map(([filepath, , worktreeStatus]) =>
               worktreeStatus
-                ? git.add({ ...repo, filepath })
-                : git.remove({ ...repo, filepath })
+                ? client.call("dGitProvider","add",removeSlash(filepath))
+                : client.call("dGitProvider","rm",removeSlash(filepath))
             )
           )
         );
@@ -80,11 +76,7 @@ export class gitService {
       try {
         for (const filepath of stagingfiles) {
           try {
-            await git.add({
-              fs: fsNoPromise,
-              dir: "/",
-              filepath: removeSlash(filepath),
-            });
+            await client.call("dGitProvider","add",removeSlash(filepath))
           } catch (e) {}
         }
         await fileservice.showFiles();
@@ -99,11 +91,7 @@ export class gitService {
     ////Utils.log('RM GIT', $(args[0].currentTarget).data('file'))
     const filename = args; // $(args[0].currentTarget).data('file')
 
-    await git.remove({
-      fs: fsNoPromise,
-      dir: "/",
-      filepath: removeSlash(filename),
-    });
+    await client.call("dGitProvider","add",removeSlash(filename))
     await fileservice.showFiles();
     toast.success(`Removed file file ${filename}`);
   }
@@ -167,7 +155,7 @@ export class gitService {
     }
     await client.enableCallBacks()
     //Utils.log("done");
-    await fileservice.syncToBrowser();
+    //await fileservice.syncToBrowser();
     await fileservice.syncStart();
   }
 
@@ -311,12 +299,8 @@ export class gitService {
   }
 
   async statusMatrix(dir: string = "/", ref: string = "HEAD") {
-    const matrix = await git
-      .statusMatrix({
-        fs: fsNoPromise,
-        dir: "/",
-      })
-      .catch((e) => {});
+    console.log("MATRIX")
+    const matrix = await client.call("dGitProvider","status",'HEAD')
 
     let result = (matrix || []).map((x) => {
       return {
@@ -328,9 +312,14 @@ export class gitService {
   }
 
   async getStatusMatrixFiles() {
-    let files = await (await this.statusMatrix()).map((f) => {
+    console.log("getStatusMatrixFiles")
+    const matrix = await this.statusMatrix()
+    console.log("matrix", matrix)
+    let files =  matrix.map((f) => {
+      console.log(f)
       return f.filename;
     });
+    console.log("matrix files", files)
     return files;
   }
 
@@ -346,19 +335,12 @@ export class gitService {
   }
 
   async listFiles(dir: string = "/", ref: string = "HEAD") {
-    let filescommited = await git.listFiles({
-      fs: fsNoPromise,
-      dir: dir,
-      ref: ref,
-    });
+    let filescommited = await client.call("dGitProvider","lsfiles",ref)
     return filescommited;
   }
 
   async listFilesInstaging(dir: string = "/") {
-    let filesInStaging = await git.listFiles({
-      fs: fsNoPromise,
-      dir: dir,
-    });
+    let filesInStaging = await client.call("dGitProvider","lsfiles",'HEAD')
     return filesInStaging;
   }
 

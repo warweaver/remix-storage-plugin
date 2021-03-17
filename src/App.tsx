@@ -156,7 +156,6 @@ function App() {
           >
             <Tab className="mt-4 ml-1" eventKey="files" title="FILES">
               <FileExplorer setTab={setTab} />
-              <FileTools />
               <FileHelp/>
             </Tab>
             <Tab className="mt-4 ml-1" eventKey="git" title="GIT">

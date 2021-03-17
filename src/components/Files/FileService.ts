@@ -133,8 +133,9 @@ export class LsFileService {
   }
 
   // SYNC FUNCTIONS
-
+  // TODO: remove
   async syncToBrowser() {
+    return true
     //this.showspinner();
     loaderservice.setLoading(true);
     await client.disableCallBacks();
@@ -175,15 +176,8 @@ export class LsFileService {
 
   async syncFromBrowser() {
     await client.disableCallBacks();
-    /// remove the files in the working area
-
-    /// get files from ID and sync them
     let files = await this.getDirectoryFromIde("/");
-
-    //Utils.log("files to add ", files);
-    for (let i = 0; i < files.length; i++) {
-      await this.addFileFromBrowser(files[i]);
-    }
+    console.log("SYNC DONE", files)
     await this.showFiles();
     await client.enableCallBacks();
   }
@@ -237,7 +231,7 @@ export class LsFileService {
 
   async getFileStatusMatrix() {
     this.fileStatusResult = await gitservice.statusMatrix();
-    //Utils.log("STATUS MATRIX", this.fileStatusResult);
+    Utils.log("STATUS MATRIX", this.fileStatusResult);
     // let filesinstaging = await gitservice.listFilesInstaging();
     // //Utils.log("FILES IN STAGING", filesinstaging);
     // let filesingit = await gitservice.listFiles();
@@ -251,7 +245,7 @@ export class LsFileService {
         }
       });
     });
-    ////Utils.log("file status", this.fileStatusResult);
+    Utils.log("file status", this.fileStatusResult);
   }
 
   getFilesByStatus(status: string) {
@@ -288,6 +282,7 @@ export class LsFileService {
 
     try {
       await this.getFileStatusMatrix();
+      Utils.log("files", files);
       let jsonfiles = await jsonObjectFromFileList(
         arrayUnique(filesinbrowser.concat(files))
       );
