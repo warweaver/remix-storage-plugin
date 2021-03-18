@@ -1,5 +1,5 @@
 import git, { ReadCommitResult } from "isomorphic-git";
-import { client, fileservice, fs, fsNoPromise, Utils } from "../../App";
+import { client, fileservice, Utils } from "../../App";
 import { toast } from "react-toastify";
 import path from "path";
 import { removeSlash } from "../Files/utils";
@@ -27,15 +27,7 @@ export class gitService {
     await fileservice.showFiles();
   }
 
-  async clearRepoName() {
-    this.reponameSubject.next("");
-  }
-
   async addAllToGit() {
-    let repo = {
-      fs: fsNoPromise,
-      dir: "/",
-    };
     try {
       await client.call("dGitProvider","status",'HEAD')
         .then((status) =>
@@ -123,8 +115,6 @@ export class gitService {
     //Utils.log("checkout", oid);
     toast.dismiss();
     await client.disableCallBacks()
-    await fileservice.clearFilesInIde();
-
     try {
       await client.call("dGitProvider","checkout",oid)
       this.gitlog();
@@ -211,12 +201,12 @@ export class gitService {
 
   async commit(message: string = "") {
     //Utils.log("commit");
-    let filescommited = await this.listFilesInstaging();
-    //Utils.log(filescommited);
-    if (filescommited.length === 0) {
-      toast.error("no files to commit");
-      return;
-    }
+    // let filescommited = await this.listFilesInstaging();
+    // //Utils.log(filescommited);
+    // if (filescommited.length === 0) {
+    //   toast.error("no files to commit");
+    //   return;
+    // }
     const sha = await client.call("dGitProvider","commit", 
       {
         name: "Remix Workspace",

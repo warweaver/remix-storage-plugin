@@ -43,11 +43,6 @@ import { devutils } from "./components/Utils";
 
 export const Utils:devutils = new devutils();
 
-export var fsConfig: any; //= new FS("remix-storage-config");
-export var fsConfigPromise: any; // = fsConfig.promises;
-
-export var fsNoPromise: any; // = new FS("remix-workspace");
-export var fs: any; // = fsNoPromise.promises;
 export const gitservice: gitService = new gitService();
 export const client: WorkSpacePlugin = new WorkSpacePlugin();
 export const fileservice: LsFileService = new LsFileService();
@@ -59,12 +54,9 @@ export const localipfsstorage: LocalIPFSStorage = new LocalIPFSStorage();
 
 export const resetFileSystem = async (wipe: boolean = false) => {
   try {
-    fsConfig = new FS("remix-storage-config");
-    fsConfigPromise = fsConfig.promises;
-    fsNoPromise = new FS("remix-workspace", { wipe: wipe });
-    fs = fsNoPromise.promises;
     localipfsstorage.init();
     client.clientLoaded.subscribe(async (load: boolean) => {
+      if (load) await ipfservice.setipfsHost();
       if (load) await fileservice.syncStart();
     });
     return true;

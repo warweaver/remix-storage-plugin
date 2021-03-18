@@ -84,7 +84,7 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
     <>
       <hr></hr>
       <h4>Import from 3Box storage</h4>
-      <ConfirmDelete title={"Importing"} text={"Importing will delete the files you are working on! Continue?"} ref={ModalRef}></ConfirmDelete>
+      <ConfirmDelete title={"Importing"} text={"This will create a new workspace! Continue?"} ref={ModalRef}></ConfirmDelete>
       <ConfirmDelete title={"Deleting"} text={"Are you sure you want to erase this item?"} ref={EraseModalRef}></ConfirmDelete>
       
       <div className="alert alert-warning" role="alert">

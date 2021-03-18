@@ -1,6 +1,6 @@
 import { unstable_batchedUpdates } from "react-dom";
 import { BehaviorSubject } from "rxjs";
-import { fsConfigPromise, gitservice, ipfservice, Utils } from "../../App";
+import { client, gitservice, ipfservice, Utils } from "../../App";
 import { boxObject } from "../3box/3boxService";
 import { default as dateFormat } from 'dateformat'
 export class LocalIPFSStorage {
@@ -17,10 +17,8 @@ export class LocalIPFSStorage {
   }
 
   async read() {
-    let r = await fsConfigPromise.readFile("/objects.json", {
-      encoding: "utf8",
-    });
-    this.objects = JSON.parse(r);
+    let r = window.localStorage.getItem('ipfs')
+    this.objects = r? JSON.parse(r):[];
     this.objects.sort((a, b) => (a.timestamp > b.timestamp) ? -1 : 1)
     this.objects = await this.filterNulls();
     //Utils.log("READ CONFIG",this.objects);
@@ -28,11 +26,7 @@ export class LocalIPFSStorage {
   }
 
   async write() {
-    await fsConfigPromise.writeFile(
-      "/objects.json",
-      JSON.stringify(await this.filterNulls()),
-      { encoding: "utf8" }
-    );
+    window.localStorage.setItem('ipfs', JSON.stringify(await this.filterNulls()) );
   }
 
   async addToStorage(box: boxObject) {
@@ -74,6 +68,8 @@ export class LocalIPFSStorage {
         ref: commits[0].oid,
         message: commits[0].commit.message,
       };
+
+      console.log(ob)
   
       return ob;
     }catch(e){

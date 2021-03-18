@@ -13,10 +13,6 @@ export const FileHelp: React.FC<FileHelpProps> = ({}) => {
         <br></br>
         In this section you can manage your files in git. Files from remix will
         be added automatically.<br></br>
-        Starting a new repo clears git and uses the files in remix to create a
-        new repo.<br></br>
-        Clearing all files clears git & remix to create a new repo.<br></br>
-        Check out the help section to learn more.
       </div>
       <br></br>
       <br></br>

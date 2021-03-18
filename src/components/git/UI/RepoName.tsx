@@ -16,15 +16,11 @@ export const RepoName: React.FC<RepoNameProps> = ({}) => {
     setNAme({ value: e.currentTarget.value });
   };
   const saveName = () => {
-      gitservice.reponameSubject.next(name.value)
-      gitservice.reponame = name.value
       localStorage.setItem("currentRepo",name.value)
   };
 
   useEffect(()=>{
     let name:string = localStorage.getItem("currentRepo") || ""
-    gitservice.reponame = name
-    gitservice.reponameSubject.next(name)
   },[])
 
   return (

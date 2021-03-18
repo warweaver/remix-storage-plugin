@@ -1,16 +1,12 @@
 import { toast } from "react-toastify";
-import FS from "@isomorphic-git/lightning-fs";
 import App, {
   resetFileSystem,
-  fileservice,
-  fsNoPromise,
   gitservice,
   loaderservice,
   Utils,
 } from "../../App";
 import { client } from "../../App";
 import path from "path";
-import { fs } from "../../App";
 import { removeSlash, jsonObjectFromFileList, arrayUnique } from "./utils";
 import { BehaviorSubject } from "rxjs";
 import { fileExplorerNode, fileStatusResult, statusMatrix } from "./types";
@@ -42,21 +38,6 @@ export class LsFileService {
   confirmDeletion = new BehaviorSubject<boolean | undefined>(undefined);
   fileStatusResult: fileStatusResult[] = [];
 
-  constructor() {}
-
-  async addFileFromBrowser(file: string) {
-    try {
-      const content = await client.call(
-        "fileManager",
-        "readFile",
-        Utils.addSlash(file)
-      );
-      ////Utils.log(content);
-      await this.addFile(file, content);
-      //return content
-    } catch (e) {}
-  }
-
   // RESET FUNCTIONS
 
   async clearDb() {
@@ -71,111 +52,22 @@ export class LsFileService {
     };
   }
 
-  async clearFilesInIde() {
-    await client.disableCallBacks();
-    var files = await client.call("fileManager", "readdir", "/");
-    let fileArray = normalize(files)
-    for (let i = 0; i < fileArray.length; i++) {
-      let fi: any = fileArray[i];
-      try {
-        await client.call(
-          "fileManager",
-          "remove",
-          Utils.addSlash(fi.filename)
-        );
-      } catch (e) {
-        //Utils.log(e);
-      }
-    }
-    await client.enableCallBacks();
-    return true;
-  }
-
-  async clearFilesInWorkingDirectory() {
-    // files in FS
-    const files = await gitservice.getStatusMatrixFiles();
-    for (let i = 0; i < files.length; i++) {
-      await this.rmFile(files[i]);
-    }
-  }
-
-  async startNewRepo() {
-    await resetFileSystem(true);
-    await this.syncFromBrowser();
-    await gitservice.init();
-    await gitservice.clearRepoName();
-  }
-
   async syncStart() {
     //await resetFileSystem();
     await this.syncFromBrowser();
     await gitservice.init();
   }
 
-  // SYNC FUNCTIONS
-  // TODO: remove
-  async syncToBrowser() {
-    return true
-    //this.showspinner();
-    loaderservice.setLoading(true);
-    await client.disableCallBacks();
-    let filesToSync = [];
-    // first get files in current commit, not the files in the FS because they can be changed or unstaged
-
-    let filescommited = await gitservice.listFiles();
-    const currentcommitoid = await gitservice.getCommitFromRef("HEAD");
-    for (let i = 0; i < filescommited.length; i++) {
-      const ob = {
-        path: filescommited[i],
-        content: await gitservice.getFileContentCommit(
-          filescommited[i],
-          currentcommitoid
-        ),
-      };
-      //Utils.log("sync file", ob);
-      try {
-        await client.call(
-          "fileManager",
-          "setFile",
-          Utils.addSlash(ob.path),
-          ob.content
-        );
-      } catch (e) {
-        //Utils.log("could not load file", e);
-        loaderservice.setLoading(false);
-      }
-      filesToSync.push(ob);
-    }
-    //Utils.log("files to sync", filesToSync);
-
-    await this.showFiles();
-    await client.enableCallBacks();
-    toast.success("Import successfull");
-    loaderservice.setLoading(false);
-  }
-
   async syncFromBrowser() {
     await client.disableCallBacks();
+    const workspacename = await client.call('fileExplorers', 'getCurrentWorkspace')
+    console.log("SET NAME", workspacename)
+    gitservice.reponameSubject.next(workspacename)
+    gitservice.reponame = workspacename
     let files = await this.getDirectoryFromIde("/");
     console.log("SYNC DONE", files)
     await this.showFiles();
     await client.enableCallBacks();
-  }
-
-  async addFile(file: string, content: string) {
-    //Utils.log("add file ", file);
-    const directories = path.dirname(file);
-    await this.createDirectoriesFromString(directories);
-    ////Utils.log(fs);
-    await fs.writeFile("/" + file, content);
-  }
-
-  async rmFile(file: string) {
-    try {
-      //Utils.log("rm file ", file);
-      await fs.unlink("/" + file);
-    } catch (e) {}
-    //await this.showFiles();
   }
 
   async createDirectoriesFromString(strdirectories: string) {
@@ -191,7 +83,7 @@ export class LsFileService {
       const finalPath = previouspath + "/" + directories[i];
       ////Utils.log("creating ", finalPath);
       try {
-        await fs.mkdir(finalPath);
+        await client.call("fileManager","mkdir",finalPath);
       } catch (e) {
         // //Utils.log(e)
       }
@@ -279,31 +171,6 @@ export class LsFileService {
     } catch (e) {}
     await gitservice.checkForFilesCommmited();
     return true;
-  }
-
-  async getDirectory(dir: string) {
-    //Utils.log("get directory");
-    let result: string[] = [];
-    const files = await client.call("fileManager", "readdir", dir);
-    //Utils.log(files);
-
-    for (let i = 0; i < files.length; i++) {
-      const fi = files[i];
-      if (typeof fi !== "undefined") {
-        // //Utils.log('looking into ', fi, dir)
-        if (dir === "/") dir = "";
-        const type = await fs.stat(`${dir}/${fi}`);
-        if (type.type === "dir") {
-          // //Utils.log('is directory, so get ', `${dir}/${fi}`)
-          result = [...result, ...(await this.getDirectory(`${dir}/${fi}`))];
-        } else {
-          // //Utils.log('is file ', `${dir}/${fi}`)
-          result.push(`${dir}/${fi}`);
-        }
-      }
-    }
-    //Utils.log(result);
-    return result;
   }
 
   async getDirectoryFromIde(dir: string, onlyDirectories: boolean = false) {

@@ -50,7 +50,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
 
   useEffect(() => {
     //Utils.log("export view");
-    ipfservice.setipfsHost();
+    //ipfservice.setipfsHost();
   }, []);
 
   const addFilesToIpfs = async () => {

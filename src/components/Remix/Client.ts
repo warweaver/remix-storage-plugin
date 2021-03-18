@@ -46,7 +46,6 @@ export class WorkSpacePlugin extends PluginClient {
         await fileservice.syncFromBrowser();
 
       }
-      //await this.addFileFromBrowser(e)
     });
 
     this.on("fileManager", "fileAdded", async (e) => {
@@ -84,8 +83,28 @@ export class WorkSpacePlugin extends PluginClient {
         await fileservice.syncFromBrowser();
 
       }
-      //await this.addFileFromBrowser(e)
     });
+
+
+    this.on("fileExplorers", "setWorkspace", async (x) => {
+      console.log("ws set", x);
+      await fileservice.syncFromBrowser();
+      Utils.log(x);
+    });
+
+    this.on("fileExplorers", "deleteWorkspace", async (x) => {
+      console.log("wS DELETE", x);
+      await fileservice.syncFromBrowser();
+      Utils.log(x);
+    });
+
+    this.on("fileExplorers", "renameWorkspace", async (x) => {
+      console.log("wS rn", x);
+      await fileservice.syncFromBrowser();
+      Utils.log(x);
+    });
+
+
     this.callBackEnabled = true;
   }
 

@@ -62,11 +62,11 @@ export const GitLog: React.FC<gitLogProps> = ({}) => {
           })}
 
           <div
-            onClick={async () => await checkout("master")}
+            onClick={async () => await checkout("main")}
             className="btn btn-primary btn-sm checkout-btn"
-            data-oid="master"
+            data-oid="main"
           >
-            git checkout master
+            git checkout main
           </div>
         </div>
       </div>
