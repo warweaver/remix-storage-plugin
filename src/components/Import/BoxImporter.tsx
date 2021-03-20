@@ -2,7 +2,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { createRef, Suspense } from "react";
 import { Card } from "react-bootstrap";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "../usesubscribe/index";
 import { boxservice, ipfservice, Utils } from "../../App";
 import { boxObject } from "../3box/3boxService";
 import ConfirmDelete from "../ConfirmDelete";

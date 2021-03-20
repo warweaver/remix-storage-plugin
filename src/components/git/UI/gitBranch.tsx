@@ -1,6 +1,6 @@
 import React, { createRef, useState } from "react";
 import { Alert } from "react-bootstrap";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "../../usesubscribe/index";
 import { gitservice, Utils } from "../../../App";
 import ConfirmDelete from "../../ConfirmDelete";
 

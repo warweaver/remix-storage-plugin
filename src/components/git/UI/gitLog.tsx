@@ -1,6 +1,6 @@
 import { ReadCommitResult } from "isomorphic-git";
 import React, { createRef } from "react";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "../../usesubscribe/index";
 import { gitservice, Utils } from "../../../App";
 import { default as dateFormat } from "dateformat";
 import ConfirmDelete from "../../ConfirmDelete";

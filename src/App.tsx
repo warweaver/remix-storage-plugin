@@ -24,7 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Importer } from "./components/Import/importer";
 import Loading from "react-fullscreen-loading";
 import { LoaderService } from "./components/loaderService";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "./components/usesubscribe/index";
 import { Help } from "./components/Help";
 import { RepoName } from "./components/git/UI/RepoName";
 import { LocalIPFSStorage } from "./components/LocalStorage/LocalStorage";

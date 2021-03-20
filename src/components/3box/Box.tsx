@@ -11,7 +11,7 @@ import {
   Utils,
 } from "../../App";
 import { toast } from "react-toastify";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "../usesubscribe/index";
 
 interface BoxProps {
   buttonTitle: string;

@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "../usesubscribe/index";
 import {
   boxservice,
   gitservice,

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "../usesubscribe/index";
 import { fileservice, gitservice, Utils } from "../../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

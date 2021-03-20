@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "../usesubscribe/index";
 import { ipfservice } from "../../App";
 
 interface IPFSConfigProps {}
