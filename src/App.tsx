@@ -84,11 +84,13 @@ function App() {
   const [canLoad, setCanLoad] = useState<boolean>(false);
   const repoName = useBehaviorSubject(gitservice.reponameSubject);
   const canCommit = useBehaviorSubject(gitservice.canCommit);
+  const canUseApp = useBehaviorSubject(fileservice.canUseApp);
   const [confirmShow, setConfirmShow] = React.useState(false);
 
   gitservice.reponameSubject.subscribe((x) => {}).unsubscribe();
   gitservice.canCommit.subscribe((x) => {}).unsubscribe();
   loaderservice.loading.subscribe((x) => {}).unsubscribe();
+  fileservice.canUseApp.subscribe((x) => {}).unsubscribe();
 
   const setTab = async (key: string) => {
     setActiveKey(key);
@@ -105,8 +107,8 @@ function App() {
 
   return (
     <div className="App">
-      {!canLoad ? (
-        <ConnectionWarning canLoad={canLoad} />
+      {!canUseApp ? (
+        <ConnectionWarning canLoad={canUseApp} />
       ) : (
         <Container fluid>
           {loading ? (
@@ -114,7 +116,6 @@ function App() {
           ) : (
             <></>
           )}
-          <RepoName />
           <FontAwesomeIcon icon={faExclamationTriangle}></FontAwesomeIcon><a className='small pl-2' href='https://github.com/bunsenstraat/remix-storage-plugin/issues' target='_blank'>Submit issues</a>
           <div className="nav navbar bg-light p-3"><div><div className="float-left pr-1 m-0">dGit</div> | repo: {repoName}</div></div>
           

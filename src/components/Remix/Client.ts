@@ -15,9 +15,13 @@ export class WorkSpacePlugin extends PluginClient {
     this.onload().then(async () => {
       //Utils.log("workspace client loaded", this);
       toast.success("Connected to REMIX");
-      await this.call("manager", "activatePlugin", "dGitProvider")
-      this.clientLoaded.next(true);
-      await this.setCallBacks();
+      try{
+        await this.call("manager", "activatePlugin", "dGitProvider")
+        this.clientLoaded.next(true);
+        await this.setCallBacks();
+      }catch(e){
+        toast.error("Could not activate DECENTRALIZED GIT. Please activate DECENTRALIZED GIT in the plugin list and restart this plugin.", {autoClose:false})
+      }
     });
   }
 
@@ -89,19 +93,19 @@ export class WorkSpacePlugin extends PluginClient {
 
     this.on("fileExplorers", "setWorkspace", async (x) => {
       console.log("ws set", x);
-      await fileservice.syncFromBrowser();
+      await fileservice.syncFromBrowser(x.isLocalhost);
       Utils.log(x);
     });
 
     this.on("fileExplorers", "deleteWorkspace", async (x) => {
       console.log("wS DELETE", x);
-      await fileservice.syncFromBrowser();
+      await fileservice.syncFromBrowser(x.isLocalhost);
       Utils.log(x);
     });
 
     this.on("fileExplorers", "renameWorkspace", async (x) => {
       console.log("wS rn", x);
-      await fileservice.syncFromBrowser();
+      await fileservice.syncFromBrowser(x.isLocalhost);
       Utils.log(x);
     });
 

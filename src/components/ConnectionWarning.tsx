@@ -4,25 +4,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { Utils } from "../App";
 interface ConnectionWarningProps {
-  canLoad: boolean;
+  canLoad: boolean | undefined;
 }
 
 export const ConnectionWarning: React.FC<ConnectionWarningProps> = (props) => {
   //Utils.log("WARNING",props)
   return (
     <>
-      <Modal show={!props.canLoad} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
+      <Modal show={true} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header>
           <Modal.Title>
-        <FontAwesomeIcon icon={faExclamationTriangle} /> Change your browser settings
+        <FontAwesomeIcon icon={faExclamationTriangle} /> Localhost is not supported
         </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-
-          This app won't work properly when you are not on https and your
-          browser blocks third party cookies.<br></br>
-          Running it in incognito mode might not work unless you allow third part cookies.<br></br>
-          3Box services are not available unless you are on https.<br></br>
+            Localhost and remixd are not supported in this app.
         </Modal.Body>
       </Modal>
     </>

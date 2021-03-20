@@ -58,7 +58,6 @@ export class LocalIPFSStorage {
     try{
       const commits = await gitservice.getCommits();
       let key = gitservice.reponame;
-  
       let ob: boxObject = {
         key: key,
         cid: ipfservice.cid,
@@ -68,12 +67,19 @@ export class LocalIPFSStorage {
         ref: commits[0].oid,
         message: commits[0].commit.message,
       };
-
-      console.log(ob)
-  
       return ob;
     }catch(e){
-      throw(e)
+      let key = gitservice.reponame;
+      let ob: boxObject = {
+        key: key,
+        cid: ipfservice.cid,
+        datestored: dateFormat(new Date(),"dddd, mmmm dS, yyyy, h:MM:ss TT"),
+        datecommit: "no commits",
+        timestamp: Date.now(),
+        ref: "no commits",
+        message: "no commits",
+      };
+      return ob;
     }
 
   }
