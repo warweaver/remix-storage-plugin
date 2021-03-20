@@ -263,7 +263,7 @@ export class gitService {
   }
 
   async statusMatrix(dir: string = "/", ref: string = "HEAD") {
-    console.log("MATRIX");
+    Utils.log("MATRIX");
     const matrix = await client.call("dGitProvider", "status", { ref: "HEAD" });
 
     let result = (matrix || []).map((x) => {
@@ -276,14 +276,14 @@ export class gitService {
   }
 
   async getStatusMatrixFiles() {
-    console.log("getStatusMatrixFiles");
+    Utils.log("getStatusMatrixFiles");
     const matrix = await this.statusMatrix();
-    console.log("matrix", matrix);
+    Utils.log("matrix", matrix);
     let files = matrix.map((f) => {
-      console.log(f);
+      Utils.log(f);
       return f.filename;
     });
-    console.log("matrix files", files);
+    Utils.log("matrix files", files);
     return files;
   }
 

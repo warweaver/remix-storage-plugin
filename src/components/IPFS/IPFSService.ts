@@ -36,14 +36,14 @@ export class IPFSService {
   }
 
   async setipfsHost() {
-    console.log(this.ipfsconfig)
+    Utils.log(this.ipfsconfig)
     try {
       const c = await client.call("dGitProvider", "setIpfsConfig", this.ipfsconfig ) 
-      console.log(c)
+      Utils.log(c)
       this.connectionStatus.next(c)
       return true;
     } catch (e) {
-      console.log(e)
+      Utils.log(e)
       toast.error(
         "There was an error connecting to IPFS, please check your IPFS settings if applicable."
       );
@@ -59,7 +59,7 @@ export class IPFSService {
     loaderservice.setLoading(true)
     try {
       const result = await client.call('dGitProvider', 'push')
-      console.log(result)
+      Utils.log(result)
       this.cid = result;
       this.cidBehavior.next(this.cid);
       toast.success(`You files were uploaded to IPFS`);

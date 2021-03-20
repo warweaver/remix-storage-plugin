@@ -92,19 +92,19 @@ export class WorkSpacePlugin extends PluginClient {
 
 
     this.on("fileExplorers", "setWorkspace", async (x) => {
-      console.log("ws set", x);
+      Utils.log("ws set", x);
       await fileservice.syncFromBrowser(x.isLocalhost);
       Utils.log(x);
     });
 
     this.on("fileExplorers", "deleteWorkspace", async (x) => {
-      console.log("wS DELETE", x);
+      Utils.log("wS DELETE", x);
       await fileservice.syncFromBrowser(x.isLocalhost);
       Utils.log(x);
     });
 
     this.on("fileExplorers", "renameWorkspace", async (x) => {
-      console.log("wS rn", x);
+      Utils.log("wS rn", x);
       await fileservice.syncFromBrowser(x.isLocalhost);
       Utils.log(x);
     });

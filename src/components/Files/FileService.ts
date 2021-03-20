@@ -74,7 +74,7 @@ export class LsFileService {
         this.canUseApp.next(false);
         return
       }
-      console.log("SET NAME", workspace);
+      Utils.log("SET NAME", workspace);
       gitservice.reponameSubject.next(workspace.name);
       gitservice.reponame = workspace.name;
       this.canUseApp.next(true);
@@ -163,8 +163,8 @@ export class LsFileService {
     //$('#files').show()
     //$('#diff-container').hide()
     let files = await gitservice.getStatusMatrixFiles(); //await this.getDirectory("/");
-    console.log("start get files");
-    console.log("matrix files", files);
+    Utils.log("start get files");
+    Utils.log("matrix files", files);
     let filesinbrowser = await this.getDirectoryFromIde("/");
     //Utils.log("get matrix result", files, filesinbrowser);
 
