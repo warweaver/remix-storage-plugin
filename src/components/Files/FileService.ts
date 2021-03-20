@@ -61,22 +61,25 @@ export class LsFileService {
 
   async syncFromBrowser(isLocalhost = false) {
     await client.disableCallBacks();
-    if(isLocalhost){
-      this.canUseApp.next(false)
-      toast.warning("Localhost not supported")
-      return
+    if (isLocalhost) {
+      this.canUseApp.next(false);
+      return;
     }
     try {
-      const workspacename = await client.call(
+      const workspace = await client.call(
         "fileExplorers",
         "getCurrentWorkspace"
       );
-      console.log("SET NAME", workspacename);
-      gitservice.reponameSubject.next(workspacename);
-      gitservice.reponame = workspacename;
-      this.canUseApp.next(true)
+      if (workspace.isLocalhost) {
+        this.canUseApp.next(false);
+        return
+      }
+      console.log("SET NAME", workspace);
+      gitservice.reponameSubject.next(workspace.name);
+      gitservice.reponame = workspace.name;
+      this.canUseApp.next(true);
     } catch (e) {
-      this.canUseApp.next(false)
+      this.canUseApp.next(false);
       Utils.log("no workspace");
     }
     await this.showFiles();
