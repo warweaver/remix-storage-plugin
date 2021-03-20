@@ -18,6 +18,7 @@ export const FileTools: React.FC<FileToolsProps> = ({}) => {
 
   return (
     <>
+      <div onClick={async ()=> gitservice.zip()} className='btn btn-primary btn-sm'>download as zip</div>
     </>
   );
 };

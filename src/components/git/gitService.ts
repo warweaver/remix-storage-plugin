@@ -23,19 +23,24 @@ export class gitService {
   reponame = "";
 
   async init() {
-    await client.call("dGitProvider","init")
+    await client.call("dGitProvider", "init");
     await fileservice.showFiles();
   }
 
   async addAllToGit() {
     try {
-      await client.call("dGitProvider","status",'HEAD')
+      await client
+        .call("dGitProvider", "status", { ref: "HEAD" })
         .then((status) =>
           Promise.all(
             status.map(([filepath, , worktreeStatus]) =>
               worktreeStatus
-                ? client.call("dGitProvider","add",removeSlash(filepath))
-                : client.call("dGitProvider","rm",removeSlash(filepath))
+                ? client.call("dGitProvider", "add", {
+                    filepath: removeSlash(filepath),
+                  })
+                : client.call("dGitProvider", "rm", {
+                    filepath: removeSlash(filepath),
+                  })
             )
           )
         );
@@ -61,7 +66,9 @@ export class gitService {
       try {
         for (const filepath of stagingfiles) {
           try {
-            await client.call("dGitProvider","add",removeSlash(filepath))
+            await client.call("dGitProvider", "add", {
+              filepath: removeSlash(filepath),
+            });
           } catch (e) {}
         }
         await fileservice.showFiles();
@@ -76,7 +83,9 @@ export class gitService {
     ////Utils.log('RM GIT', $(args[0].currentTarget).data('file'))
     const filename = args; // $(args[0].currentTarget).data('file')
 
-    await client.call("dGitProvider","add",removeSlash(filename))
+    await client.call("dGitProvider", "add", {
+      filepath: removeSlash(filename),
+    });
     await fileservice.showFiles();
     toast.success(`Removed file file ${filename}`);
   }
@@ -87,8 +96,13 @@ export class gitService {
     let oid = await this.getLastCommmit();
     if (oid)
       try {
-        const commitOid = await client.call('dGitProvider','resolveref',oid)
-        const { blob }= await client.call('dGitProvider','readblob',commitOid, removeSlash(filename))
+        const commitOid = await client.call("dGitProvider", "resolveref", {
+          ref: oid,
+        });
+        const { blob } = await client.call("dGitProvider", "readblob", {
+          oid: commitOid,
+          filepath: removeSlash(filename),
+        });
         const original = Buffer.from(blob).toString("utf8");
         //(original, filename);
         await client.disableCallBacks();
@@ -98,7 +112,7 @@ export class gitService {
           Utils.addSlash(filename),
           original
         );
-        await client.enableCallBacks()
+        await client.enableCallBacks();
         await fileservice.syncFromBrowser();
         //await fileservice.showFiles()
         //await fileservice.syncToBrowser();
@@ -110,19 +124,17 @@ export class gitService {
       }
   }
 
-  async checkout(args: string) {
-    const oid = args; //$(args[0].currentTarget).data('oid')
-    //Utils.log("checkout", oid);
+  async checkout(cmd :any) {
     toast.dismiss();
-    await client.disableCallBacks()
+    await client.disableCallBacks();
     try {
-      await client.call("dGitProvider","checkout",oid)
+      await client.call("dGitProvider", "checkout", cmd);
       this.gitlog();
     } catch (e) {
       //Utils.log(e);
       toast.error(" " + e, { autoClose: false });
     }
-    await client.enableCallBacks()
+    await client.enableCallBacks();
     //Utils.log("done");
     //await fileservice.syncToBrowser();
     await fileservice.syncStart();
@@ -131,7 +143,11 @@ export class gitService {
   async getCommits() {
     //Utils.log("get commits");
     try {
-      const commits: ReadCommitResult[] = await client.call('dGitProvider','log','HEAD')
+      const commits: ReadCommitResult[] = await client.call(
+        "dGitProvider",
+        "log",
+        { ref: "HEAD" }
+      );
       return commits;
     } catch (e) {
       return [];
@@ -155,7 +171,7 @@ export class gitService {
   async createBranch(name: string = "") {
     const branch = name; //|| $("#newbranchname").val();
     if (branch)
-      await await client.call('dGitProvider','branch',branch)
+      await await client.call("dGitProvider", "branch", { ref: branch });
 
     fileservice.showFiles();
   }
@@ -191,7 +207,8 @@ export class gitService {
 
   async currentBranch() {
     try {
-      const branch: string = await client.call("dGitProvider","currentbranch") || "";
+      const branch: string =
+        (await client.call("dGitProvider", "currentbranch")) || "";
       //Utils.log("BRANCH", branch);
       return branch;
     } catch (e) {
@@ -207,32 +224,37 @@ export class gitService {
     //   toast.error("no files to commit");
     //   return;
     // }
-    const sha = await client.call("dGitProvider","commit", 
-      {
+    const sha = await client.call("dGitProvider", "commit", {
+      author: {
         name: "Remix Workspace",
         email: "",
       },
-      message
-    );
+      message: message,
+    });
     toast.success(`Commited: ${sha}`);
 
     await fileservice.showFiles();
   }
 
   async getBranches() {
-    let branches: string[] = await client.call("dGitProvider","branches")
+    let branches: string[] = await client.call("dGitProvider", "branches");
     this.branches.next(branches);
   }
 
   async getCommitFromRef(ref: string) {
-    const commitOid = await client.call('dGitProvider','resolveref',ref)
+    const commitOid = await client.call("dGitProvider", "resolveref", {
+      ref: ref,
+    });
     return commitOid;
   }
 
   async getFileContentCommit(fullfilename: string, commitOid: string) {
     let content = "";
     try {
-      const { blob } = await client.call('dGitProvider','readblob',commitOid, removeSlash(fullfilename))
+      const { blob } = await client.call("dGitProvider", "readblob", {
+        oid: commitOid,
+        filepath: removeSlash(fullfilename),
+      });
       content = Buffer.from(blob).toString("utf8");
     } catch (e) {
       //Utils.log(e);
@@ -241,8 +263,8 @@ export class gitService {
   }
 
   async statusMatrix(dir: string = "/", ref: string = "HEAD") {
-    console.log("MATRIX")
-    const matrix = await client.call("dGitProvider","status",'HEAD')
+    console.log("MATRIX");
+    const matrix = await client.call("dGitProvider", "status", { ref: "HEAD" });
 
     let result = (matrix || []).map((x) => {
       return {
@@ -254,14 +276,14 @@ export class gitService {
   }
 
   async getStatusMatrixFiles() {
-    console.log("getStatusMatrixFiles")
-    const matrix = await this.statusMatrix()
-    console.log("matrix", matrix)
-    let files =  matrix.map((f) => {
-      console.log(f)
+    console.log("getStatusMatrixFiles");
+    const matrix = await this.statusMatrix();
+    console.log("matrix", matrix);
+    let files = matrix.map((f) => {
+      console.log(f);
       return f.filename;
     });
-    console.log("matrix files", files)
+    console.log("matrix files", files);
     return files;
   }
 
@@ -271,18 +293,22 @@ export class gitService {
       this.canExport.next(true);
       return true;
     } catch (e) {
-      this.canExport.next(false);
+      this.canExport.next(true);
       return false;
     }
   }
 
   async listFiles(dir: string = "/", ref: string = "HEAD") {
-    let filescommited = await client.call("dGitProvider","lsfiles",ref)
+    let filescommited = await client.call("dGitProvider", "lsfiles", {
+      ref: ref,
+    });
     return filescommited;
   }
 
   async listFilesInstaging(dir: string = "/") {
-    let filesInStaging = await client.call("dGitProvider","lsfiles",'HEAD')
+    let filesInStaging = await client.call("dGitProvider", "lsfiles", {
+      ref: "HEAD",
+    });
     return filesInStaging;
   }
 
@@ -309,17 +335,35 @@ export class gitService {
     this.diffResult.next(diffs);
   }
 
+  async zip(){
+    await client.call(
+      "dGitProvider",
+      "zip"
+    );
+  }
+
   async diffFile(args: any) {
     //$('#files').hide()
     //$('#diff-container').show()
     //Utils.log("DIFF", args);
     const fullfilename = args; // $(args[0].currentTarget).data('file')
     try {
-      const commitOid = await await client.call('dGitProvider','resolveref','HEAD')
+      const commitOid = await client.call(
+        "dGitProvider",
+        "resolveref",
+        {ref:"HEAD"}
+      );
 
-      const { blob } = await client.call('dGitProvider','readblob',commitOid, removeSlash(fullfilename))
+      const { blob } = await client.call("dGitProvider", "readblob", {
+        oid: commitOid,
+        filepath: removeSlash(fullfilename),
+      });
 
-      const newcontent = await client.call("fileManager","readFile", removeSlash(fullfilename))
+      const newcontent = await client.call(
+        "fileManager",
+        "readFile",
+        removeSlash(fullfilename)
+      );
       const original = Buffer.from(blob).toString("utf8");
 
       // Utils.log(original);

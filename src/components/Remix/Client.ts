@@ -15,6 +15,7 @@ export class WorkSpacePlugin extends PluginClient {
     this.onload().then(async () => {
       //Utils.log("workspace client loaded", this);
       toast.success("Connected to REMIX");
+      await this.call("manager", "activatePlugin", "dGitProvider")
       this.clientLoaded.next(true);
       await this.setCallBacks();
     });

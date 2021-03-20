@@ -100,19 +100,7 @@ function App() {
   };
 
   useEffect(() => {
-    var request = window.indexedDB.open("MyTestDatabase", 3);
-    //Utils.log(request);
-    request.onerror = function (event) {
-      //Utils.log("DB not supported");
-      setCanLoad(false);
-      return false;
-    };
-    request.onsuccess = function (event) {
-      //Utils.log("DB supported");
       resetFileSystem(false).then((x) => setCanLoad(x));
-    };
-
-    //setCanLoad(r)
   }, []);
 
   return (
@@ -148,6 +136,7 @@ function App() {
           >
             <Tab className="mt-4 ml-1" eventKey="files" title="FILES">
               <FileExplorer setTab={setTab} />
+              <FileTools/>
               <FileHelp/>
             </Tab>
             <Tab className="mt-4 ml-1" eventKey="git" title="GIT">

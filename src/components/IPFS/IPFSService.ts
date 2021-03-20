@@ -99,7 +99,7 @@ export class IPFSService {
       return false;
     }
     try {
-      await client.call('dGitProvider', 'pull', cid)
+      await client.call('dGitProvider', 'pull', {cid:cid})
       loaderservice.setLoading(false)
       //await fileservice.syncToBrowser();
       await fileservice.syncStart()

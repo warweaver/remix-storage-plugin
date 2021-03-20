@@ -31,7 +31,7 @@ export const GitLog: React.FC<gitLogProps> = ({}) => {
   const checkout = async (oid:string) => {
     try {
       await ModalRef.current?.show();
-      gitservice.checkout(oid)
+      gitservice.checkout({ref:oid})
       //Utils.log("yes");
     } catch (e) {
       //Utils.log("no");
