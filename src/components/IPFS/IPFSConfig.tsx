@@ -54,7 +54,7 @@ export const IPFSConfig: React.FC<IPFSConfigProps> = ({}) => {
         onChange={setPortChange}
         className="form-control w-100"
         type="number"
-        id="reponame"
+        id="port"
         value={port}
       />
       <label>PROTOCOL</label>
@@ -62,7 +62,7 @@ export const IPFSConfig: React.FC<IPFSConfigProps> = ({}) => {
         onChange={setProtocolChange}
         className="form-control w-100"
         type="text"
-        id="reponame"
+        id="protocol"
         value={protocol}
       />
       <label>URL</label>
@@ -70,7 +70,7 @@ export const IPFSConfig: React.FC<IPFSConfigProps> = ({}) => {
         onChange={setUrlChange}
         className="form-control w-100"
         type="text"
-        id="reponame"
+        id="url"
         value={url}
       />
       <button className="btn btn-primary mt-5" onClick={checkconfig}>Check connection</button>

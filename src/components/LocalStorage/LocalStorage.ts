@@ -17,31 +17,23 @@ export class LocalIPFSStorage {
   }
 
   async read() {
-    if(!window.localStorage){
-      toast.error("This browser is not compatible with this app", { autoClose: false })
-      return
-    }
     try{
-      let r = window.localStorage.getItem('ipfs')
+      let r = await client.call('dGitProvider','getItem','dgit-ipfs')
       this.objects = r? JSON.parse(r):[];
       this.objects.sort((a, b) => (a.timestamp > b.timestamp) ? -1 : 1)
       this.objects = await this.filterNulls();
       //Utils.log("READ CONFIG",this.objects);
       this.boxObjects.next(this.objects);
     }catch(e){
-      toast.error("This browser is not compatible with this app", { autoClose: false })
+
     }
   }
 
   async write() {
-    if(!window.localStorage){
-      toast.error("This browser is not compatible with this app", { autoClose: false })
-      return
-    }
     try{
-      window.localStorage.setItem('ipfs', JSON.stringify(await this.filterNulls()) );
+      await client.call('dGitProvider','setItem','dgit-ipfs', JSON.stringify(await this.filterNulls()) )
     }catch(e){
-      toast.error("This browser is not compatible with this app", { autoClose: false })
+      
     }
   }
 

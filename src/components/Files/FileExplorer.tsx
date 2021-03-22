@@ -88,7 +88,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = (props) => {
           style={{ cursor: "pointer" }}
           onClick={async () => await handleClick(files)}
         >
-          {files.name}
+          {files.fullname === "/"?gitservice.reponame:files.name}
         </span>
         {files.type === `dir` ? (
           <span className="status float-right ml-3">

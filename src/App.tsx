@@ -27,7 +27,7 @@ import { LoaderService } from "./components/loaderService";
 import { useBehaviorSubject } from "./components/usesubscribe/index";
 import { Help } from "./components/Help";
 import { LocalIPFSStorage } from "./components/LocalStorage/LocalStorage";
-import { ConnectionWarning } from "./components/ConnectionWarning";
+import { LocalHostWarning } from "./components/LocalHostWarning";
 import { IPFSConfig } from "./components/IPFS/IPFSConfig";
 import { GitStatus } from "./components/git/UI/gitStatus";
 
@@ -53,8 +53,9 @@ export const localipfsstorage: LocalIPFSStorage = new LocalIPFSStorage();
 
 export const resetFileSystem = async (wipe: boolean = false) => {
   try {
-    localipfsstorage.init();
+    
     client.clientLoaded.subscribe(async (load: boolean) => {
+      await localipfsstorage.init();
       if (load) await ipfservice.setipfsHost();
       if (load) await fileservice.syncStart();
     });
@@ -106,8 +107,8 @@ function App() {
 
   return (
     <div className="App">
-      {!canUseApp ? (
-        <ConnectionWarning canLoad={canUseApp} />
+      { !canUseApp ? (
+        <LocalHostWarning canLoad={canUseApp} />
       ) : (
         <Container fluid>
           {loading ? (

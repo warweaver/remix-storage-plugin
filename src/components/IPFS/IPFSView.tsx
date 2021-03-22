@@ -10,6 +10,12 @@ import {
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-toastify";
 
+const BoxController = React.lazy(() =>
+  import("../3box/Box").then(({ BoxController }) => ({
+    default: BoxController,
+  }))
+);
+
 interface IPFSViewProps {}
 
 export const IPFSView: React.FC<IPFSViewProps> = () => {
@@ -17,11 +23,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
   const boxconnected = useBehaviorSubject(boxservice.status);
   const IPFSStatus = useBehaviorSubject(ipfservice.connectionStatus);
   const canExport = useBehaviorSubject(gitservice.canExport);
-  const BoxController = React.lazy(() =>
-    import("../3box/Box").then(({ BoxController }) => ({
-      default: BoxController,
-    }))
-  );
+
   ipfservice.connectionStatus.subscribe((x) => {}).unsubscribe();
   ipfservice.cidBehavior.subscribe((x) => {}).unsubscribe();
   boxservice.status.subscribe((x) => {}).unsubscribe();
@@ -34,7 +36,12 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
         <>
           IPFS Hash: {ipfservice.cid}
           <br></br>
-          <CopyToClipboard text={ipfservice.cid} onCopy={() => {toast.success("Copied to clipboard.")}}>
+          <CopyToClipboard
+            text={ipfservice.cid}
+            onCopy={() => {
+              toast.success("Copied to clipboard.");
+            }}
+          >
             <button className="btn btn-primary">Copy to clipboard</button>
           </CopyToClipboard>
           <br></br>

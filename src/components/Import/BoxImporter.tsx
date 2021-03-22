@@ -7,17 +7,18 @@ import { boxservice, ipfservice, Utils } from "../../App";
 import { boxObject } from "../3box/3boxService";
 import ConfirmDelete from "../ConfirmDelete";
 //import { BoxController } from "../3box/Box";
+const BoxController = React.lazy(() =>
+  import("../3box/Box").then(({ BoxController }) => {
+    return { default: BoxController };
+  })
+);
 
 interface boximporterProps {}
 
 export const BoxImporter: React.FC<boximporterProps> = ({}) => {
   const boxobjects = useBehaviorSubject(boxservice.boxObjects);
   const IPFSStatus = useBehaviorSubject(ipfservice.connectionStatus);
-  const BoxController = React.lazy(() =>
-    import("../3box/Box").then(({ BoxController }) => ({
-      default: BoxController,
-    }))
-  );
+
   let ModalRef = createRef<ConfirmDelete>();
   let EraseModalRef = createRef<ConfirmDelete>();
   ipfservice.connectionStatus.subscribe((x) => {}).unsubscribe();
@@ -70,23 +71,31 @@ export const BoxImporter: React.FC<boximporterProps> = ({}) => {
     }
   };
 
-  const deleteFrom3Box = async(o:any) =>{
+  const deleteFrom3Box = async (o: any) => {
     try {
       await EraseModalRef.current?.show();
-      await boxservice.deleteFrom3Box(o.key)
+      await boxservice.deleteFrom3Box(o.key);
       //Utils.log("yes");
     } catch (e) {
       //Utils.log("no");
     }
-  }
+  };
 
   return (
     <>
       <hr></hr>
       <h4>Import from 3Box storage</h4>
-      <ConfirmDelete title={"Importing"} text={"This will create a new workspace! Continue?"} ref={ModalRef}></ConfirmDelete>
-      <ConfirmDelete title={"Deleting"} text={"Are you sure you want to erase this item?"} ref={EraseModalRef}></ConfirmDelete>
-      
+      <ConfirmDelete
+        title={"Importing"}
+        text={"This will create a new workspace! Continue?"}
+        ref={ModalRef}
+      ></ConfirmDelete>
+      <ConfirmDelete
+        title={"Deleting"}
+        text={"Are you sure you want to erase this item?"}
+        ref={EraseModalRef}
+      ></ConfirmDelete>
+
       <div className="alert alert-warning" role="alert">
         Please make sure the IDE is on HTTPS otherwise you can't connect.
       </div>
