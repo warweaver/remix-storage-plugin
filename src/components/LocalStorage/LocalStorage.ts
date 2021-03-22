@@ -1,8 +1,8 @@
-import { unstable_batchedUpdates } from "react-dom";
 import { BehaviorSubject } from "rxjs";
 import { client, gitservice, ipfservice, Utils } from "../../App";
 import { boxObject } from "../3box/3boxService";
 import { default as dateFormat } from 'dateformat'
+import { toast } from "react-toastify";
 export class LocalIPFSStorage {
   boxObjects = new BehaviorSubject<boxObject[] | []>([]);
   objects: any[] = [];
@@ -17,16 +17,24 @@ export class LocalIPFSStorage {
   }
 
   async read() {
-    let r = window.localStorage.getItem('ipfs')
-    this.objects = r? JSON.parse(r):[];
-    this.objects.sort((a, b) => (a.timestamp > b.timestamp) ? -1 : 1)
-    this.objects = await this.filterNulls();
-    //Utils.log("READ CONFIG",this.objects);
-    this.boxObjects.next(this.objects);
+    try{
+      let r = window.localStorage.getItem('ipfs')
+      this.objects = r? JSON.parse(r):[];
+      this.objects.sort((a, b) => (a.timestamp > b.timestamp) ? -1 : 1)
+      this.objects = await this.filterNulls();
+      //Utils.log("READ CONFIG",this.objects);
+      this.boxObjects.next(this.objects);
+    }catch(e){
+      toast.error("This browser is not compatible with this app", { autoClose: false })
+    }
   }
 
   async write() {
-    window.localStorage.setItem('ipfs', JSON.stringify(await this.filterNulls()) );
+    try{
+      window.localStorage.setItem('ipfs', JSON.stringify(await this.filterNulls()) );
+    }catch(e){
+      toast.error("This browser is not compatible with this app", { autoClose: false })
+    }
   }
 
   async addToStorage(box: boxObject) {
