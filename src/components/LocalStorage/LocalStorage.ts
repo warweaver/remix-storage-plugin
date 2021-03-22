@@ -17,6 +17,10 @@ export class LocalIPFSStorage {
   }
 
   async read() {
+    if(!window.localStorage){
+      toast.error("This browser is not compatible with this app", { autoClose: false })
+      return
+    }
     try{
       let r = window.localStorage.getItem('ipfs')
       this.objects = r? JSON.parse(r):[];
@@ -30,6 +34,10 @@ export class LocalIPFSStorage {
   }
 
   async write() {
+    if(!window.localStorage){
+      toast.error("This browser is not compatible with this app", { autoClose: false })
+      return
+    }
     try{
       window.localStorage.setItem('ipfs', JSON.stringify(await this.filterNulls()) );
     }catch(e){
