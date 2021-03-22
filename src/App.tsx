@@ -26,7 +26,6 @@ import Loading from "react-fullscreen-loading";
 import { LoaderService } from "./components/loaderService";
 import { useBehaviorSubject } from "./components/usesubscribe/index";
 import { Help } from "./components/Help";
-import { RepoName } from "./components/git/UI/RepoName";
 import { LocalIPFSStorage } from "./components/LocalStorage/LocalStorage";
 import { ConnectionWarning } from "./components/ConnectionWarning";
 import { IPFSConfig } from "./components/IPFS/IPFSConfig";
