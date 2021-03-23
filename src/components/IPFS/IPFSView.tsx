@@ -42,11 +42,15 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
               toast.success("Copied to clipboard.");
             }}
           >
-            <button className="btn btn-primary">Copy to clipboard</button>
+            <button className="btn btn-primary mb-2">Copy to clipboard</button>
           </CopyToClipboard>
           <br></br>
-          <a className="pl-2" target="_blank" href={getUrl()} id="CID">
+          <a className="btn btn-primary mb-2" target="_blank" href={getUrl()} id="CID">
             View files
+          </a>
+          <br></br>
+          <a className="btn btn-primary" target="_blank" href={getVscodeUrl()} id="VSCODE">
+            Clone in VSCode
           </a>
         </>
       );
@@ -72,6 +76,10 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
   const getUrl = () => {
     return `${ipfservice.ipfsconfig.ipfsurl}${cid}`;
   };
+
+  const getVscodeUrl = () =>{
+    return `vscode://RemixProject.ethereum-remix/pull?cid=${cid}`;
+  }
 
   return (
     <>

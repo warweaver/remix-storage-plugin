@@ -2,7 +2,7 @@ import { PluginClient } from "@remixproject/plugin";
 import { createClient } from "@remixproject/plugin-webview";
 import { toast } from "react-toastify";
 import { BehaviorSubject } from "rxjs";
-import { fileservice, Utils } from "../../App";
+import { fileservice, ipfservice, Utils } from "../../App";
 
 export class WorkSpacePlugin extends PluginClient {
   clientLoaded = new BehaviorSubject(false);
@@ -11,7 +11,7 @@ export class WorkSpacePlugin extends PluginClient {
   constructor() {
     super();
     createClient(this);
-    toast.info("Connecting to REMIX");
+    toast.info("Connecting to REMIX DGIT2");
     this.onload().then(async () => {
       //Utils.log("workspace client loaded", this);
       toast.success("Connected to REMIX");
@@ -22,7 +22,23 @@ export class WorkSpacePlugin extends PluginClient {
       }catch(e){
         toast.error("Could not activate DECENTRALIZED GIT. Please activate DECENTRALIZED GIT in the plugin list and restart this plugin.", {autoClose:false})
       }
+
+
     });
+
+
+    
+
+  }
+
+  async pull(cid: string){
+    try {
+      console.log("PULL", cid, ipfservice)
+      ipfservice.importFromCID(cid)
+      //Utils.log("yes");
+    } catch (e) {
+      //Utils.log("no");
+    }
   }
 
   async setCallBacks() {

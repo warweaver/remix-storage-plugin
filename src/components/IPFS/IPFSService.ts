@@ -76,6 +76,12 @@ export class IPFSService {
     return true;
   }
 
+  async addAndOpenInVscode(){
+    await this.addToIpfs()
+    window.open(`vscode://RemixProject.ethereum-remix/pull?cid=${this.cid}`)
+    return `vscode://RemixProject.ethereum-remix/pull?cid=${this.cid}`;
+  }
+
   async importFromCID(cid: string | undefined, name:string = "") {
     toast.dismiss()
     const connect = await this.setipfsHost()

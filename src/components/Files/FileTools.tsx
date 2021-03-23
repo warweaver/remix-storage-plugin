@@ -1,9 +1,9 @@
 import React, { createRef } from "react";
-import { fileservice, gitservice, localipfsstorage, resetFileSystem, Utils } from "../../App";
+import { fileservice, gitservice, ipfservice, localipfsstorage, resetFileSystem, Utils } from "../../App";
 import ConfirmDelete from "../ConfirmDelete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileArchive } from "@fortawesome/free-regular-svg-icons"
-
+import { faCloudDownloadAlt } from "@fortawesome/free-solid-svg-icons"
 interface FileToolsProps {}
 
 export const FileTools: React.FC<FileToolsProps> = ({}) => {
@@ -20,7 +20,8 @@ export const FileTools: React.FC<FileToolsProps> = ({}) => {
 
   return (
     <>
-      <div onClick={async ()=> gitservice.zip()} className='btn btn-primary btn-sm'>download as zip <FontAwesomeIcon icon={faFileArchive}></FontAwesomeIcon></div>
+      <div onClick={async ()=> gitservice.zip()} className='btn btn-primary mb-3'>download as zip <FontAwesomeIcon icon={faFileArchive}></FontAwesomeIcon></div><br></br>
+      <div onClick={async ()=> ipfservice.addAndOpenInVscode()} className='btn btn-primary'>clone in VSCode <FontAwesomeIcon icon={faCloudDownloadAlt}></FontAwesomeIcon></div>
     </>
   );
 };
