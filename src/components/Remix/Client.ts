@@ -11,7 +11,9 @@ export class WorkSpacePlugin extends PluginClient {
   constructor() {
     super();
     createClient(this);
+    console.log(this)
     toast.info("Connecting to REMIX DGIT2");
+    this.methods = ['pull']
     this.onload().then(async () => {
       //Utils.log("workspace client loaded", this);
       toast.success("Connected to REMIX");
