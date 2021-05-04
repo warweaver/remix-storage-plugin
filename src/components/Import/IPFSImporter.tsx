@@ -19,7 +19,7 @@ export const IPFSImporter: React.FC<ipfsimporterProps> = ({}) => {
   const importFromCID = async (cid: string | undefined, name:string = "") => {
     try {
       await ModalRef.current?.show();
-      ipfservice.importFromCID(cid,name)
+      await ipfservice.importFromCID(cid,name)
       //Utils.log("yes");
     } catch (e) {
       //Utils.log("no");
