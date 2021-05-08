@@ -14,8 +14,7 @@ export const IPFSConfig: React.FC<IPFSConfigProps> = ({}) => {
   ipfservice.connectionStatus.subscribe((x)=>{}).unsubscribe(); 
   const setHostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     sethost(e.currentTarget.value);
-    ipfservice.ipfsconfig.host = e.currentTarget.value
-    
+    ipfservice.ipfsconfig.host = e.currentTarget.value    
   };
   const setPortChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setport(e.currentTarget.value);
@@ -40,6 +39,7 @@ export const IPFSConfig: React.FC<IPFSConfigProps> = ({}) => {
 
   return (
     <>
+      <h5>Custom IPFS gateway</h5>
         <label>HOST</label>
         
       <input

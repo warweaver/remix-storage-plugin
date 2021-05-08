@@ -73,6 +73,12 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
     } catch (e) {}
   };
 
+  const addFilesToPinata = async () =>{
+    try {
+      await ipfservice.addFilesToPinata();
+    } catch (e) {}
+  }
+
   const getUrl = () => {
     return `${ipfservice.ipfsconfig.ipfsurl}${cid}`;
   };
@@ -98,6 +104,16 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
           Commit some files first, then you can export.
         </div>
       )}
+       <h4>Export to Pinata Cloud</h4>
+      <button
+        //disabled={(IPFSStatus ? false : true) || (canExport ? false : true)}
+        className="btn w-25 btn-primary"
+        id="main-btn"
+        onClick={async () => await addFilesToPinata()}
+      >
+        Export to Pinata
+      </button>
+      <hr></hr>
       <h4>Export to Local storage & IPFS</h4>
       <button
         disabled={(IPFSStatus ? false : true) || (canExport ? false : true)}
@@ -105,7 +121,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
         id="main-btn"
         onClick={async () => await addFilesToIpfs()}
       >
-        Export to IPFS only & store in local storage
+        Export to custom IPFS & store in local storage
       </button>
 
       <br />
@@ -113,18 +129,6 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
       <br />
       {getUrlLink()}
       <hr />
-      <h4>Export to 3Box Storage</h4>
-      <div className="alert alert-warning w-25" role="alert">
-        Please make sure the IDE is on HTTPS otherwise you can't connect.
-      </div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <BoxController
-          buttonTitle="Export to 3Box"
-          storeData={true}
-          IPFSStatus={IPFSStatus}
-        />
-      </Suspense>
-      <div id="boxexportstatus"></div>
     </>
   );
 };

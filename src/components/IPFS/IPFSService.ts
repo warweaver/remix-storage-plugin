@@ -23,13 +23,18 @@ export class IPFSService {
     ipfsurl: "http://135.181.91.225:9001/ipfs/",
   };
 
+  pinataConfig = {
+    key: "",
+    secret: ""
+  }
 
   ipfs = IpfsHttpClient(this.ipfsconfig);
   filesToSend: ipfsFileObject[] = [];
   cid: string = "";
   cidBehavior = new BehaviorSubject<string>("");
   connectionStatus = new BehaviorSubject<boolean>(false)
-
+  pinataConnectionStatus = new BehaviorSubject<boolean>(false)
+  
   async getipfsurl() {
     return this.ipfsconfig.ipfsurl;
     //return $("#IPFS-url").val() != "" ? $("#IPFS-url").val() : false || ipfsurl;
@@ -50,6 +55,23 @@ export class IPFSService {
       this.connectionStatus.next(false)
       loaderservice.setLoading(false)
       return false;
+    }
+  }
+
+  async addFilesToPinata(){
+    loaderservice.setLoading(true)
+    try{
+      let result = await client.call("dGitProvider" as any, "pin",this.pinataConfig.key,this.pinataConfig.secret);
+      this.cid = result;
+      this.cidBehavior.next(this.cid);
+      toast.success(`You files were uploaded to Pinata IPFS`);
+      loaderservice.setLoading(false)
+    }catch(err){
+      toast.error(
+        "There was an error uploading to Pinata, please check your Pinata settings."
+      );
+      toast.error("There was an error uploading to Pinata!",{autoClose:false});
+      loaderservice.setLoading(false)
     }
   }
 

@@ -43,21 +43,13 @@ No, it will pull the repo from IPFS in its entirety and erase the files in Remix
 You can share files by sharing the IPFS hash that was created when you exported.<br>
 But each time you export a unique version is created in IPFS, so if someone else works on the files they will also export a unique version.<br>
 This app does not replace GitHub when it comes to collaboration features.
-## Do I need 3Box and what is it?
+## PINATA CLOUD
 
-3Box allows you to store user information connected to your Metamask/Wallet address.<br>This means if you move around or clear your browser local storage you can still access your repo's by connecting to 3Box.
+Pinata is an IPFS pinning service. This means it will ensure the data your export is kept in IPFS for as long as you want it to be<br>
+To use this service you need an API key & secret from Pinata. Up to 1GB of data is free. That should be enough to keep the remix data you need.<br>
 
-You do not need it to use this app. You can store your stuff in IPFS and local storage only if you do not plan to clear that or move around.
+## Which custom IPFS can I use?
 
-## How to connect to 3Box? Why does it take so long?
-
-3Box uses your web3 address to store your data. This means you have to connect through Metamask or WalletConnect.<br>
-The 3Box connection is pretty slow, be patient, let it work. It will timeout by itself if it doesn't work.<br>
-If the connection failes please check if you are on HTTPS.
-
-## Which IPFS can I use?
-
-By default the IPFS used is a node from the Remix team.<br>
 You can start your own IPFS daemon and set it to localhost in the config of the plugin.<br>
 However you need to configure your IPFS daemon to accept calls from a web app by setting the Access-control-allow or CORS headers.<br>
 Checkout the IPFS daemon documentation on how to do this.<br>

@@ -39,6 +39,8 @@ import { ExportHelp } from "./components/IPFS/ExportHelp";
 import { ImportHelp } from "./components/Import/ImportHelp";
 import { ConfigHelp } from "./components/IPFS/ConfigHelp";
 import { devutils } from "./components/Utils";
+import { PinataConfig } from "./components/IPFS/PinataConfig";
+import { PinataStorage } from "./components/Pinata/PinataStorage";
 
 export const Utils:devutils = new devutils();
 
@@ -49,7 +51,6 @@ export const ipfservice: IPFSService = new IPFSService();
 export const boxservice: BoxService = new BoxService();
 export const loaderservice: LoaderService = new LoaderService();
 export const localipfsstorage: LocalIPFSStorage = new LocalIPFSStorage();
-
 
 export const resetFileSystem = async (wipe: boolean = false) => {
   try {
@@ -157,6 +158,7 @@ function App() {
               <DiffView />
             </Tab>
             <Tab className="mt-4 ml-1" eventKey="config" title="SETTINGS">
+              <PinataConfig></PinataConfig>
               <IPFSConfig />
               <ConfigHelp/>
             </Tab>
@@ -168,6 +170,41 @@ function App() {
       )}
     </div>
   );
+}
+
+// Hook
+export const useLocalStorage = (key: string, initialValue: any) => {
+  // State to store our value
+  // Pass initial state function to useState so logic is only executed once
+  const [storedValue, setStoredValue] = useState<any>(() => {
+    try {
+      // Get from local storage by key
+      const item = window.localStorage.getItem(key);
+      // Parse stored json or if none return initialValue
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      // If error also return initialValue
+      console.log(error);
+      return initialValue;
+    }
+  });
+  // Return a wrapped version of useState's setter function that ...
+  // ... persists the new value to localStorage.
+  const setValue = (value: any | ((val: any) => any)) => {
+    try {
+      // Allow value to be a function so we have same API as useState
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
+      // Save state
+      setStoredValue(valueToStore);
+      // Save to local storage
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      // A more advanced implementation would handle the error case
+      console.log(error);
+    }
+  };
+  return [storedValue, setValue] as const;
 }
 
 export default App;
