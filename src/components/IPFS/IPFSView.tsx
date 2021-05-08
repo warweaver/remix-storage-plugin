@@ -10,12 +10,6 @@ import {
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-toastify";
 
-const BoxController = React.lazy(() =>
-  import("../3box/Box").then(({ BoxController }) => ({
-    default: BoxController,
-  }))
-);
-
 interface IPFSViewProps {}
 
 export const IPFSView: React.FC<IPFSViewProps> = () => {

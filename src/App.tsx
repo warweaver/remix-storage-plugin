@@ -40,7 +40,6 @@ import { ImportHelp } from "./components/Import/ImportHelp";
 import { ConfigHelp } from "./components/IPFS/ConfigHelp";
 import { devutils } from "./components/Utils";
 import { PinataConfig } from "./components/IPFS/PinataConfig";
-import { PinataStorage } from "./components/Pinata/PinataStorage";
 
 export const Utils:devutils = new devutils();
 
