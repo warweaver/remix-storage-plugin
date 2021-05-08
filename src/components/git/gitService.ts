@@ -263,9 +263,9 @@ export class gitService {
   }
 
   async statusMatrix(dir: string = "/", ref: string = "HEAD") {
-    Utils.log("MATRIX");
+    Utils.log("calll status");
     const matrix = await client.call("dGitProvider", "status", { ref: "HEAD" });
-
+    Utils.log("MATRIX", matrix);
     let result = (matrix || []).map((x) => {
       return {
         filename: `/${x.shift()}`,

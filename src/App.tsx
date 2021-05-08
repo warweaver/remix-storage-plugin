@@ -72,6 +72,7 @@ export const providerOptions = {
     package: WalletConnectProvider,
     options: {
       infuraId: "83d4d660ce3546299cbe048ed95b6fad",
+      bridge: 'https://wallet-connect-bridge.dyn.plugin.remixproject.org:8080/'
     },
   },
 };

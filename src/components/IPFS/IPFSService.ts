@@ -17,10 +17,10 @@ export interface ipfsFileObject {
 
 export class IPFSService {
   ipfsconfig: ipfsConfig = {
-    host: "ipfs.komputing.org",
-    port: 443,
+    host: "static.225.91.181.135.clients.your-server.de",
+    port: 5002,
     protocol: "https",
-    ipfsurl: "https://ipfsgw.komputing.org/ipfs/",
+    ipfsurl: "http://135.181.91.225:9001/ipfs/",
   };
 
 

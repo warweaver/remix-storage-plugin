@@ -2427,36 +2427,37 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@remixproject/plugin-api@0.3.12-alpha.3":
-  version "0.3.12-alpha.3"
-  resolved "https://registry.yarnpkg.com/@remixproject/plugin-api/-/plugin-api-0.3.12-alpha.3.tgz#228c32ea5d43d283e8f143399bc24ca8e568254a"
-  integrity sha512-S9ysB9NQdYtoDAbvRWGrG5mWiDgsvHLXzVuPu2l+AfLDULDqDw96UxY1uYWrons7VZKh06GbjwJvu5Qz3Ejekw==
+"@remixproject/plugin-api@0.3.13-alpha.3":
+  version "0.3.13-alpha.3"
+  resolved "https://registry.yarnpkg.com/@remixproject/plugin-api/-/plugin-api-0.3.13-alpha.3.tgz#2c55eb3608beb8e0942721f05a7d876d0e1ca5cb"
+  integrity sha512-fKOX2+f0KQ1JMNJJxGryNJ9GwvkS3O7SF8DP2I7wbMY15rUeNdb0SJYXugXzJkQqeuFemdB2c0pqS9KXwwhb9Q==
   dependencies:
-    "@remixproject/plugin-utils" "0.3.12-alpha.3"
+    "@remixproject/plugin-utils" "0.3.13-alpha.3"
 
-"@remixproject/plugin-utils@0.3.12-alpha.3":
-  version "0.3.12-alpha.3"
-  resolved "https://registry.yarnpkg.com/@remixproject/plugin-utils/-/plugin-utils-0.3.12-alpha.3.tgz#fedcc3a0a5c6d3270938b939e5ec4e5813eb9dc1"
-  integrity sha512-dYuIQvoujJsQomwi3EjZmI+Hv7LkVnHbvheQKFb0t9D57lktN9QjJV7sQYWUW35nl1OyMnhu/VS0g04W8XsATA==
+"@remixproject/plugin-utils@0.3.13-alpha.3":
+  version "0.3.13-alpha.3"
+  resolved "https://registry.yarnpkg.com/@remixproject/plugin-utils/-/plugin-utils-0.3.13-alpha.3.tgz#d376f25ed43f269e5739e2ad349d2d09d85ba3db"
+  integrity sha512-5naLaDgyKhHlnPFMcGQBARhhViRNok1RtRjhdTailEWGt02MvWFP0QFZnj6CrTLQ+nO+fbuyxItytW/CLyPJeA==
   dependencies:
     tslib "2.0.1"
 
-"@remixproject/plugin-webview@^0.3.12-alpha.3":
-  version "0.3.12-alpha.3"
-  resolved "https://registry.yarnpkg.com/@remixproject/plugin-webview/-/plugin-webview-0.3.12-alpha.3.tgz#9d2527373130794551dc7e0916c19deb7f8a5fdc"
-  integrity sha512-F/rS2IQLhq34GVmc3cBxZFm/GgJnBcOvg1OjSnECjepX3NoY9U/7IsxrGCmNlwpGoC/dQb8WUV2v+J63AU0FXQ==
+"@remixproject/plugin-webview@^0.3.13-alpha.3":
+  version "0.3.13-alpha.3"
+  resolved "https://registry.yarnpkg.com/@remixproject/plugin-webview/-/plugin-webview-0.3.13-alpha.3.tgz#28b02f5d162bf670f4bdcd260bf9cfcf25e83ec8"
+  integrity sha512-FVo/LztoWK1uia2bUv+gFONIg35Zqlw4C8ys3fds8V+kXew9irjKtmln5ZMKhgtDmB7KSY3xItqKJcmaHdGIrQ==
   dependencies:
-    "@remixproject/plugin" "0.3.12-alpha.3"
-    "@remixproject/plugin-api" "0.3.12-alpha.3"
-    "@remixproject/plugin-utils" "0.3.12-alpha.3"
+    "@remixproject/plugin" "0.3.13-alpha.3"
+    "@remixproject/plugin-api" "0.3.13-alpha.3"
+    "@remixproject/plugin-utils" "0.3.13-alpha.3"
+    axios "^0.21.1"
 
-"@remixproject/plugin@0.3.12-alpha.3", "@remixproject/plugin@^0.3.12-alpha.3":
-  version "0.3.12-alpha.3"
-  resolved "https://registry.yarnpkg.com/@remixproject/plugin/-/plugin-0.3.12-alpha.3.tgz#1c2d8f8d5af65dcf7662823b84758a66946ac5e2"
-  integrity sha512-BEhiYZnX/l0mjrhIrSZhdimGlQkvbx5LrIhZQCZxtnokEKs4eOHGbWDZhRbgZq7pNuj5ipJkEwO/4FdPGtFtlA==
+"@remixproject/plugin@0.3.13-alpha.3", "@remixproject/plugin@^0.3.13-alpha.3":
+  version "0.3.13-alpha.3"
+  resolved "https://registry.yarnpkg.com/@remixproject/plugin/-/plugin-0.3.13-alpha.3.tgz#7f8ec920f7712d6194f3ac0958fa22f841933391"
+  integrity sha512-Eolu49QRAEawA0HmAOZ5iOud/cFg+4j/Uhp8aUYG4TVsXGgdm2QgTtRhfm2tSVsQbVeEYpLqHglO3T011aUobw==
   dependencies:
-    "@remixproject/plugin-api" "0.3.12-alpha.3"
-    "@remixproject/plugin-utils" "0.3.12-alpha.3"
+    "@remixproject/plugin-api" "0.3.13-alpha.3"
+    "@remixproject/plugin-utils" "0.3.13-alpha.3"
     events "3.2.0"
 
 "@restart/context@^2.1.4":
@@ -4226,6 +4227,13 @@ axe-core@^4.0.2:
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.1.3.tgz#64a4c85509e0991f5168340edc4bedd1ceea6966"
   integrity sha512-vwPpH4Aj4122EW38mxO/fxhGKtwWTMLDIJfZ1He0Edbtjcfna/R3YB67yVhezUMzqc3Jr3+Ii50KRntlENL4xQ==
+
+axios@^0.21.1:
+  version "0.21.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
+  integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
+  dependencies:
+    follow-redirects "^1.10.0"
 
 axobject-query@^2.2.0:
   version "2.2.0"
@@ -8127,6 +8135,11 @@ follow-redirects@^1.0.0:
   version "1.13.3"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.3.tgz#e5598ad50174c1bc4e872301e82ac2cd97f90267"
   integrity sha512-DUgl6+HDzB0iEptNQEXLx/KhTmDb8tZUHSeLqpnjpknR70H0nC2t9N73BK6fN4hOvJ84pKlIQVQ4k5FFlBedKA==
+
+follow-redirects@^1.10.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.0.tgz#f5d260f95c5f8c105894491feee5dc8993b402fe"
+  integrity sha512-0vRwd7RKQBTt+mgu87mtYeofLFZpTas2S9zY+jIeuLJMNvudIgF52nr19q40HOwH5RrhWIPuj9puybzSJiRrVg==
 
 for-in@^1.0.2:
   version "1.0.2"

@@ -67,7 +67,7 @@ export class LsFileService {
     }
     try {
       const workspace = await client.call(
-        "fileExplorers",
+        "filePanel",
         "getCurrentWorkspace"
       );
       if (workspace.isLocalhost) {
@@ -80,6 +80,7 @@ export class LsFileService {
       this.canUseApp.next(true);
     } catch (e) {
       this.canUseApp.next(false);
+      console.log(e)
       Utils.log("no workspace");
     }
     await this.showFiles();

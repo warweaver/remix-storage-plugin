@@ -20,6 +20,7 @@ export class WorkSpacePlugin extends PluginClient {
       try{
         await this.call("manager", "activatePlugin", "dGitProvider")
         this.clientLoaded.next(true);
+        console.log("set callbacks")
         await this.setCallBacks();
       }catch(e){
         toast.error("Could not activate DECENTRALIZED GIT. Please activate DECENTRALIZED GIT in the plugin list and restart this plugin.", {autoClose:false})
@@ -109,19 +110,19 @@ export class WorkSpacePlugin extends PluginClient {
     });
 
 
-    this.on("fileExplorers", "setWorkspace", async (x) => {
+    this.on("filePanel", "setWorkspace", async (x:any) => {
       Utils.log("ws set", x);
       await fileservice.syncFromBrowser(x.isLocalhost);
       Utils.log(x);
     });
 
-    this.on("fileExplorers", "deleteWorkspace", async (x) => {
+    this.on("filePanel", "deleteWorkspace", async (x:any) => {
       Utils.log("wS DELETE", x);
       await fileservice.syncFromBrowser(x.isLocalhost);
       Utils.log(x);
     });
 
-    this.on("fileExplorers", "renameWorkspace", async (x) => {
+    this.on("filePanel", "renameWorkspace", async (x:any) => {
       Utils.log("wS rn", x);
       await fileservice.syncFromBrowser(x.isLocalhost);
       Utils.log(x);
