@@ -6,10 +6,10 @@ import { ipfservice } from "../../App";
 interface IPFSConfigProps {}
 
 export const IPFSConfig: React.FC<IPFSConfigProps> = ({}) => {
-  const [host, sethost] = useState<string>("static.225.91.181.135.clients.your-server.de");
-  const [port, setport] = useState<string>("5002");
-  const [protocol, setprotocol] = useState<string>("https");
-  const [url, setUrl] = useState<string>("http://135.181.91.225:9001/ipfs/");
+  const [host, sethost] = useState<string>(ipfservice.ipfsconfig.host);
+  const [port, setport] = useState<string>(ipfservice.ipfsconfig.port.toString());
+  const [protocol, setprotocol] = useState<string>(ipfservice.ipfsconfig.protocol);
+  const [url, setUrl] = useState<string>(ipfservice.ipfsconfig.ipfsurl || "");
   const IPFSStatus = useBehaviorSubject(ipfservice.connectionStatus)
   ipfservice.connectionStatus.subscribe((x)=>{}).unsubscribe(); 
   const setHostChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -26,7 +26,7 @@ Files are not added by git automatically, you need to add, stage and commmit the
 The plugin offers you 3 ways to import/export your files:
 - You just store the git repo in IPFS and keep the hash somewhere for later use
 - You store the git repo in IPFS and your browser keeps a list of your hashes
-- You store the git repo in IPFS and you export the hash to a list in 3Box.io
+- You store the git repo in IPFS and you export the hash to a list in Pinata Cloud
 
 ## Is 'Export' the same as 'push'?
 

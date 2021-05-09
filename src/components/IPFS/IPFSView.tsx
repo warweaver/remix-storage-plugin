@@ -78,7 +78,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
   };
 
   const getVscodeUrl = () =>{
-    return `vscode://RemixProject.ethereum-remix/pull?cid=${cid}`;
+    return `vscode://${process.env.REACT_APP_REMIX_EXTENSION}/pull?cid=${cid}`;
   }
 
   return (

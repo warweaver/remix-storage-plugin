@@ -22,7 +22,6 @@ export const ConnectionWarning: React.FC<ConnectionWarningProps> = (props) => {
           This app won't work properly when you are not on https and your
           browser blocks third party cookies.<br></br>
           Running it in incognito mode might not work unless you allow third part cookies.<br></br>
-          3Box services are not available unless you are on https.<br></br>
         </Modal.Body>
       </Modal>
     </>

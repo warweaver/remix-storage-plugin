@@ -17,10 +17,10 @@ export interface ipfsFileObject {
 
 export class IPFSService {
   ipfsconfig: ipfsConfig = {
-    host: "static.225.91.181.135.clients.your-server.de",
-    port: 5002,
-    protocol: "https",
-    ipfsurl: "http://135.181.91.225:9001/ipfs/",
+    host: process.env.REACT_APP_DEFAULT_IPFS_HOST || "",
+    port: parseInt(process.env.REACT_APP_DEFAULT_IPFS_PORT || "0"),
+    protocol: process.env.REACT_APP_DEFAULT_IPFS_PROTOCOL || "",
+    ipfsurl: process.env.REACT_APP_DEFAULT_IPFS_GATEWAY || "",
   };
 
   pinataConfig = {
@@ -28,7 +28,6 @@ export class IPFSService {
     secret: ""
   }
 
-  ipfs = IpfsHttpClient(this.ipfsconfig);
   filesToSend: ipfsFileObject[] = [];
   cid: string = "";
   cidBehavior = new BehaviorSubject<string>("");
@@ -100,8 +99,8 @@ export class IPFSService {
 
   async addAndOpenInVscode(){
     await this.addToIpfs()
-    window.open(`vscode://RemixProject.ethereum-remix/pull?cid=${this.cid}`)
-    return `vscode://RemixProject.ethereum-remix/pull?cid=${this.cid}`;
+    window.open(`vscode://${process.env.REACT_APP_REMIX_EXTENSION}/pull?cid=${this.cid}`)
+    return `vscode://${process.env.REACT_APP_REMIX_EXTENSION}/pull?cid=${this.cid}`;
   }
 
   async importFromCID(cid: string | undefined, name:string = "") {
