@@ -56,8 +56,9 @@ export const resetFileSystem = async (wipe: boolean = false) => {
     
     client.clientLoaded.subscribe(async (load: boolean) => {
       await localipfsstorage.init();
-      if (load) await ipfservice.setipfsHost();
+      //if (load) await ipfservice.setipfsHost();
       if (load) await fileservice.syncStart();
+      if (load) await ipfservice.setipfsHost();
     });
     return true;
     //await fileservice.showFiles();

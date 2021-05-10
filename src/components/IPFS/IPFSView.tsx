@@ -16,8 +16,10 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
   const cid = useBehaviorSubject(ipfservice.cidBehavior);
   const boxconnected = useBehaviorSubject(boxservice.status);
   const IPFSStatus = useBehaviorSubject(ipfservice.connectionStatus);
+  const PinataStatus = useBehaviorSubject(ipfservice.pinataConnectionStatus);
   const canExport = useBehaviorSubject(gitservice.canExport);
 
+  ipfservice.pinataConnectionStatus.subscribe((x) => {}).unsubscribe();
   ipfservice.connectionStatus.subscribe((x) => {}).unsubscribe();
   ipfservice.cidBehavior.subscribe((x) => {}).unsubscribe();
   boxservice.status.subscribe((x) => {}).unsubscribe();
@@ -83,14 +85,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
 
   return (
     <>
-      {IPFSStatus ? (
-        <></>
-      ) : (
-        <div className="alert alert-warning w-25 mt-2" role="alert">
-          Your IPFS settings are incorrect. Unable to connect. Check your
-          settings.
-        </div>
-      )}
+
       {canExport ? (
         <></>
       ) : (
@@ -99,8 +94,16 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
         </div>
       )}
        <h4>Export to Pinata Cloud</h4>
+       {PinataStatus ? (
+        <></>
+      ) : (
+        <div className="alert alert-warning w-25 mt-2" role="alert">
+          Your Pinata API key is incorrect or missing. Unable to connect. Check your
+          settings.
+        </div>
+      )}
       <button
-        //disabled={(IPFSStatus ? false : true) || (canExport ? false : true)}
+        disabled={(PinataStatus ? false : true) || (canExport ? false : true)}
         className="btn w-25 btn-primary"
         id="main-btn"
         onClick={async () => await addFilesToPinata()}
@@ -109,6 +112,14 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
       </button>
       <hr></hr>
       <h4>Export to Local storage & IPFS</h4>
+      {IPFSStatus ? (
+        <></>
+      ) : (
+        <div className="alert alert-warning w-25 mt-2" role="alert">
+          Your IPFS settings are incorrect. Unable to connect. Check your
+          settings.
+        </div>
+      )}
       <button
         disabled={(IPFSStatus ? false : true) || (canExport ? false : true)}
         className="btn w-25 btn-primary"

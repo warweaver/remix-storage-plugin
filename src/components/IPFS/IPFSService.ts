@@ -65,6 +65,8 @@ export class IPFSService {
       this.cidBehavior.next(this.cid);
       toast.success(`You files were uploaded to Pinata IPFS`);
       loaderservice.setLoading(false)
+      this.pinataConnectionStatus.next(false)
+      this.pinataConnectionStatus.next(true)
     }catch(err){
       toast.error(
         "There was an error uploading to Pinata, please check your Pinata settings."

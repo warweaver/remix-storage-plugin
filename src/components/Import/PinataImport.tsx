@@ -6,6 +6,7 @@ import { useBehaviorSubject } from "../usesubscribe/index";
 import { client, ipfservice, localipfsstorage, Utils } from "../../App";
 import ConfirmDelete from "../ConfirmDelete";
 import { init } from "isomorphic-git";
+import dateFormat from "dateformat";
 
 interface PinataImportProps {}
 
@@ -79,7 +80,7 @@ export const PinataImport: React.FC<PinataImportProps> = ({}) => {
     try {
       await ModalRef.current?.show();
 
-      //await ipfservice.importFromCID(cid, name);
+      await ipfservice.importFromCID(cid, name);
       //Utils.log("yes");
     } catch (e) {
       //Utils.log("no");
@@ -135,7 +136,11 @@ export const PinataImport: React.FC<PinataImportProps> = ({}) => {
                   </div>
                   <div className="row">
                     <div className="col">DATE EXPORTED</div>
-                    <div className="col">{o.date_pinned}</div>
+                    <div className="col">{dateFormat(o.date_pinned,"dddd, mmmm dS, yyyy, h:MM:ss TT")}</div>
+                  </div>
+                  <div className="row">
+                    <div className="col">MESSAGE</div>
+                    <div className="col">{o.metadata.keyvalues.message}</div>
                   </div>
                 </Card.Body>
               </Card>
