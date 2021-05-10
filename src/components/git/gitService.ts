@@ -1,5 +1,5 @@
 import git, { ReadCommitResult } from "isomorphic-git";
-import { client, fileservice, fs, fsNoPromise, Utils } from "../../App";
+import { client, fileservice, Utils } from "../../App";
 import { toast } from "react-toastify";
 import path from "path";
 import { removeSlash } from "../Files/utils";
@@ -22,39 +22,25 @@ export class gitService {
   canExport = new BehaviorSubject<boolean>(false);
   reponame = "";
 
-  constructor() {
-    //this.init();
-  }
-
   async init() {
-    await git.init({
-      fs: fsNoPromise,
-      dir: "/",
-      defaultBranch: "master",
-    });
-    //toast.info(`Git version ${git.version()}`);
-
+    await client.call("dGitProvider", "init");
     await fileservice.showFiles();
   }
 
-  async clearRepoName() {
-    this.reponameSubject.next("");
-  }
-
   async addAllToGit() {
-    let repo = {
-      fs: fsNoPromise,
-      dir: "/",
-    };
     try {
-      await git
-        .statusMatrix(repo)
+      await client
+        .call("dGitProvider", "status", { ref: "HEAD" })
         .then((status) =>
           Promise.all(
             status.map(([filepath, , worktreeStatus]) =>
               worktreeStatus
-                ? git.add({ ...repo, filepath })
-                : git.remove({ ...repo, filepath })
+                ? client.call("dGitProvider", "add", {
+                    filepath: removeSlash(filepath),
+                  })
+                : client.call("dGitProvider", "rm", {
+                    filepath: removeSlash(filepath),
+                  })
             )
           )
         );
@@ -80,9 +66,7 @@ export class gitService {
       try {
         for (const filepath of stagingfiles) {
           try {
-            await git.add({
-              fs: fsNoPromise,
-              dir: "/",
+            await client.call("dGitProvider", "add", {
               filepath: removeSlash(filepath),
             });
           } catch (e) {}
@@ -99,9 +83,7 @@ export class gitService {
     ////Utils.log('RM GIT', $(args[0].currentTarget).data('file'))
     const filename = args; // $(args[0].currentTarget).data('file')
 
-    await git.remove({
-      fs: fsNoPromise,
-      dir: "/",
+    await client.call("dGitProvider", "add", {
       filepath: removeSlash(filename),
     });
     await fileservice.showFiles();
@@ -114,14 +96,10 @@ export class gitService {
     let oid = await this.getLastCommmit();
     if (oid)
       try {
-        const commitOid = await git.resolveRef({
-          fs: fsNoPromise,
-          dir: "/",
-          ref: "HEAD",
-        }); 
-        const { blob } = await git.readBlob({
-          fs: fsNoPromise,
-          dir: "/",
+        const commitOid = await client.call("dGitProvider", "resolveref", {
+          ref: oid,
+        });
+        const { blob } = await client.call("dGitProvider", "readblob", {
           oid: commitOid,
           filepath: removeSlash(filename),
         });
@@ -134,7 +112,7 @@ export class gitService {
           Utils.addSlash(filename),
           original
         );
-        await client.enableCallBacks()
+        await client.enableCallBacks();
         await fileservice.syncFromBrowser();
         //await fileservice.showFiles()
         //await fileservice.syncToBrowser();
@@ -146,39 +124,30 @@ export class gitService {
       }
   }
 
-  async checkout(args: string) {
-    const oid = args; //$(args[0].currentTarget).data('oid')
-    //Utils.log("checkout", oid);
+  async checkout(cmd :any) {
     toast.dismiss();
-    await client.disableCallBacks()
-    await fileservice.clearFilesInIde();
-
+    await client.disableCallBacks();
     try {
-      await git.checkout({
-        fs: fsNoPromise,
-        dir: "/",
-        ref: oid,
-      });
-
+      await client.call("dGitProvider", "checkout", cmd);
       this.gitlog();
     } catch (e) {
       //Utils.log(e);
       toast.error(" " + e, { autoClose: false });
     }
-    await client.enableCallBacks()
+    await client.enableCallBacks();
     //Utils.log("done");
-    await fileservice.syncToBrowser();
+    //await fileservice.syncToBrowser();
     await fileservice.syncStart();
   }
 
   async getCommits() {
     //Utils.log("get commits");
     try {
-      const commits: ReadCommitResult[] = await git.log({
-        fs: fsNoPromise,
-        dir: "/",
-        depth: 200,
-      });
+      const commits: ReadCommitResult[] = await client.call(
+        "dGitProvider",
+        "log",
+        { ref: "HEAD" }
+      );
       return commits;
     } catch (e) {
       return [];
@@ -202,11 +171,7 @@ export class gitService {
   async createBranch(name: string = "") {
     const branch = name; //|| $("#newbranchname").val();
     if (branch)
-      await git.branch({
-        fs: fsNoPromise,
-        dir: "/",
-        ref: branch,
-      });
+      await await client.call("dGitProvider", "branch", { ref: branch });
 
     fileservice.showFiles();
   }
@@ -243,11 +208,7 @@ export class gitService {
   async currentBranch() {
     try {
       const branch: string =
-        (await git.currentBranch({
-          fs: fsNoPromise,
-          dir: "/",
-          fullname: false,
-        })) || "";
+        (await client.call("dGitProvider", "currentbranch")) || "";
       //Utils.log("BRANCH", branch);
       return branch;
     } catch (e) {
@@ -257,20 +218,18 @@ export class gitService {
 
   async commit(message: string = "") {
     //Utils.log("commit");
-    let filescommited = await this.listFilesInstaging();
-    //Utils.log(filescommited);
-    if (filescommited.length === 0) {
-      toast.error("no files to commit");
-      return;
-    }
-    const sha = await git.commit({
-      fs: fsNoPromise,
-      dir: "/",
+    // let filescommited = await this.listFilesInstaging();
+    // //Utils.log(filescommited);
+    // if (filescommited.length === 0) {
+    //   toast.error("no files to commit");
+    //   return;
+    // }
+    const sha = await client.call("dGitProvider", "commit", {
       author: {
         name: "Remix Workspace",
         email: "",
       },
-      message: message, //$('#message').val()
+      message: message,
     });
     toast.success(`Commited: ${sha}`);
 
@@ -278,17 +237,12 @@ export class gitService {
   }
 
   async getBranches() {
-    let branches: string[] = await git.listBranches({
-      fs: fsNoPromise,
-      dir: "/",
-    });
+    let branches: string[] = await client.call("dGitProvider", "branches");
     this.branches.next(branches);
   }
 
   async getCommitFromRef(ref: string) {
-    const commitOid = await git.resolveRef({
-      fs: fsNoPromise,
-      dir: "/",
+    const commitOid = await client.call("dGitProvider", "resolveref", {
       ref: ref,
     });
     return commitOid;
@@ -297,9 +251,7 @@ export class gitService {
   async getFileContentCommit(fullfilename: string, commitOid: string) {
     let content = "";
     try {
-      const { blob } = await git.readBlob({
-        fs: fsNoPromise,
-        dir: "/",
+      const { blob } = await client.call("dGitProvider", "readblob", {
         oid: commitOid,
         filepath: removeSlash(fullfilename),
       });
@@ -311,13 +263,9 @@ export class gitService {
   }
 
   async statusMatrix(dir: string = "/", ref: string = "HEAD") {
-    const matrix = await git
-      .statusMatrix({
-        fs: fsNoPromise,
-        dir: "/",
-      })
-      .catch((e) => {});
-
+    Utils.log("calll status");
+    const matrix = await client.call("dGitProvider", "status", { ref: "HEAD" });
+    Utils.log("MATRIX", matrix);
     let result = (matrix || []).map((x) => {
       return {
         filename: `/${x.shift()}`,
@@ -328,9 +276,14 @@ export class gitService {
   }
 
   async getStatusMatrixFiles() {
-    let files = await (await this.statusMatrix()).map((f) => {
+    Utils.log("getStatusMatrixFiles");
+    const matrix = await this.statusMatrix();
+    Utils.log("matrix", matrix);
+    let files = matrix.map((f) => {
+      Utils.log(f);
       return f.filename;
     });
+    Utils.log("matrix files", files);
     return files;
   }
 
@@ -340,24 +293,21 @@ export class gitService {
       this.canExport.next(true);
       return true;
     } catch (e) {
-      this.canExport.next(false);
+      this.canExport.next(true);
       return false;
     }
   }
 
   async listFiles(dir: string = "/", ref: string = "HEAD") {
-    let filescommited = await git.listFiles({
-      fs: fsNoPromise,
-      dir: dir,
+    let filescommited = await client.call("dGitProvider", "lsfiles", {
       ref: ref,
     });
     return filescommited;
   }
 
   async listFilesInstaging(dir: string = "/") {
-    let filesInStaging = await git.listFiles({
-      fs: fsNoPromise,
-      dir: dir,
+    let filesInStaging = await client.call("dGitProvider", "lsfiles", {
+      ref: "HEAD",
     });
     return filesInStaging;
   }
@@ -385,31 +335,38 @@ export class gitService {
     this.diffResult.next(diffs);
   }
 
+  async zip(){
+    await client.call(
+      "dGitProvider",
+      "zip"
+    );
+  }
+
   async diffFile(args: any) {
     //$('#files').hide()
     //$('#diff-container').show()
     //Utils.log("DIFF", args);
     const fullfilename = args; // $(args[0].currentTarget).data('file')
     try {
-      const commitOid = await git.resolveRef({
-        fs: fsNoPromise,
-        dir: "/",
-        ref: "HEAD",
-      });
+      const commitOid = await client.call(
+        "dGitProvider",
+        "resolveref",
+        {ref:"HEAD"}
+      );
 
-      const { blob } = await git.readBlob({
-        fs: fsNoPromise,
-        dir: "/",
+      const { blob } = await client.call("dGitProvider", "readblob", {
         oid: commitOid,
         filepath: removeSlash(fullfilename),
       });
 
-      const newcontent = await fs.readFile(fullfilename, {
-        encoding: "utf8",
-      });
+      const newcontent = await client.call(
+        "fileManager",
+        "readFile",
+        removeSlash(fullfilename)
+      );
       const original = Buffer.from(blob).toString("utf8");
 
-      //Utils.log(original);
+      // Utils.log(original);
       //Utils.log(newcontent);
       //const filediff = createPatch(filename, original, newcontent); // diffLines(original,newcontent)
       ////Utils.log(filediff)

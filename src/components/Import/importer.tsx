@@ -1,7 +1,8 @@
 import React from "react";
 import { LocalIPFSView } from "../LocalStorage/LocalIPFSView";
-import { BoxImporter } from "./BoxImporter";
+
 import { IPFSImporter } from "./IPFSImporter";
+import { PinataImport } from "./PinataImport";
 
 
 
@@ -11,9 +12,8 @@ export const Importer: React.FC<importerProps> = ({}) => {
   return (
     <>
         <IPFSImporter/>
+        <PinataImport></PinataImport>
         <LocalIPFSView/>
-        <BoxImporter/>
-        
     </>
   );
 };

@@ -2,7 +2,7 @@ import { PluginClient } from "@remixproject/plugin";
 import { createClient } from "@remixproject/plugin-webview";
 import { toast } from "react-toastify";
 import { BehaviorSubject } from "rxjs";
-import { fileservice, Utils } from "../../App";
+import { fileservice, ipfservice, Utils } from "../../App";
 
 export class WorkSpacePlugin extends PluginClient {
   clientLoaded = new BehaviorSubject(false);
@@ -11,13 +11,37 @@ export class WorkSpacePlugin extends PluginClient {
   constructor() {
     super();
     createClient(this);
-    toast.info("Connecting to REMIX");
+    console.log(this)
+    toast.info("Connecting to REMIX DGIT2");
+    this.methods = ['pull']
     this.onload().then(async () => {
       //Utils.log("workspace client loaded", this);
       toast.success("Connected to REMIX");
-      this.clientLoaded.next(true);
-      await this.setCallBacks();
+      try{
+        await this.call("manager", "activatePlugin", "dGitProvider")
+        this.clientLoaded.next(true);
+        console.log("set callbacks")
+        await this.setCallBacks();
+      }catch(e){
+        toast.error("Could not activate DECENTRALIZED GIT. Please activate DECENTRALIZED GIT in the plugin list and restart this plugin.", {autoClose:false})
+      }
+
+
     });
+
+
+    
+
+  }
+
+  async pull(cid: string){
+    try {
+      console.log("PULL", cid, ipfservice)
+      await ipfservice.importFromCID(cid)
+      //Utils.log("yes");
+    } catch (e) {
+      //Utils.log("no");
+    }
   }
 
   async setCallBacks() {
@@ -46,7 +70,6 @@ export class WorkSpacePlugin extends PluginClient {
         await fileservice.syncFromBrowser();
 
       }
-      //await this.addFileFromBrowser(e)
     });
 
     this.on("fileManager", "fileAdded", async (e) => {
@@ -62,7 +85,6 @@ export class WorkSpacePlugin extends PluginClient {
       // Do something
       //Utils.log(e);
       if (this.callBackEnabled) {
-        await fileservice.clearFilesInWorkingDirectory()
         await fileservice.syncFromBrowser();
       }
       // await this.rmFile(e)
@@ -82,12 +104,31 @@ export class WorkSpacePlugin extends PluginClient {
       // Do something
       if (this.callBackEnabled) {
         //Utils.log(oldfile, newfile);
-        await fileservice.clearFilesInWorkingDirectory()
         await fileservice.syncFromBrowser();
 
       }
-      //await this.addFileFromBrowser(e)
     });
+
+
+    this.on("filePanel", "setWorkspace", async (x:any) => {
+      Utils.log("ws set", x);
+      await fileservice.syncFromBrowser(x.isLocalhost);
+      Utils.log(x);
+    });
+
+    this.on("filePanel", "deleteWorkspace", async (x:any) => {
+      Utils.log("wS DELETE", x);
+      await fileservice.syncFromBrowser(x.isLocalhost);
+      Utils.log(x);
+    });
+
+    this.on("filePanel", "renameWorkspace", async (x:any) => {
+      Utils.log("wS rn", x);
+      await fileservice.syncFromBrowser(x.isLocalhost);
+      Utils.log(x);
+    });
+
+
     this.callBackEnabled = true;
   }
 

@@ -1,5 +1,5 @@
 import React, { createRef, useState } from "react";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "../usesubscribe/index";
 import { ipfservice, Utils } from "../../App";
 import ConfirmDelete from "../ConfirmDelete";
 
@@ -19,7 +19,7 @@ export const IPFSImporter: React.FC<ipfsimporterProps> = ({}) => {
   const importFromCID = async (cid: string | undefined, name:string = "") => {
     try {
       await ModalRef.current?.show();
-      ipfservice.importFromCID(cid,name)
+      await ipfservice.importFromCID(cid,name)
       //Utils.log("yes");
     } catch (e) {
       //Utils.log("no");
@@ -28,7 +28,7 @@ export const IPFSImporter: React.FC<ipfsimporterProps> = ({}) => {
 
   return (
     <>
-      <ConfirmDelete title={"Importing"} text={"Importing will delete the files you are working on! Continue?"} ref={ModalRef}></ConfirmDelete>
+      <ConfirmDelete title={"Importing"} text={"This will create a new workspace! Continue?"} ref={ModalRef}></ConfirmDelete>
       <div className="form-group">
         <h4>Import from IPFS hash</h4>
         <label>IPFS HASH</label>

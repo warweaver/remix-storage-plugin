@@ -1,6 +1,6 @@
 import { ReadCommitResult } from "isomorphic-git";
 import React, { createRef } from "react";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "../../usesubscribe/index";
 import { gitservice, Utils } from "../../../App";
 import { default as dateFormat } from "dateformat";
 import ConfirmDelete from "../../ConfirmDelete";
@@ -31,7 +31,7 @@ export const GitLog: React.FC<gitLogProps> = ({}) => {
   const checkout = async (oid:string) => {
     try {
       await ModalRef.current?.show();
-      gitservice.checkout(oid)
+      gitservice.checkout({ref:oid})
       //Utils.log("yes");
     } catch (e) {
       //Utils.log("no");
@@ -62,11 +62,11 @@ export const GitLog: React.FC<gitLogProps> = ({}) => {
           })}
 
           <div
-            onClick={async () => await checkout("master")}
+            onClick={async () => await checkout("main")}
             className="btn btn-primary btn-sm checkout-btn"
-            data-oid="master"
+            data-oid="main"
           >
-            git checkout master
+            git checkout main
           </div>
         </div>
       </div>

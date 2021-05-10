@@ -1,17 +1,17 @@
 import React, { createRef } from "react";
-import { fileservice, gitservice, localipfsstorage, resetFileSystem, Utils } from "../../App";
-import ConfirmDelete from "../ConfirmDelete";
-
+import { fileservice, gitservice, ipfservice, localipfsstorage, resetFileSystem, Utils } from "../../App";
+import ConfirmDelete from "../ConfirmDelete"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileArchive } from "@fortawesome/free-regular-svg-icons"
+import { faCloudDownloadAlt } from "@fortawesome/free-solid-svg-icons"
 interface FileToolsProps {}
 
 export const FileTools: React.FC<FileToolsProps> = ({}) => {
   let ModalRef = createRef<ConfirmDelete>();
 
   const clearAll = async () => {
-    try {
-      
+    try {  
       await ModalRef.current?.show()
-      await fileservice.clearAll();
       //Utils.log("yes");
     } catch (e) {
       //Utils.log("no");
@@ -20,39 +20,8 @@ export const FileTools: React.FC<FileToolsProps> = ({}) => {
 
   return (
     <>
-      <hr />
-      <ConfirmDelete title={"Clear Files"} text={<div>This action will delete the files you are working on! Continue?</div>} ref={ModalRef}></ConfirmDelete>
-      {/*         <button className="btn btn-danger w-10" onClick={async()=>fileservice.getDirectory("/")}>get dir</button> */}
-      <button
-        className="btn btn-danger w-10 d-none"
-        onClick={async () => fileservice.syncFromBrowser()}
-      >
-        Sync from IDE
-      </button>
-      <button
-        className="btn btn-primary w-10 ml-2"
-        onClick={async () => fileservice.startNewRepo()}
-      >
-        Start new repo
-      </button>{" "}
-      <button
-        className="btn btn-primary w-10 ml-2"
-        onClick={async () => await gitservice.clearRepoName()}
-      >
-        Rename your repo
-      </button> | 
-      <button
-        className="btn btn-danger w-10 ml-2"
-        onClick={async () => await clearAll()}
-      >
-        Clear all files & git init
-      </button>
-      {/*         <button className="btn btn-danger w-10 ml-2" onClick={async()=>fileservice.clearFilesInWorkingDirectory()}>Clear files in browser</button>
-        <button className="btn btn-danger w-10 ml-2" onClick={async()=>fileservice.syncStart()}>sync start</button>
-
-        <button className="btn btn-danger w-10" onClick={async()=>fileservice.showFiles()}>show files</button>
-
-        <button className="btn btn-danger w-10" onClick={async()=>resetFileSystem()}>show config</button> */}
+      <div onClick={async ()=> gitservice.zip()} className='btn btn-primary mb-3'>download as zip <FontAwesomeIcon icon={faFileArchive}></FontAwesomeIcon></div><br></br>
+      <div onClick={async ()=> ipfservice.addAndOpenInVscode()} className='btn btn-primary'>clone in VSCode <FontAwesomeIcon icon={faCloudDownloadAlt}></FontAwesomeIcon></div>
     </>
   );
 };

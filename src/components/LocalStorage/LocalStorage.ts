@@ -1,8 +1,8 @@
-import { unstable_batchedUpdates } from "react-dom";
 import { BehaviorSubject } from "rxjs";
-import { fsConfigPromise, gitservice, ipfservice, Utils } from "../../App";
+import { client, gitservice, ipfservice, Utils } from "../../App";
 import { boxObject } from "../3box/3boxService";
 import { default as dateFormat } from 'dateformat'
+import { toast } from "react-toastify";
 export class LocalIPFSStorage {
   boxObjects = new BehaviorSubject<boxObject[] | []>([]);
   objects: any[] = [];
@@ -17,22 +17,24 @@ export class LocalIPFSStorage {
   }
 
   async read() {
-    let r = await fsConfigPromise.readFile("/objects.json", {
-      encoding: "utf8",
-    });
-    this.objects = JSON.parse(r);
-    this.objects.sort((a, b) => (a.timestamp > b.timestamp) ? -1 : 1)
-    this.objects = await this.filterNulls();
-    //Utils.log("READ CONFIG",this.objects);
-    this.boxObjects.next(this.objects);
+    try{
+      let r = await client.call('dGitProvider','getItem','dgit-ipfs')
+      this.objects = r? JSON.parse(r):[];
+      this.objects.sort((a, b) => (a.timestamp > b.timestamp) ? -1 : 1)
+      this.objects = await this.filterNulls();
+      //Utils.log("READ CONFIG",this.objects);
+      this.boxObjects.next(this.objects);
+    }catch(e){
+
+    }
   }
 
   async write() {
-    await fsConfigPromise.writeFile(
-      "/objects.json",
-      JSON.stringify(await this.filterNulls()),
-      { encoding: "utf8" }
-    );
+    try{
+      await client.call('dGitProvider','setItem','dgit-ipfs', JSON.stringify(await this.filterNulls()) )
+    }catch(e){
+      
+    }
   }
 
   async addToStorage(box: boxObject) {
@@ -64,7 +66,6 @@ export class LocalIPFSStorage {
     try{
       const commits = await gitservice.getCommits();
       let key = gitservice.reponame;
-  
       let ob: boxObject = {
         key: key,
         cid: ipfservice.cid,
@@ -74,10 +75,19 @@ export class LocalIPFSStorage {
         ref: commits[0].oid,
         message: commits[0].commit.message,
       };
-  
       return ob;
     }catch(e){
-      throw(e)
+      let key = gitservice.reponame;
+      let ob: boxObject = {
+        key: key,
+        cid: ipfservice.cid,
+        datestored: dateFormat(new Date(),"dddd, mmmm dS, yyyy, h:MM:ss TT"),
+        datecommit: "no commits",
+        timestamp: Date.now(),
+        ref: "no commits",
+        message: "no commits",
+      };
+      return ob;
     }
 
   }

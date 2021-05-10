@@ -2,7 +2,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { createRef, useEffect } from "react";
 import { Card } from "react-bootstrap";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "../usesubscribe/index";
 import { ipfservice, localipfsstorage, Utils } from "../../App";
 import ConfirmDelete from "../ConfirmDelete";
 
@@ -73,7 +73,7 @@ export const LocalIPFSView: React.FC<LocalIPFSViewProps> = ({}) => {
   return (
     <>
       <h4>Import from Local Storage</h4>
-      <ConfirmDelete title={"Importing"} text={"Importing will delete the files you are working on! Continue?"} ref={ModalRef}></ConfirmDelete>
+      <ConfirmDelete title={"Importing"} text={"This will create a new workspace! Continue?"} ref={ModalRef}></ConfirmDelete>
       <ConfirmDelete title={"Deleting"} text={"Are you sure you want to erase this item?"} ref={EraseModalRef}></ConfirmDelete>
       <div className="container-fluid">
         {(boxobjects || []).map((o, index) => {

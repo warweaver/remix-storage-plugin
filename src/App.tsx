@@ -24,11 +24,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { Importer } from "./components/Import/importer";
 import Loading from "react-fullscreen-loading";
 import { LoaderService } from "./components/loaderService";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "./components/usesubscribe/index";
 import { Help } from "./components/Help";
-import { RepoName } from "./components/git/UI/RepoName";
 import { LocalIPFSStorage } from "./components/LocalStorage/LocalStorage";
-import { ConnectionWarning } from "./components/ConnectionWarning";
+import { LocalHostWarning } from "./components/LocalHostWarning";
 import { IPFSConfig } from "./components/IPFS/IPFSConfig";
 import { GitStatus } from "./components/git/UI/gitStatus";
 
@@ -40,14 +39,10 @@ import { ExportHelp } from "./components/IPFS/ExportHelp";
 import { ImportHelp } from "./components/Import/ImportHelp";
 import { ConfigHelp } from "./components/IPFS/ConfigHelp";
 import { devutils } from "./components/Utils";
+import { PinataConfig } from "./components/IPFS/PinataConfig";
 
 export const Utils:devutils = new devutils();
 
-export var fsConfig: any; //= new FS("remix-storage-config");
-export var fsConfigPromise: any; // = fsConfig.promises;
-
-export var fsNoPromise: any; // = new FS("remix-workspace");
-export var fs: any; // = fsNoPromise.promises;
 export const gitservice: gitService = new gitService();
 export const client: WorkSpacePlugin = new WorkSpacePlugin();
 export const fileservice: LsFileService = new LsFileService();
@@ -56,16 +51,14 @@ export const boxservice: BoxService = new BoxService();
 export const loaderservice: LoaderService = new LoaderService();
 export const localipfsstorage: LocalIPFSStorage = new LocalIPFSStorage();
 
-
 export const resetFileSystem = async (wipe: boolean = false) => {
   try {
-    fsConfig = new FS("remix-storage-config");
-    fsConfigPromise = fsConfig.promises;
-    fsNoPromise = new FS("remix-workspace", { wipe: wipe });
-    fs = fsNoPromise.promises;
-    localipfsstorage.init();
+    
     client.clientLoaded.subscribe(async (load: boolean) => {
+      await localipfsstorage.init();
+      //if (load) await ipfservice.setipfsHost();
       if (load) await fileservice.syncStart();
+      if (load) await ipfservice.setipfsHost();
     });
     return true;
     //await fileservice.showFiles();
@@ -80,6 +73,7 @@ export const providerOptions = {
     package: WalletConnectProvider,
     options: {
       infuraId: "83d4d660ce3546299cbe048ed95b6fad",
+      bridge: 'https://wallet-connect-bridge.dyn.plugin.remixproject.org:8080/'
     },
   },
 };
@@ -92,11 +86,13 @@ function App() {
   const [canLoad, setCanLoad] = useState<boolean>(false);
   const repoName = useBehaviorSubject(gitservice.reponameSubject);
   const canCommit = useBehaviorSubject(gitservice.canCommit);
+  const canUseApp = useBehaviorSubject(fileservice.canUseApp);
   const [confirmShow, setConfirmShow] = React.useState(false);
 
   gitservice.reponameSubject.subscribe((x) => {}).unsubscribe();
   gitservice.canCommit.subscribe((x) => {}).unsubscribe();
   loaderservice.loading.subscribe((x) => {}).unsubscribe();
+  fileservice.canUseApp.subscribe((x) => {}).unsubscribe();
 
   const setTab = async (key: string) => {
     setActiveKey(key);
@@ -108,25 +104,13 @@ function App() {
   };
 
   useEffect(() => {
-    var request = window.indexedDB.open("MyTestDatabase", 3);
-    //Utils.log(request);
-    request.onerror = function (event) {
-      //Utils.log("DB not supported");
-      setCanLoad(false);
-      return false;
-    };
-    request.onsuccess = function (event) {
-      //Utils.log("DB supported");
       resetFileSystem(false).then((x) => setCanLoad(x));
-    };
-
-    //setCanLoad(r)
   }, []);
 
   return (
     <div className="App">
-      {!canLoad ? (
-        <ConnectionWarning canLoad={canLoad} />
+      { !canUseApp ? (
+        <LocalHostWarning canLoad={canUseApp} />
       ) : (
         <Container fluid>
           {loading ? (
@@ -134,7 +118,6 @@ function App() {
           ) : (
             <></>
           )}
-          <RepoName />
           <FontAwesomeIcon icon={faExclamationTriangle}></FontAwesomeIcon><a className='small pl-2' href='https://github.com/bunsenstraat/remix-storage-plugin/issues' target='_blank'>Submit issues</a>
           <div className="nav navbar bg-light p-3"><div><div className="float-left pr-1 m-0">dGit</div> | repo: {repoName}</div></div>
           
@@ -156,7 +139,7 @@ function App() {
           >
             <Tab className="mt-4 ml-1" eventKey="files" title="FILES">
               <FileExplorer setTab={setTab} />
-              <FileTools />
+              <FileTools/>
               <FileHelp/>
             </Tab>
             <Tab className="mt-4 ml-1" eventKey="git" title="GIT">
@@ -175,6 +158,7 @@ function App() {
               <DiffView />
             </Tab>
             <Tab className="mt-4 ml-1" eventKey="config" title="SETTINGS">
+              <PinataConfig></PinataConfig>
               <IPFSConfig />
               <ConfigHelp/>
             </Tab>
@@ -186,6 +170,41 @@ function App() {
       )}
     </div>
   );
+}
+
+// Hook
+export const useLocalStorage = (key: string, initialValue: any) => {
+  // State to store our value
+  // Pass initial state function to useState so logic is only executed once
+  const [storedValue, setStoredValue] = useState<any>(() => {
+    try {
+      // Get from local storage by key
+      const item = window.localStorage.getItem(key);
+      // Parse stored json or if none return initialValue
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      // If error also return initialValue
+      console.log(error);
+      return initialValue;
+    }
+  });
+  // Return a wrapped version of useState's setter function that ...
+  // ... persists the new value to localStorage.
+  const setValue = (value: any | ((val: any) => any)) => {
+    try {
+      // Allow value to be a function so we have same API as useState
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
+      // Save state
+      setStoredValue(valueToStore);
+      // Save to local storage
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      // A more advanced implementation would handle the error case
+      console.log(error);
+    }
+  };
+  return [storedValue, setValue] as const;
 }
 
 export default App;

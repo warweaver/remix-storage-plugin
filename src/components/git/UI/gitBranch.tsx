@@ -1,6 +1,6 @@
 import React, { createRef, useState } from "react";
 import { Alert } from "react-bootstrap";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "../../usesubscribe/index";
 import { gitservice, Utils } from "../../../App";
 import ConfirmDelete from "../../ConfirmDelete";
 
@@ -34,7 +34,7 @@ export const GitBranch: React.FC<gitBranchProps> = ({}) => {
   const checkout = async (oid: string) => {
     try {
       await ModalRef.current?.show();
-      gitservice.checkout(oid);
+      gitservice.checkout({ref:oid});
       //Utils.log("yes");
     } catch (e) {
       //Utils.log("no");

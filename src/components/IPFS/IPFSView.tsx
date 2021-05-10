@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { useBehaviorSubject } from "use-subscribable";
+import { useBehaviorSubject } from "../usesubscribe/index";
 import {
   boxservice,
   gitservice,
@@ -16,12 +16,10 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
   const cid = useBehaviorSubject(ipfservice.cidBehavior);
   const boxconnected = useBehaviorSubject(boxservice.status);
   const IPFSStatus = useBehaviorSubject(ipfservice.connectionStatus);
+  const PinataStatus = useBehaviorSubject(ipfservice.pinataConnectionStatus);
   const canExport = useBehaviorSubject(gitservice.canExport);
-  const BoxController = React.lazy(() =>
-    import("../3box/Box").then(({ BoxController }) => ({
-      default: BoxController,
-    }))
-  );
+
+  ipfservice.pinataConnectionStatus.subscribe((x) => {}).unsubscribe();
   ipfservice.connectionStatus.subscribe((x) => {}).unsubscribe();
   ipfservice.cidBehavior.subscribe((x) => {}).unsubscribe();
   boxservice.status.subscribe((x) => {}).unsubscribe();
@@ -34,12 +32,21 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
         <>
           IPFS Hash: {ipfservice.cid}
           <br></br>
-          <CopyToClipboard text={ipfservice.cid} onCopy={() => {toast.success("Copied to clipboard.")}}>
-            <button className="btn btn-primary">Copy to clipboard</button>
+          <CopyToClipboard
+            text={ipfservice.cid}
+            onCopy={() => {
+              toast.success("Copied to clipboard.");
+            }}
+          >
+            <button className="btn btn-primary mb-2">Copy to clipboard</button>
           </CopyToClipboard>
           <br></br>
-          <a className="pl-2" target="_blank" href={getUrl()} id="CID">
+          <a className="btn btn-primary mb-2" target="_blank" href={getUrl()} id="CID">
             View files
+          </a>
+          <br></br>
+          <a className="btn btn-primary" target="_blank" href={getVscodeUrl()} id="VSCODE">
+            Clone in VSCode
           </a>
         </>
       );
@@ -50,7 +57,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
 
   useEffect(() => {
     //Utils.log("export view");
-    ipfservice.setipfsHost();
+    //ipfservice.setipfsHost();
   }, []);
 
   const addFilesToIpfs = async () => {
@@ -62,12 +69,49 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
     } catch (e) {}
   };
 
+  const addFilesToPinata = async () =>{
+    try {
+      await ipfservice.addFilesToPinata();
+    } catch (e) {}
+  }
+
   const getUrl = () => {
     return `${ipfservice.ipfsconfig.ipfsurl}${cid}`;
   };
 
+  const getVscodeUrl = () =>{
+    return `vscode://${process.env.REACT_APP_REMIX_EXTENSION}/pull?cid=${cid}`;
+  }
+
   return (
     <>
+
+      {canExport ? (
+        <></>
+      ) : (
+        <div className="alert alert-danger w-25 mt-2" role="alert">
+          Commit some files first, then you can export.
+        </div>
+      )}
+       <h4>Export to Pinata Cloud</h4>
+       {PinataStatus ? (
+        <></>
+      ) : (
+        <div className="alert alert-warning w-25 mt-2" role="alert">
+          Your Pinata API key is incorrect or missing. Unable to connect. Check your
+          settings.
+        </div>
+      )}
+      <button
+        disabled={(PinataStatus ? false : true) || (canExport ? false : true)}
+        className="btn w-25 btn-primary"
+        id="main-btn"
+        onClick={async () => await addFilesToPinata()}
+      >
+        Export to Pinata
+      </button>
+      <hr></hr>
+      <h4>Export to Local storage & IPFS</h4>
       {IPFSStatus ? (
         <></>
       ) : (
@@ -76,21 +120,13 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
           settings.
         </div>
       )}
-      {canExport ? (
-        <></>
-      ) : (
-        <div className="alert alert-danger w-25 mt-2" role="alert">
-          Commit some files first, then you can export.
-        </div>
-      )}
-      <h4>Export to Local storage & IPFS</h4>
       <button
         disabled={(IPFSStatus ? false : true) || (canExport ? false : true)}
         className="btn w-25 btn-primary"
         id="main-btn"
         onClick={async () => await addFilesToIpfs()}
       >
-        Export to IPFS only & store in local storage
+        Export to custom IPFS & store in local storage
       </button>
 
       <br />
@@ -98,18 +134,6 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
       <br />
       {getUrlLink()}
       <hr />
-      <h4>Export to 3Box Storage</h4>
-      <div className="alert alert-warning w-25" role="alert">
-        Please make sure the IDE is on HTTPS otherwise you can't connect.
-      </div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <BoxController
-          buttonTitle="Export to 3Box"
-          storeData={true}
-          IPFSStatus={IPFSStatus}
-        />
-      </Suspense>
-      <div id="boxexportstatus"></div>
     </>
   );
 };
