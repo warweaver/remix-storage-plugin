@@ -21,7 +21,7 @@ export const FileTools: React.FC<FileToolsProps> = ({}) => {
   return (
     <>
       <div onClick={async ()=> gitservice.zip()} className='btn btn-primary mb-3'>download as zip <FontAwesomeIcon icon={faFileArchive}></FontAwesomeIcon></div><br></br>
-      <div onClick={async ()=> ipfservice.addAndOpenInVscode()} className='btn btn-primary'>clone in VSCode <FontAwesomeIcon icon={faCloudDownloadAlt}></FontAwesomeIcon></div>
+      <div hidden onClick={async ()=> ipfservice.addAndOpenInVscode()} className='btn btn-primary'>clone in VSCode <FontAwesomeIcon icon={faCloudDownloadAlt}></FontAwesomeIcon></div>
     </>
   );
 };
