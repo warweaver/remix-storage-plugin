@@ -35,7 +35,7 @@ export class WorkSpacePlugin extends PluginClient {
 
   async pull(cid: string){
     try {
-      await ipfservice.importFromCID(cid)
+      await ipfservice.importFromCID(cid, false)
       //Utils.log("yes");
     } catch (e) {
       //Utils.log("no");
