@@ -19,7 +19,6 @@ export const PinataImport: React.FC<PinataImportProps> = ({}) => {
   ipfservice.pinataConnectionStatus.subscribe((x) => {}).unsubscribe();
 
   useEffect(() => {
-    console.log("update pinata", status);
     if (status) read();
   }, [status]);
 
@@ -44,8 +43,6 @@ export const PinataImport: React.FC<PinataImportProps> = ({}) => {
           ipfservice.pinataConfig.key,
           ipfservice.pinataConfig.secret
         );
-
-        console.log(r);
         setData(r.rows);
       } catch (err) {
         console.log(err);
@@ -80,7 +77,7 @@ export const PinataImport: React.FC<PinataImportProps> = ({}) => {
     try {
       await ModalRef.current?.show();
 
-      await ipfservice.importFromCID(cid, name);
+      await ipfservice.importFromCID(cid, name, false);
       //Utils.log("yes");
     } catch (e) {
       //Utils.log("no");
@@ -98,7 +95,6 @@ export const PinataImport: React.FC<PinataImportProps> = ({}) => {
           ipfservice.pinataConfig.secret,
           cid
         );
-        console.log(r);
         await read()
       } catch (err) {
         console.log(err);

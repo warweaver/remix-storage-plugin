@@ -11,7 +11,6 @@ export class WorkSpacePlugin extends PluginClient {
   constructor() {
     super();
     createClient(this);
-    console.log(this)
     toast.info("Connecting to REMIX DGIT2");
     this.methods = ['pull']
     this.onload().then(async () => {
@@ -20,9 +19,9 @@ export class WorkSpacePlugin extends PluginClient {
       try{
         await this.call("manager", "activatePlugin", "dGitProvider")
         this.clientLoaded.next(true);
-        console.log("set callbacks")
         await this.setCallBacks();
       }catch(e){
+        console.log(e)
         toast.error("Could not activate DECENTRALIZED GIT. Please activate DECENTRALIZED GIT in the plugin list and restart this plugin.", {autoClose:false})
       }
 
@@ -36,8 +35,7 @@ export class WorkSpacePlugin extends PluginClient {
 
   async pull(cid: string){
     try {
-      console.log("PULL", cid, ipfservice)
-      await ipfservice.importFromCID(cid)
+      await ipfservice.importFromCID(cid, false)
       //Utils.log("yes");
     } catch (e) {
       //Utils.log("no");

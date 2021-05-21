@@ -30,7 +30,6 @@ export const PinataConfig: React.FC<PinataConfigProps> = ({}) => {
   }, []);
 
   const checkconfig = async () => {
-    console.log("check");
     toast.dismiss();
     try {
       let r = await client.call("dGitProvider" as any, "pinList", key, secret);

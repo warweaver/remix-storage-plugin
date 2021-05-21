@@ -45,7 +45,7 @@ export const IPFSView: React.FC<IPFSViewProps> = () => {
             View files
           </a>
           <br></br>
-          <a className="btn btn-primary" target="_blank" href={getVscodeUrl()} id="VSCODE">
+          <a className="btn btn-primary" target="_blank" href={getVscodeUrl()} hidden id="VSCODE">
             Clone in VSCode
           </a>
         </>

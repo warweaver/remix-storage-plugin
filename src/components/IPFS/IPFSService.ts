@@ -105,7 +105,7 @@ export class IPFSService {
     return `vscode://${process.env.REACT_APP_REMIX_EXTENSION}/pull?cid=${this.cid}`;
   }
 
-  async importFromCID(cid: string | undefined, name:string = "") {
+  async importFromCID(cid: string | undefined, name:string = "", local:boolean = false) {
     toast.dismiss()
     const connect = await this.setipfsHost()
     if(!connect){toast.error("Unable to connect to IPFS check your settings.",{autoClose:false}); return false;}
@@ -113,11 +113,11 @@ export class IPFSService {
       //Utils.log("cid", cid);
       this.cid = cid;
       //$("#ipfs").val(ipfservice.cid);
-      await ipfservice.clone();
+      await ipfservice.clone(local);
     }
   }
 
-  async clone() {
+  async clone(local:boolean) {
     await client.disableCallBacks()
     loaderservice.setLoading(true)
     const connect = await this.setipfsHost()
@@ -128,7 +128,7 @@ export class IPFSService {
       return false;
     }
     try {
-      await client.call('dGitProvider', 'pull', {cid:cid})
+      await client.call('dGitProvider', 'pull', {cid:cid, local:local})
       loaderservice.setLoading(false)
       //await fileservice.syncToBrowser();
       await fileservice.syncStart()
