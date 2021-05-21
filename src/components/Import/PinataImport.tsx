@@ -120,7 +120,7 @@ export const PinataImport: React.FC<PinataImportProps> = ({}) => {
         ref={EraseModalRef}
       ></ConfirmDelete>
       <div className="container-fluid">
-        {(data || []).map((o: any, index: any) => {
+        {(data || []).filter((o: any)=> {return o.metadata.name}).map((o: any, index: any) => {
           return (
             <div key={index} className="row p-1">
               <Card className="w-75">
@@ -128,15 +128,15 @@ export const PinataImport: React.FC<PinataImportProps> = ({}) => {
                   <h5>{o.metadata.name}</h5>
                   <div className="row">
                     <div className="col">IPFS</div>
-                    <div className="col">{o.ipfs_pin_hash}</div>
+                    <div className="col">{o?.ipfs_pin_hash}</div>
                   </div>
                   <div className="row">
                     <div className="col">DATE EXPORTED</div>
-                    <div className="col">{dateFormat(o.date_pinned,"dddd, mmmm dS, yyyy, h:MM:ss TT")}</div>
+                    <div className="col">{dateFormat(o?.date_pinned,"dddd, mmmm dS, yyyy, h:MM:ss TT")}</div>
                   </div>
                   <div className="row">
                     <div className="col">MESSAGE</div>
-                    <div className="col">{o.metadata.keyvalues.message}</div>
+                    <div className="col">{o?.metadata?.keyvalues?.message}</div>
                   </div>
                 </Card.Body>
               </Card>

@@ -35,7 +35,7 @@ export class WorkSpacePlugin extends PluginClient {
 
   async pull(cid: string){
     try {
-      await ipfservice.importFromCID(cid, false)
+      await ipfservice.importFromCID(cid, "", false)
       //Utils.log("yes");
     } catch (e) {
       //Utils.log("no");
@@ -130,6 +130,8 @@ export class WorkSpacePlugin extends PluginClient {
     this.callBackEnabled = true;
   }
 
+
+  
   async disableCallBacks() {
     this.callBackEnabled = false;
   }
