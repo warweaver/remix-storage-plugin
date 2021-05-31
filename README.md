@@ -94,7 +94,10 @@ Be careful: the browser does not have unlimited storage, large repositories will
 
 You can get the files from IPFS and just add an origin and push.<br>
 
+# Basic Operations
 
+## Set up Pinata
 
+Go to [pinata.cloud ](https://pinata.cloud/) and sign up. After that in the section API KEYS you can add a new key.<br>
 
-
+![](images/pinata.png)
