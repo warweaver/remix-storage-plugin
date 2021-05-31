@@ -48,7 +48,7 @@ No, it will pull the repo from IPFS in its entirety and erase the files in Remix
 You can share files by sharing the IPFS hash that was created when you exported.<br>
 But each time you export a unique version is created in IPFS, so if someone else works on the files they will also export a unique version.<br>
 This app does not replace GitHub when it comes to collaboration features.
-## PINATA CLOUD
+## Pinata Cloud
 
 Pinata is an IPFS pinning service. This means it will ensure the data your export is kept in IPFS for as long as you want it to be<br>
 To use this service you need an API key & secret from Pinata. Up to 1GB of data is free. That should be enough to keep the remix data you need.<br>
