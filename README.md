@@ -5,7 +5,6 @@ ______________________________________
 
 - Run the IDE on HTTPS
 - Do not run in icognito mode when third party cookies are blocked
-- You will need a walletconnect app or metamask plugin if you wish to use the 3Box connection
 
 ## What does it do?
 
@@ -13,13 +12,19 @@ This plugin tracks your files in Remix as a git repository and allows you to sto
 This repo is stored in your browser but you can export and import it from IPFS using the plugin, that way your repo is safe.<br>
 Each time you export it will generate a new unique IPFS hash for you.<br>
 In IPFS you will find your browser's files there commmited plus the git repository itself ( .git ).<br>
-These hashes are stored in your browser's local storage or you can export them to 3Box.io.<br>
+These hashes are stored in your browser's local storage or you can export them to Pinata Cloud<br>
+
+## Pinata Cloud
+
+To ensure that data persists on IPFS, and is not deleted during garbage collection, data can be pinned to one or more IPFS nodes.<br>
+As such, you should use that control to pin any content you wish to keep on IPFS indefinitely.<br>
+Pinata gives you free pinning up to 1GB of data, which should be enough to keep your projects.<br>
+https://pinata.cloud/
 
 ## Git operations
 
 You have to use the app in the same way you would when you'd manage your files in a git repo.<br>
 Files are not added by git automatically, you need to add, stage and commmit them like you would do normally.<br>
-*Files that are not commmited will not be exported to IPFS!*
 
 ## 3 ways Importing/exporting
 
