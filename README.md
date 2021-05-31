@@ -1,3 +1,19 @@
+- [A decentralized git plugin for Remix](#a-decentralized-git-plugin-for-remix)
+  - [Requirements](#requirements)
+  - [What does it do?](#what-does-it-do)
+  - [Pinata Cloud](#pinata-cloud)
+  - [Git operations](#git-operations)
+  - [3 ways Importing/exporting](#3-ways-importingexporting)
+  - [Is 'Export' the same as 'push'?](#is-export-the-same-as-push)
+  - [Is 'Import' the same as 'pull'?](#is-import-the-same-as-pull)
+  - [File collaboration](#file-collaboration)
+  - [Which custom IPFS can I use?](#which-custom-ipfs-can-i-use)
+  - [Cloning on desktop](#cloning-on-desktop)
+  - [Why not use Github?](#why-not-use-github)
+  - [How can I get my files from Github?](#how-can-i-get-my-files-from-github)
+  - [How can I get my files into Github?](#how-can-i-get-my-files-into-github)
+- [Basic Operations](#basic-operations)
+  - [Set up Pinata](#set-up-pinata)
 # A decentralized git plugin for Remix
 ______________________________________
 
@@ -99,5 +115,6 @@ You can get the files from IPFS and just add an origin and push.<br>
 ## Set up Pinata
 
 Go to [pinata.cloud ](https://pinata.cloud/) and sign up. After that in the section API KEYS you can add a new key.<br>
+Copy past that key in to the plugin settings and click 'check settings'.<br>
 
 ![](images/pinata.png)
