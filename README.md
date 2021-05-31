@@ -1,3 +1,7 @@
+
+# A decentralized git plugin for Remix
+______________________________________
+
 - [A decentralized git plugin for Remix](#a-decentralized-git-plugin-for-remix)
   - [Requirements](#requirements)
   - [What does it do?](#what-does-it-do)
@@ -13,9 +17,10 @@
   - [How can I get my files from Github?](#how-can-i-get-my-files-from-github)
   - [How can I get my files into Github?](#how-can-i-get-my-files-into-github)
 - [Basic Operations](#basic-operations)
+  - [Manage files](#manage-files)
+  - [Manage git](#manage-git)
   - [Set up Pinata](#set-up-pinata)
-# A decentralized git plugin for Remix
-______________________________________
+<br>
 
 ## Requirements
 
@@ -28,14 +33,14 @@ This plugin tracks your files in Remix as a git repository and allows you to sto
 This repo is stored in your browser but you can export and import it from IPFS using the plugin, that way your repo is safe.<br>
 Each time you export it will generate a new unique IPFS hash for you.<br>
 In IPFS you will find your browser's files there commmited plus the git repository itself ( .git ).<br>
-These hashes are stored in your browser's local storage or you can export them to Pinata Cloud<br>
+These hashes are stored in your browser's local storage or you can export them to Pinata Cloud.<br>
 
 ## Pinata Cloud
 
 To ensure that data persists on IPFS, and is not deleted during garbage collection, data can be pinned to one or more IPFS nodes.<br>
 As such, you should use that control to pin any content you wish to keep on IPFS indefinitely.<br>
 Pinata gives you free pinning up to 1GB of data, which should be enough to keep your projects.<br>
-https://pinata.cloud/
+<a href="https://pinata.cloud" target="_blank">Pinata Cloud</a>
 
 ## Git operations
 
@@ -112,9 +117,23 @@ You can get the files from IPFS and just add an origin and push.<br>
 
 # Basic Operations
 
+## Manage files
+
+When you have a workspace open your files will appear here:
+
+![](images/files.png)
+
+As you can see git is tracking your files, changes and deletions.<br>
+Here you can perform basic git operations<br>
+For example to add all files just click 'git Add -A'<br>
+
+## Manage git
+
+![](images/git.png)
+
 ## Set up Pinata
 
-Go to [pinata.cloud ](https://pinata.cloud/) and sign up. After that in the section API KEYS you can add a new key.<br>
-Copy past that key in to the plugin settings and click 'check settings'.<br>
+Go to <a href="https://pinata.cloud" target="_blank">Pinata Cloud</a> and sign up. After that in the section API KEYS you can add a new key.<br>
+Copy past that key in to the plugin settings and click 'check connection'.<br>
 
 ![](images/pinata.png)
