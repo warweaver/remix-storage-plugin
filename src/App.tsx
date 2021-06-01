@@ -1,12 +1,10 @@
-import React, { createRef, useEffect, useRef, useState } from "react";
-import logo from "./logo.svg";
+import React, { useEffect, useState } from "react";
+
 import "./App.css";
-import { Container, Tabs, Tab, Button } from "react-bootstrap";
-import Box from "3box";
-import Web3Modal from "web3modal";
-import { getAddress } from "@ethersproject/address";
+import { Container, Tabs, Tab } from "react-bootstrap";
+
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import FS from "@isomorphic-git/lightning-fs";
+
 import { FileExplorer } from "./components/Files/FileExplorer";
 import { GitControls } from "./components/git/UI/gitControls";
 
@@ -32,7 +30,7 @@ import { IPFSConfig } from "./components/IPFS/IPFSConfig";
 import { GitStatus } from "./components/git/UI/gitStatus";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile, faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { FileHelp } from "./components/Files/FileHelp";
 import { GitHelp } from "./components/git/UI/GitHelp";
 import { ExportHelp } from "./components/IPFS/ExportHelp";
