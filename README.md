@@ -19,6 +19,10 @@ ______________________________________
 - [Basic Operations](#basic-operations)
   - [Manage files](#manage-files)
   - [Manage git](#manage-git)
+  - [Exporting](#exporting)
+  - [IPFS](#ipfs)
+  - [Importing](#importing)
+  - [Code sharing](#code-sharing)
   - [Set up Pinata](#set-up-pinata)
 <br>
 
@@ -49,8 +53,7 @@ Files are not added by git automatically, you need to add, stage and commmit the
 
 ## 3 ways Importing/exporting
 
-The plugin offers you 3 ways to import/export your files:
-- You just store the git repo in IPFS and keep the hash somewhere for later use
+The plugin offers you 2 ways to import/export your files:
 - You store the git repo in IPFS and your browser keeps a list of your hashes
 - You store the git repo in IPFS and you export the hash to a list in Pinata Cloud
 
@@ -61,7 +64,7 @@ although you keep your entire GIT repo with its history.
 
 ## Is 'Import' the same as 'pull'?
 
-No, it will pull the repo from IPFS in its entirety and erase the files in Remix. It is basically always a 'clone'.
+No, it will pull the repo from IPFS in its entirety and create a new workspace in Remix. It is basically always a 'clone'.
 
 
 ## File collaboration
@@ -130,6 +133,37 @@ For example to add all files just click 'git Add -A'<br>
 ## Manage git
 
 ![](images/git.png)
+
+## Exporting 
+
+What does exporting actually mean? You files get uploaded to IPFS and are hashed. The hash is your link on IPFS to your files.<br>
+Remember that you will always export the files in your working area plus the .git directory.<br>
+
+There are two options
+- pin it in Pinata
+- just store it in IPFS, the hash will be kept in your browser storage
+
+![](images/export.png)
+
+## IPFS
+
+As you can see when you click 'view files', your files are in IPFS and immutable. 
+
+![](images/ipfs.png)
+
+When you unpin the files, the garbage collection of IPFS nodes will delete the files after aw while.
+So be sure to pin it if you need it permanently.
+
+## Importing
+
+It is important to know importing will create a new workspace for you. All the files in IPFS will be loaded into a new workspace.<br>
+It is like cloning. You can always delete the old workspace you were working on if there are too many of them.<br>
+
+![](images/import.png)
+
+## Code sharing
+
+Just pass on the IPFS hash you created, the user can import it in their browser.
 
 ## Set up Pinata
 
