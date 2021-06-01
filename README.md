@@ -7,7 +7,7 @@ ______________________________________
   - [What does it do?](#what-does-it-do)
   - [Pinata Cloud](#pinata-cloud)
   - [Git operations](#git-operations)
-  - [3 ways Importing/exporting](#3-ways-importingexporting)
+  - [2 ways Importing/exporting](#2-ways-importingexporting)
   - [Is 'Export' the same as 'push'?](#is-export-the-same-as-push)
   - [Is 'Import' the same as 'pull'?](#is-import-the-same-as-pull)
   - [File collaboration](#file-collaboration)
@@ -51,7 +51,7 @@ Pinata gives you free pinning up to 1GB of data, which should be enough to keep 
 You have to use the app in the same way you would when you'd manage your files in a git repo.<br>
 Files are not added by git automatically, you need to add, stage and commmit them like you would do normally.<br>
 
-## 3 ways Importing/exporting
+## 2 ways Importing/exporting
 
 The plugin offers you 2 ways to import/export your files:
 - You store the git repo in IPFS and your browser keeps a list of your hashes
